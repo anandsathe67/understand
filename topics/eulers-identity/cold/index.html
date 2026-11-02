@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let's Walk Round a Circle</title>
+<meta name="description" content="An interactive explainer of why e^(iπ) + 1 = 0, built from multiplication, a number line, turning, and repeating a step many times.">
+<style>
+:root{
+  --paper:#fbf6ee; --ink:#2b2520; --ink-soft:#5a4f46; --rule:#e2d7c5;
+  --accent:#c2552e; --blue:#2e6f9e; --green:#3f7d4e; --gold:#b8860b; --purple:#7a4e9e;
+  --card:#ffffff; --card-soft:#f4ecdd; --note:#fff4d6; --older:#e9f1f7; --home:#eaf4ea; --stop:#f7e6e0;
+  --sans: ui-sans-serif, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Charter, Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:19px;line-height:1.55}
+main{max-width:44rem;margin:0 auto;padding:0 16px 4rem}
+h1{font-size:2.4rem;line-height:1.1;margin:2.2rem 0 .4rem;font-weight:700;letter-spacing:-.01em}
+.sub{font-size:1.15rem;color:var(--ink-soft);margin:0 0 1.6rem;font-style:italic}
+h2{font-size:1.55rem;line-height:1.2;margin:3.2rem 0 .8rem;font-weight:700}
+h2 .num{display:inline-block;color:var(--accent);font-family:var(--sans);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem}
+h3{font-size:1.15rem;margin:1.6rem 0 .5rem}
+p{margin:0 0 1rem}
+strong{font-weight:700}
+.term{font-weight:700;color:var(--accent)}
+em{font-style:italic}
+code,.m{font-family:var(--mono);font-size:.9em;background:var(--card-soft);padding:.05em .3em;border-radius:4px}
+.eq{font-family:var(--mono);font-size:1.5rem;text-align:center;margin:1.2rem 0;letter-spacing:.02em}
+ul{padding-left:1.3rem}
+li{margin:.3rem 0}
+hr{border:0;border-top:1px solid var(--rule);margin:2.5rem 0}
+a{color:var(--blue)}
+.scene{font-size:1.1rem;border-left:4px solid var(--accent);padding:.2rem 0 .2rem 1rem;margin:1.5rem 0}
+.questions{background:var(--card-soft);border-radius:12px;padding:1rem 1.2rem;margin:1.2rem 0}
+.questions h3{margin-top:0}
+.box{border-radius:12px;padding:1rem 1.2rem;margin:1.4rem 0;font-size:.97rem}
+.box h4{margin:0 0 .5rem;font-family:var(--sans);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.hold{background:var(--note);border:1px solid #efd9a0}
+.hold h4{color:var(--gold)}
+.older{background:var(--older);border:1px solid #c6d9e8}
+.older h4{color:var(--blue)}
+.parent{background:#f3eef9;border:1px solid #d6c8e8}
+.parent h4{color:var(--purple)}
+.home{background:var(--home);border:1px solid #bfd9c2}
+.home h4{color:var(--green)}
+.stop{background:var(--stop);border:1px dashed var(--accent);text-align:center;font-style:italic}
+.stop h4{color:var(--accent)}
+.history{font-size:.95rem;color:var(--ink-soft);border-top:1px dotted var(--rule);border-bottom:1px dotted var(--rule);padding:.6rem 0;margin:1.2rem 0}
+.history::before{content:"A little history · ";font-family:var(--sans);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+/* sims */
+.sim{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:.9rem;margin:1.4rem 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.sim canvas{display:block;width:100%;height:auto;border-radius:8px;background:#fffdf8;touch-action:none}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.7rem 0 .3rem;font-family:var(--sans);font-size:.9rem}
+.controls label{display:flex;align-items:center;gap:.4rem;flex:1 1 100%;color:var(--ink-soft)}
+.controls input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+.controls .val{font-family:var(--mono);min-width:3.5em;text-align:right;color:var(--ink)}
+button{font-family:var(--sans);font-size:.92rem;border:1px solid var(--rule);background:var(--card-soft);color:var(--ink);padding:.4rem .8rem;border-radius:999px;cursor:pointer;touch-action:manipulation}
+button:hover{background:#ecdfc7}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button.primary:hover{background:#a8471f}
+button:disabled{opacity:.45;cursor:default}
+.readout{font-size:1rem;line-height:1.45;padding:.6rem .8rem;background:var(--card-soft);border-radius:8px;margin:.5rem 0 .3rem;min-height:2.6em}
+.readout b{font-family:var(--mono);font-weight:600;color:var(--accent)}
+.caption{font-family:var(--sans);font-size:.82rem;color:var(--ink-soft);margin:.4rem .2rem 0}
+.notice{font-size:.95rem}
+.notice h4{font-family:var(--sans);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin:1rem 0 .3rem}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:.4rem 0}
+.chip{font-family:var(--mono);background:var(--card-soft);border-radius:6px;padding:.15em .45em;font-size:.95rem}
+.big{font-family:var(--mono);font-size:1.6rem;margin:.4rem 0}
+.strange li{margin:.6rem 0}
+footer{margin-top:4rem;padding-top:1.5rem;border-top:1px solid var(--rule);font-size:.92rem;color:var(--ink-soft)}
+.recap{font-size:1.25rem;background:var(--card-soft);border-radius:12px;padding:1rem 1.2rem;margin:1.4rem 0}
+.toggle{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--sans);font-size:.88rem;color:var(--ink-soft)}
+@media (max-width:480px){body{font-size:17.5px} h1{font-size:2rem} .eq{font-size:1.25rem} .controls label{font-size:.85rem}}
+</style>
+</head>
+<body>
+<main>
+
+<h1>Let's Walk Round a Circle</h1>
+<p class="sub">How a bank, a turning arrow and a piece of string explain the strangest-looking equation on any T-shirt.</p>
+
+<p class="scene">My cousin Riya came to lunch wearing a black T-shirt with white writing. It said <span class="m">e<sup>iπ</sup> + 1 = 0</span>, and nothing else. "What does it mean?" I asked. She said, "It's the most beautiful equation in maths." "But what does it <em>mean</em>?" She chewed her roti and said, "It links the five most important numbers." That is true, and it is also the least useful sentence anyone has ever said about it. It's like saying a bicycle links a saddle and two wheels.</p>
+
+<p>This page is the answer I wish Riya had given me. We are going to build the whole thing out of four ordinary ideas: multiplying, a number line, turning, and doing the same small thing many, many times. There is no step where you have to "just trust me". Where a step is too hard for a ten-year-old to carry alone, I say so and mark it <strong>For older readers</strong> or <strong>Parent, carry here</strong>.</p>
+
+<div class="questions">
+<h3>By the end you'll be able to answer:</h3>
+<ul>
+<li>How can a number be <em>imaginary</em>? Isn't that cheating?</li>
+<li>How can <em>multiplying</em> ever make something <em>spin</em>?</li>
+<li>Why does the number <em>e</em> show up both in bank accounts and in circles?</li>
+<li>What could "e to the power of a turn" possibly mean? You can't multiply something by itself a <em>turn</em> times.</li>
+<li>Why π and not 180? Who said circles are measured in π?</li>
+</ul>
+</div>
+
+<p>It takes two or three sittings. There are two "good place to stop" signs along the way. Every picture is a real calculation running live in your browser, so drag, press and slide everything.</p>
+
+<!-- ====================================================== 1 -->
+<h2><span class="num">Section 1</span><br>A power is a multiplication done again and again</h2>
+
+<p>Suppose you have a photocopier that doubles things. You put in 1 sweet, you get 2. Put the 2 back in: 4. Again: 8. Again: 16. Doubling four times in a row takes 1 to 16.</p>
+
+<p>Writing "2 × 2 × 2 × 2" is long. Mathematicians write it with a tiny raised number: <span class="m">2<sup>4</sup></span>. It just means "multiply by 2, four times". <span class="m">2<sup>3</sup></span> means 2 × 2 × 2 = 8. <span class="m">10<sup>2</sup></span> means 10 × 10 = 100. The raised number is called a <span class="term">power</span> (or an exponent), and the whole page is about one of them, so let's make sure it feels like a machine you can run.</p>
+
+<div class="sim" id="sim-power">
+  <div class="controls">
+    <span>Multiply by</span>
+    <button data-base="2" class="primary">2</button>
+    <button data-base="3">3</button>
+    <button data-base="10">10</button>
+    <button data-base="1.5">1.5</button>
+    <button data-base="1.1">1.1</button>
+    <button data-base="0.5">½</button>
+    <label>how many times: <input type="range" min="0" max="12" value="4"><span class="val">4</span></label>
+  </div>
+  <div class="chips"></div>
+  <div class="big"></div>
+  <div class="readout"></div>
+  <div class="caption">The power machine. Pick a number, pick how many times to multiply by it, and the result is computed live.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Set "how many times" to 0. The answer is 1 every time. Zero multiplications leaves the starting 1 alone.</li>
+<li>Try 1.1, twelve times. A small push, repeated, adds up: 1 becomes about 3.1.</li>
+<li>Try ½. Multiplying can also shrink things. Hold on to that.</li>
+</ul>
+</div>
+
+<p class="history">The little raised number was made popular by René Descartes in his book <em>La Géométrie</em> in 1637. Before that, people wrote things like "the cube of the number", in words.</p>
+
+<div class="box hold"><h4>Hold on to this idea</h4><p>A power is a <em>machine run many times</em>. Everything that follows is: pick one small step, and repeat it.</p></div>
+
+<p><em>Side remark for older readers:</em> when a grown-up writes <span class="m">2<sup>n</sup></span>, the letter n is just a space where a number like 4 or 12 will go. "Multiply by 2, n times."</p>
+
+<!-- ====================================================== 2 -->
+<h2><span class="num">Section 2</span><br>Multiplying stretches an arrow</h2>
+
+<p>Draw a number line on the floor: 0 in the middle, 1, 2, 3 going right, −1, −2, −3 going left. Now instead of thinking of a number as a <em>dot</em> on the line, think of it as an <em>arrow</em> from 0 to the dot. The number 3 is an arrow three steps long pointing right.</p>
+
+<p>What does "multiply by 2" do to the arrow? It stretches it to twice the length. Multiply by ½ and it shrinks to half. The arrow never turns; it only gets longer or shorter.</p>
+
+<div class="sim" id="sim-line1">
+  <canvas></canvas>
+  <div class="controls">
+    <button data-op="2">× 2</button>
+    <button data-op="3">× 3</button>
+    <button data-op="0.5">× ½</button>
+    <button data-op="reset">reset to 1</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">An arrow on the number line. Each button multiplies the arrow by that number. The line re-scales itself when the arrow gets long.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Press × 2 three times: 1 → 2 → 4 → 8. That's the power machine from Section 1, drawn as stretching.</li>
+<li>Press × 2 and then × ½. You're back where you started. Shrinking undoes stretching.</li>
+<li>Notice what never happens: the arrow never points left. No amount of stretching does that.</li>
+</ul>
+</div>
+
+<!-- ====================================================== 3 -->
+<h2><span class="num">Section 3</span><br>Multiplying by −1 is a half-turn</h2>
+
+<p>Now press × (−1) below. The arrow 3 becomes −3. It <em>could</em> have got there by jumping across. But watch: the sim turns the arrow, like the hand of a clock, through half a turn, from pointing right to pointing left. Length stays the same. Only the direction changes.</p>
+
+<p>Is that cheating? Here's the test. Everybody learns the rule "negative times negative is positive" and nobody is told why. If × (−1) is a half-turn, then × (−1) twice is two half-turns, which is one whole turn, which is back where you started. (−1) × (−1) = 1. The rule isn't a rule at all; it's what two half-turns do.</p>
+
+<div class="sim" id="sim-line2">
+  <canvas></canvas>
+  <div class="controls">
+    <button data-op="2">× 2</button>
+    <button data-op="0.5">× ½</button>
+    <button data-op="-1" class="primary">× (−1)</button>
+    <button data-op="reset">reset to 3</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The same number-line arrow, with a new button. × (−1) swings the arrow through a half-turn (180°). Nothing else about it changes.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Press × (−1) twice. You get back to 3. Two half-turns is a full turn.</li>
+<li>Press × 2 then × (−1): the arrow is −6. Press × (−1) then × 2: also −6. Stretching and turning don't care which order you do them.</li>
+<li>Multiplying by −2 would be "stretch by 2 and half-turn", both at once.</li>
+</ul>
+</div>
+
+<div class="box hold"><h4>Hold on to this idea</h4><p>Multiplying an arrow does two things: it <strong>stretches</strong> it (or shrinks it) and it <strong>turns</strong> it. So far the only turn we've seen is a half-turn. Keep your eye on the turning.</p></div>
+
+<!-- ====================================================== 4 -->
+<h2><span class="num">Section 4</span><br>A quarter-turn, done twice, is a half-turn. We call it <em>i</em></h2>
+
+<p>Here is a question. × (−1) is a half-turn. Is there a number which, when you multiply by it <em>twice</em>, gives a half-turn? Something that, done twice, is × (−1)?</p>
+
+<p>Think about turning. What turn, done twice, is a half-turn? A <strong>quarter-turn</strong>, obviously: turn a quarter, turn another quarter, and you've turned half. So the number we want is "multiply = quarter-turn". There's one problem: a quarter-turn makes the arrow point <em>up</em>, and there is no "up" on a number line.</p>
+
+<p>So we give ourselves an up. Draw a second number line through 0, going up and down. Now the arrow has a whole flat plane to point in. The quarter-turn number is so useful it gets its own letter: <span class="term">i</span>. An arrow of length 1 pointing straight up is called <em>i</em>. An arrow of length 2 pointing up is <em>2i</em>. Multiplying by <em>i</em> means "turn a quarter-turn, don't stretch".</p>
+
+<div class="sim" id="sim-plane">
+  <canvas></canvas>
+  <div class="controls">
+    <button data-op="i" class="primary">× i</button>
+    <button data-op="-i">× (−i)</button>
+    <button data-op="-1">× (−1)</button>
+    <button data-op="2">× 2</button>
+    <button data-op="0.5">× ½</button>
+    <button data-op="reset">reset to 1</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The number plane. Across is the old number line; up-and-down is the new one. × i is a quarter-turn anticlockwise; × (−i) is a quarter-turn clockwise.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Reset, then press × i twice. The arrow is at −1. Two quarter-turns is a half-turn: <em>i</em> × <em>i</em> = −1. That's the whole secret of <em>i</em>.</li>
+<li>Press × i four times. Back to 1. Four quarter-turns is a full turn.</li>
+<li>Press × 2 then × i. The arrow is 2i: two up. Multiplying by a plain number stretches; multiplying by <em>i</em> turns; they don't fight.</li>
+<li>Press × (−i) then × i. Back where you were. Clockwise undoes anticlockwise.</li>
+</ul>
+</div>
+
+<p>Now the first puzzle. "How can a number be imaginary?" It isn't, really. <em>i</em> is no more imaginary than −1. −1 means "one step, but turned round", and <em>i</em> means "one step, but turned a quarter". Nobody panics about −1. The word "imaginary" is a 400-year-old insult that stuck.</p>
+
+<p class="history">Descartes used the word "imaginary" in 1637 as a put-down: he meant these numbers were made-up and useless. For 150 years nobody drew them. Then a Norwegian surveyor, Caspar Wessel, drew the number plane in a paper presented in 1797; a Paris bookkeeper, Jean-Robert Argand, drew it again in 1806; and Carl Friedrich Gauss used it and gave the numbers the name "complex" in 1831. Once people could <em>see</em> <em>i</em> as a direction, the insult stopped making sense.</p>
+
+<div class="box home"><h4>Try it at home · the paper arrow</h4>
+<p>Cut an arrow out of paper and put a pin or a dot of blu-tack through its tail. Point it right. Say "times <em>i</em>" and turn it a quarter anticlockwise: it points up. Say it again: it points left, which is −1. Again: down, which is −<em>i</em>. Again: right, home.</p>
+<p><em>Why it works:</em> the paper arrow is exactly the arrow in the plane sim above, and your hand is the multiplication. Count the quarter-turns: two of them always make a half-turn, no matter where you start. That is <em>i</em> × <em>i</em> = −1 in your fingers.</p>
+</div>
+
+<div class="box stop"><h4>A good place to stop</h4><p>You now have the whole number plane and you know what <em>i</em> is. That's a full sitting. Next time: every multiplication is a stretch plus a turn, and then a bank.</p></div>
+
+<!-- ====================================================== 5 -->
+<h2><span class="num">Section 5</span><br>Every multiplication is a stretch and a turn</h2>
+
+<p>So far we can stretch (× 2), half-turn (× −1) and quarter-turn (× <em>i</em>). What about a small turn, say an eighth of a turn? There must be a number for that too, and there is. Here is how to find it with a rule you already know.</p>
+
+<p>You know that 4 × (10 + 2) is 40 + 8. Multiplying by "10 plus 2" means "multiply by 10, multiply by 2, add the results". The same works for arrows. Multiplying an arrow by "1 + <em>i</em>" means: take one copy of the arrow (that's × 1), take one copy turned a quarter (that's × <em>i</em>), and add them tip-to-tail. One step forward plus one step sideways is a diagonal: longer by about 1.41×, turned by 45°, an eighth of a turn. The sim draws both copies so you can see them join.</p>
+
+<div class="box parent"><h4>Parent, carry here</h4><p>The step "multiply by (1 + <em>i</em>) = one copy plus one turned copy" is the ordinary rule for multiplying out a sum, the one your child uses for 4 × 12 = 40 + 8. The new thing is only that one of the pieces is a turn. If they accept "× <em>i</em> is a quarter-turn" and "adding arrows is tip-to-tail", they have everything. Let the sim do the drawing; don't make them do the algebra.</p></div>
+
+<div class="sim" id="sim-mult">
+  <canvas></canvas>
+  <div class="controls">
+    <span>Multiplier presets:</span>
+    <button data-m="1,1" class="primary">1 + i</button>
+    <button data-m="1,0.1">1 + 0.1i</button>
+    <button data-m="0,1">i</button>
+    <button data-m="2,0">2</button>
+    <button data-m="-1,0">−1</button>
+    <button data-m="0.5,0.5">0.5 + 0.5i</button>
+  </div>
+  <div class="controls">
+    <button data-act="apply" class="primary">Multiply the arrow by it</button>
+    <button data-act="reset">reset arrow to 1</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">Drag the orange dot to choose any multiplier. Blue is your arrow. The dashed pieces are "a copy of the arrow" and "a copy turned a quarter", added tip-to-tail. Red is where they end up: the arrow times the multiplier.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>With the multiplier at 1 + i, press "Multiply the arrow" twice. The arrow goes 1 → (1 + i) → 2i: straight up, length 2. Two eighth-turns made a quarter-turn, and 1.41 × 1.41 = 2. So (1 + <em>i</em>) × (1 + <em>i</em>) = 2<em>i</em>, checked by watching.</li>
+<li>Press the 1 + 0.1i preset. The readout says it stretches by only 1.005× and turns by 5.7°. A <em>small</em> sideways slice is almost a pure turn, with hardly any stretch.</li>
+<li>Drag the orange dot anywhere. Whatever you pick, the readout always says "stretch by so much, turn by so much". Every multiplication is a stretch and a turn. There are no other kinds.</li>
+</ul>
+</div>
+
+<div class="box older"><h4>For older readers · the brackets</h4>
+<p>(1 + <em>i</em>)(1 + <em>i</em>) = 1 + <em>i</em> + <em>i</em> + <em>i</em>·<em>i</em> = 1 + 2<em>i</em> − 1 = 2<em>i</em>, using <em>i</em>·<em>i</em> = −1 from Section 4. The stretch factor of 1 + <em>i</em> is its length, √(1² + 1²) = √2 ≈ 1.414, and its turn is 45° because it points along the diagonal. In general, multiplying by a + b<em>i</em> stretches by √(a² + b²) and turns by the angle of the point (a, b).</p></div>
+
+<div class="box hold"><h4>Hold on to this idea</h4><p>Adding a <strong>small sideways slice</strong> to an arrow turns it a little and hardly stretches it at all. We'll come back to this with a vengeance in Section 7.</p></div>
+
+<!-- ====================================================== 6 -->
+<h2><span class="num">Section 6</span><br>Growing in tiny slices lands on <em>e</em></h2>
+
+<p>Now a completely different story, which is true. Imagine a bank that pays 100% interest a year. You put in ₹100; after a year the bank adds 100% of it, and you have ₹200. Doubling. Fine.</p>
+
+<p>A friendlier bank says: "We'll pay the same 100%, but in two halves. After six months we add 50%, and after another six months we add 50% of whatever you have <em>then</em>." ₹100 → ₹150 → ₹225. More! Because the second 50% was paid on the first 50% too.</p>
+
+<p>So you ask for monthly: twelve slices of 1/12 each. Then daily: 365 slices of 1/365. Then every second. Surely with enough slices you get rich without limit?</p>
+
+<p>You don't. Slide and watch. The money creeps up and then stops creeping, at about ₹271.83. More slices don't help. That stopping number, 2.71828…, is called <span class="term">e</span>. It is what "growing by 100% in tiny, tiny slices" adds up to.</p>
+
+<div class="sim" id="sim-bank">
+  <canvas></canvas>
+  <div class="controls">
+    <label>how many times the interest is paid in the year: <input type="range" min="0" max="8" value="0"><span class="val"></span></label>
+    <label>total growth promised: <input type="range" min="0.25" max="3" step="0.25" value="1"><span class="val"></span></label>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The growth machine. The staircase is your money through one year; each step is one interest payment of (growth ÷ number of slices). The dotted line is where the staircase is heading as the slices get tinier.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Paid once: ₹200. Twice: ₹225. Monthly: ₹261.30. Daily: ₹271.46. Every second: ₹271.83. The jumps get smaller and smaller; the machine is settling, not exploding.</li>
+<li>In Section 1 notation, "monthly" is the power machine: (1 + 1/12) multiplied 12 times. That's <span class="m">(1 + 1/12)<sup>12</sup></span>. <em>e</em> is this power machine with the slices made as small as you like.</li>
+<li>Now set "total growth" to 2 and slide to every second. ₹100 becomes ₹738.91. And 2.718 × 2.718 = 7.389. Growing by 200% in tiny slices is the same as growing by 100% in tiny slices, <em>twice</em>. Try 3: ₹2008.55 = 2.718 × 2.718 × 2.718.</li>
+</ul>
+</div>
+
+<p>That last bullet matters. Feed the machine growth 2 and you get <em>e</em> × <em>e</em>, which is <span class="m">e<sup>2</sup></span>. Feed it 3 and you get <span class="m">e<sup>3</sup></span>. So the machine's answer for growth of "some amount" is always "<em>e</em> to the power of that amount". That is why the T-shirt has an <em>e</em> with a power on it. The power is the amount you fed the machine.</p>
+
+<p class="history">Jacob Bernoulli asked exactly this bank question in 1683 and found the answer was stuck between 2 and 3, but he never found its digits. Leonhard Euler worked out those digits (2.71828182845…) and began calling the number <em>e</em> in a manuscript around 1727; the letter first appeared in print in his book <em>Mechanica</em> in 1736. Nobody knows for sure why he picked <em>e</em>. It is probably not for "Euler": he was a modest man and the letters a, b, c, d were already busy.</p>
+
+<div class="box home"><h4>Try it at home · the calculator race</h4>
+<p>On any calculator, work out 1.01 × 1.01 × 1.01… a hundred times (most calculators let you press = repeatedly after typing <span class="m">× 1.01</span>; or use the power button: 1.01 <span class="m">x<sup>y</sup></span> 100). You get 2.7048. Now race it against 1.001 to the power 1000: 2.7169. And 1.0001 to the power 10,000: 2.7181. Smaller slice, more slices, closer to 2.71828.</p>
+<p><em>Why it works:</em> 1.01 a hundred times is the bank paying 1% a hundred times, which is 100% in a hundred slices. It is the growth-machine sim with the slider at 100, and your calculator is doing the same multiplication the sim does.</p>
+</div>
+
+<div class="box hold"><h4>Hold on to this idea</h4><p>The growth machine is: <strong>keep what you have, and add a small slice of it. Repeat.</strong> Fed "100%" in tiny slices it lands on <em>e</em>; fed "200%" it lands on <em>e</em> × <em>e</em>. Now ask the obvious silly question: what if the slice we add isn't "more of the same", but <em>sideways</em>?</p></div>
+
+<div class="box stop"><h4>A good place to stop</h4><p>You've met <em>e</em> and you know what it is: the settling point of growth in tiny slices. Next sitting is the big one: we feed the same machine a turn.</p></div>
+
+<!-- ====================================================== 7 -->
+<h2><span class="num">Section 7</span><br>Turning in tiny slices walks you round a circle</h2>
+
+<p>Section 5 showed that adding a small sideways slice to an arrow turns it a little. Section 6 showed a machine that adds a small slice many times. Put them together.</p>
+
+<p>Start with the arrow 1. Instead of adding "a slice of the arrow" (which stretches it, like the bank), add "a slice of the arrow <em>turned a quarter</em>", which is a sideways slice. Let's make the total of all the slices add up to 3.14 arrow-lengths, which is π. Why π? Patience: it's a guess for now, and the next section explains it. With 1 slice, you add one big sideways step of length 3.14. With 10 slices, ten sideways steps of 0.314 each, and each one is sideways to <em>the arrow as it is then</em>, which has already turned a bit. Run it.</p>
+
+<div class="sim" id="sim-chain">
+  <canvas></canvas>
+  <div class="controls">
+    <label>number of slices: <input type="range" min="0" max="34" value="7"><span class="val"></span></label>
+    <button data-act="play" class="primary">Play, one slice at a time</button>
+    <label class="toggle"><input type="checkbox" data-act="circle" checked> show a perfect circle of radius 1</label>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The turn machine. Each short segment is one sideways slice, added to the arrow's tip. The chain is where the tip goes; the thick arrow is the final arrow. The target, −1, is marked.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>One slice: a single sideways step of 3.14. The arrow ends up far away, up at (1, 3.14). Nothing like −1.</li>
+<li>Ten slices (the default): the chain is already bending into a curve, and the arrow has turned 174°, almost a half-turn. But it's too long, 1.60 instead of 1, so it lands at (−1.59, 0.16), past the target.</li>
+<li>Slide up. 100 slices: 179.9°, length 1.05. 1000 slices: 180.0°, length 1.005, landing at (−1.005, 0.000). 100,000 slices: length 1.00005. The landing creeps onto −1 and stays there. Nobody told it to; it just does.</li>
+<li>Press Play with 10 or 20 slices and watch the tip walk. Every step is sideways to the arrow <em>at that moment</em>, so the tip keeps curling. That curling is the circle.</li>
+</ul>
+</div>
+
+<p>This is the moment the whole page was built for. We never said "circle" anywhere. We said "add a sideways slice, again and again", and a circle appeared on its own, and the arrow walked exactly halfway round it, onto −1.</p>
+
+<p>Why does sideways make a circle? Whirl a stone on a string. At every instant the stone is pulled sideways to the way it's going, and it goes round in a circle. A sideways push never makes you go faster or slower; it only changes which way you're facing. Our slices are sideways pushes on the arrow's tip. So the tip can't get much longer; it can only turn.</p>
+
+<div class="box parent"><h4>Parent, carry here</h4><p>Two things to hold for the child. First, "sideways to the arrow <em>now</em>" is the key phrase: the direction of each slice keeps changing, which is why the path curls rather than running off in a straight line. Second, the small overshoot (length 1.60 at 10 slices, 1.005 at 1000) is real, not a drawing error, and it shrinks as the slices get smaller. A sideways slice of length 0.314 doesn't just turn the arrow; it also makes it a hair longer, like the 1.005× from Section 5. Ten hairs add up to 60% extra; a thousand tinier hairs add up to only 0.5%. The box below has the arithmetic.</p></div>
+
+<div class="box older"><h4>For older readers · why the overshoot shrinks</h4>
+<p>Each step multiplies the arrow by (1 + <em>i</em>π/n). Its length is √(1 + π²/n²), which for large n is about 1 + π²/(2n²). Multiplying n such lengths gives about 1 + π²/(2n). For n = 1000 that is 1.0049, matching the readout. As n → ∞ it goes to 1: the stretch disappears and only the turn remains. The turn per step is arctan(π/n), which for large n is π/n, so n steps turn by π in total. Both facts together say the chain converges to a half-circle of radius 1 ending at −1. (If you bent each step to stay exactly on the circle instead of going straight, you would land on −1 for every n.)</p></div>
+
+<div class="box home"><h4>Try it at home · the matchstick chain</h4>
+<p>Take 12 matchsticks (or 12 equal strips of paper). Lay the first one flat. Lay the second one touching its end, turned by one hour on a clock face (30°). Lay the third turned another 30° from the second. Keep going. After 6 sticks you've turned 180° and you're pointing back the way you came, halfway round a rough circle. After 12 you've closed the loop.</p>
+<p><em>Why it works:</em> each stick is one slice in the turn-machine sim, pointing sideways to the arrow from the centre. Six slices of 30° is a half-turn. Your rough circle has corners because 12 slices is few; the sim with 100 slices has corners too, just too small to see.</p>
+</div>
+
+<!-- ====================================================== 8 -->
+<h2><span class="num">Section 8</span><br>π radius-lengths of string reach exactly halfway round</h2>
+
+<p>We fed the machine a total of 3.14 arrow-lengths of sideways slices, and the arrow ended up halfway round. Why 3.14?</p>
+
+<p>Because the tip of the arrow was walking <em>along the circle</em>, and the slices were its steps. So "how far did it turn" is really "how much string did it walk". And there's a fact about circles that every ten-year-old has heard but few have felt: the distance all the way round a circle is 2π times the radius, about 6.28 radius-lengths. Halfway round is 3.14 radius-lengths. Our arrow has length 1, so the circle it walks has radius 1, so halfway round is exactly π of string.</p>
+
+<div class="sim" id="sim-string">
+  <canvas></canvas>
+  <div class="controls">
+    <label>string wrapped, in radius-lengths: <input type="range" min="0" max="6.5" step="0.01" value="1"><span class="val"></span></label>
+    <button data-s="1">1</button>
+    <button data-s="1.5707963">π/2</button>
+    <button data-s="3.1415927" class="primary">π</button>
+    <button data-s="6.2831853">2π</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">A circle of radius 1 and a piece of string. The straight string (below) has a tick every radius-length. The same string is wrapped round the circle (red), and the arrow points to where it ends.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>One radius-length of string wraps to an angle of 57.3°. That angle has a name: one <span class="term">radian</span>. It is the circle's own natural unit of turn, measured by string, not by someone's choice of 360.</li>
+<li>Press π. The arrow lands exactly on −1. Press 2π: all the way round, back to 1.</li>
+<li>The second puzzle from the top of the page: "why π and not 180?" Because the machine doesn't know about degrees. It only knows how much sideways string it added. 180 is a human unit; π is the string's unit.</li>
+</ul>
+</div>
+
+<p><em>Side remark for older readers:</em> grown-ups write the amount of string as θ (theta, a Greek letter) and say "an angle of θ radians". It's just the slider position above.</p>
+
+<p class="history">Roger Cotes, a young Cambridge mathematician, was measuring angles by string length around 1714, three decades before Euler's famous book. The word "radian" is much younger: James Thomson, a professor in Belfast, coined it in 1873.</p>
+
+<div class="box home"><h4>Try it at home · the plate and the string</h4>
+<p>Find a round steel plate (a thali) or a roti. Measure from the centre to the edge with a piece of string and cut the string to that length: one radius. Cut six of these, and one extra cut to about 0.14 of a radius (a little bit; for a 10 cm radius, about 1.4 cm). Now lay radius-strings end to end around the edge: 1, 2, 3, and the little bit. You're at exactly the far side, halfway round. Three more radii and the little bit again brings you home: 6.28 radii, 2π.</p>
+<p><em>Why it works:</em> this is the string sim with your hands. The plate's edge is the circle of Section 7, the strings are the slices, and π is just the number of radius-lengths it takes to go halfway. It isn't a fact about the number 3.14; it's a fact about round things.</p>
+</div>
+
+<!-- ====================================================== 9 -->
+<h2><span class="num">Section 9</span><br>Run the machine with a turn of π and you land on −1</h2>
+
+<p>Now we can say the whole thing in words, with no symbols at all.</p>
+
+<p><strong>The bank machine keeps your money and adds a slice of it. Run it with a growth of 1 in tiny slices and your money becomes <em>e</em> times bigger. The turn machine keeps your arrow and adds a sideways slice of it. Run it with a turn of π in tiny slices and your arrow walks halfway round a circle, from 1 to −1.</strong></p>
+
+<p>It's the <em>same machine</em>. The only difference is the slice. A straight slice is "more of the same direction" (growth). A sideways slice is "a quarter-turn of the arrow". That answers the third puzzle. Why does <em>e</em> show up in bank accounts and in circles? Because it is one machine. Fed a straight slice, it makes <em>e</em>. Fed a sideways slice, it makes a circle.</p>
+
+<p>Now the naming. In Section 6 the machine fed growth 2 gave <span class="m">e<sup>2</sup></span>, and fed growth 3 gave <span class="m">e<sup>3</sup></span>. The machine's answer is always "<em>e</em> to the power of what you fed it". A sideways slice of π is written <em>i</em>π. (That's π turned a quarter, which is what multiplying by <em>i</em> does.) So when the machine is fed <em>i</em>π, mathematicians write its answer as <span class="m">e<sup>iπ</sup></span>, to match. And we've watched where it lands:</p>
+
+<div class="eq">e<sup>iπ</sup> = −1</div>
+
+<p>Then add 1 to both sides. The arrow at −1, plus one step to the right, is at 0, home:</p>
+
+<div class="eq">e<sup>iπ</sup> + 1 = 0</div>
+
+<p>Read it as a sentence: "Walk halfway round the circle, take one step right, and you're back at the start." That is what Riya's T-shirt says.</p>
+
+<div class="box parent"><h4>Parent, carry here · the honest bit about the name</h4><p>Your child may object: "You can't multiply <em>e</em> by itself <em>i</em>π times. That's not a number of times." They're right, and the page shouldn't pretend otherwise. <span class="m">e<sup>iπ</sup></span> is a <em>name given</em> to the machine's output. For ordinary numbers the machine's output really is a power of <em>e</em>. It would be strange to switch names the moment the slice turns sideways. This naming is also the only one that keeps the usual rules of powers working. Older readers can check: feed the machine <em>i</em>π twice in a row, and it lands where "fed 2<em>i</em>π" lands. That is exactly what <span class="m">e<sup>a</sup>·e<sup>b</sup> = e<sup>a+b</sup></span> demands. But it is a definition, not a discovery. The discovery is where the machine lands.</p></div>
+
+<p>Here is the machine with the turn under your control. Check that it lands on the circle for every turn, not just π.</p>
+
+<div class="sim" id="sim-any">
+  <canvas></canvas>
+  <div class="controls">
+    <label>turn fed in, in radius-lengths: <input type="range" min="0" max="6.3" step="0.01" value="3.14"><span class="val"></span></label>
+    <label>number of slices: <input type="range" min="0" max="34" value="21"><span class="val"></span></label>
+    <button data-t="1.5707963">π/2</button>
+    <button data-t="3.1415927" class="primary">π</button>
+    <button data-t="4.712389">3π/2</button>
+    <button data-t="6.2831853">2π</button>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The turn machine fed any amount of turn. The grey dot is the string-sim answer from Section 8 (walk that far along the circle). The red arrow is where the slice machine actually lands.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>At 250 slices (the default) the red arrow and the grey dot almost coincide for every turn. Slide the slices down to 4 and they separate. Slide up to 100,000 and they merge.</li>
+<li>Press π/2. The machine lands on <em>i</em>, straight up. A quarter of the string is a quarter-turn. That is what <em>i</em> was in Section 4. So <span class="m">e<sup>iπ/2</sup> = i</span>.</li>
+<li>Press 2π. Back to 1, a full lap. More on that in Stranger things.</li>
+</ul>
+</div>
+
+<p class="history">Roger Cotes wrote down the link between "string length" and the machine in 1714. His form is hard to recognise today, because he wrote it with logarithms. He died two years later, at 33. Newton said "if he had lived we might have known something". Leonhard Euler stated the general fact in his 1748 book <em>Introductio in analysin infinitorum</em>: the machine fed a turn lands on the circle. Euler never wrote the line <span class="m">e<sup>iπ</sup> + 1 = 0</span> as such. It is one special case of his formula. The habit of writing it that way, and calling it "Euler's identity", came in the 19th and 20th centuries. The physicist Richard Feynman, in his 1964 lectures, called the general formula "our jewel".</p>
+
+<!-- ====================================================== STRANGER -->
+<h2><span class="num">Interlude</span><br>Stranger things</h2>
+<ul class="strange">
+<li><strong>A full lap: <span class="m">e<sup>2πi</sup> = 1</span>.</strong> Feed the machine a turn of 2π. The arrow walks all the way round and lands back on 1. In Section 9's sim, press 2π. The equation looks like it should be exciting. It just says "a full turn gets you home".</li>
+<li><strong><em>i</em> to the power <em>i</em> is an ordinary number: about 0.208.</strong> Here's why. <em>i</em> is where the machine lands when fed a turn of π/2 (press π/2 above). Raising to a power multiplies the thing you fed in. So <em>i</em> to the power <em>i</em> means feeding <em>i</em> × <em>i</em>π/2. That is −π/2, because <em>i</em> × <em>i</em> = −1. A feed of −π/2 is a <em>shrink</em>, not a turn: the bank machine with growth −π/2. The result is <span class="m">e<sup>−π/2</sup></span> = <span id="ii">0.2079</span>. For older readers: it isn't the only value. You could also reach <em>i</em> by walking π/2 plus any number of full laps. 0.208 is the one everyone means by default.</li>
+<li><strong>Your house electricity is a spinning arrow.</strong> The voltage in a wall socket swings back and forth 50 times a second (60 in some countries). Engineers picture it as an arrow spinning round the number plane. They read off its up-and-down shadow. The multiplication-is-turning idea makes the sums easy. Charles Steinmetz pushed this method in 1893. It is still how electrical engineers work.</li>
+<li><strong>A pure musical note is a spinning arrow too.</strong> A tuning fork spins 440 times a second. Its shadow traces the wave you'd see on a sound app. Every sound you hear is a pile of spinning arrows, at different speeds, added together.</li>
+<li><strong>The insult that stuck.</strong> "Imaginary" (Descartes, 1637) was meant to be dismissive, like calling something "so-called". Gauss later said it would have been better to call them "lateral" numbers: sideways numbers. He was right, and it's too late.</li>
+<li><strong>Bernoulli's problem (1683)</strong> was about interest paid in ever-smaller slices. It is the first place <em>e</em> appears in history. He never knew its value.</li>
+<li><strong>Three people drew the plane.</strong> Wessel (1797), Argand (1806), Gauss (1831, though he had the idea by 1799). Wessel's paper was in Danish and was ignored for a century. The picture is sometimes still called an "Argand diagram".</li>
+<li><strong>The turn machine is in your phone.</strong> When a game rotates a character, the code multiplies by a number like the orange dot in Section 5. A GPS working out a heading does the same. One multiplication that stretches and turns is simply cheaper than doing the two separately.</li>
+</ul>
+
+<!-- ====================================================== 10 -->
+<h2><span class="num">Section 10</span><br>Make your own</h2>
+
+<p>You've seen the machine fed a straight slice. That's the bank, and it lands on <em>e</em>. You've seen it fed a sideways slice. That's the turn, and it lands on the circle. The capstone is to feed it <em>both at once</em>: a bit of growth and a bit of turn. Growth makes the arrow longer as it goes. Turn makes it curl. Together they make a spiral. Make your own, and predict where it lands before you look.</p>
+
+<div class="sim" id="sim-spiral">
+  <canvas></canvas>
+  <div class="controls">
+    <label>growth fed in: <input type="range" min="-1.5" max="1.5" step="0.05" value="0.5"><span class="val"></span></label>
+    <label>turn fed in (radius-lengths): <input type="range" min="0" max="12.6" step="0.01" value="6.28"><span class="val"></span></label>
+    <label>number of slices: <input type="range" min="0" max="34" value="26"><span class="val"></span></label>
+    <label class="toggle"><input type="checkbox" data-act="exact" checked> show the exact answer (grey dot)</label>
+  </div>
+  <div class="readout"></div>
+  <div class="caption">The full machine: keep the arrow, add a slice that is part straight and part sideways, repeat. Growth sets how fast the spiral grows or shrinks. Turn sets how far round it goes.</div>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Growth 0.5, turn 6.28: one full lap. The arrow ends close to 1.65 = <span class="m">e<sup>0.5</sup></span>. (The readout shows how close, and the exact answer.) The length only cares about growth. The direction only cares about turn.</li>
+<li>Set growth to 0: a perfect circle again (Section 7). Set turn to 0: the bank again (Section 6). No spiral, just a longer arrow.</li>
+<li>Negative growth shrinks. Try growth −1, turn 12.6: two laps inwards. That is the shape of a snail shell, a hurricane and a galaxy's arm.</li>
+<li>Make a prediction game. The parent picks growth and turn. The child says where it lands: length <span class="m">e<sup>growth</sup></span>, direction = turn. Then slide to check.</li>
+</ul>
+</div>
+
+<div class="recap"><strong>The whole mechanism in one sentence:</strong> a power is a tiny step repeated, a sideways step only turns the arrow, so tiny sideways steps walk it round a circle, and π of that walk is exactly halfway round, at −1.</div>
+
+<p>Next time someone says "it links the five most important constants", you can say: "Walk halfway round a circle, step right once, and you're home. The five constants are just the names of the things in that sentence."</p>
+
+<footer>
+<p><strong>About this page.</strong> The shape of this page is borrowed with gratitude from Aatish Bhatia and Arkarup Banerjee's <a href="https://aatishb.com/myriad/lets-build-a-brain/">"Let's Build a Brain"</a>: one idea per section, show before naming, let the reader poke live simulations.</p>
+<p><strong>What the sims model, honestly.</strong> Every picture is computed live from the real arithmetic. Arrows are complex numbers. Multiplication is the actual complex product. The chains are literally (1 + <em>x</em>/n) multiplied n times, for the n and <em>x</em> you choose, not pre-drawn curves. Readouts are rounded, usually to two or three decimals, so that "1.005×" reads as "nearly 1" rather than as a strange number. The underlying numbers are double-precision floating point. What is simplified: the turn and bank machines show finitely many slices. The page says "lands on" when the honest phrase is "gets as close as you like as the slices shrink". That is a limit, the one idea deliberately left for later. The "sideways push makes a circle" argument is physical intuition, not a proof. The proof needs the arithmetic in the "For older readers" box of Section 7. The bank is idealised. No real bank pays 100%, and real interest is quoted differently. Historical dates were checked against standard histories. As always, read a second source.</p>
+</footer>
+
+</main>
+
+<script>
+(function(){
+'use strict';
+const PI = Math.PI;
+const fmt = (x, d=2) => { let s = x.toFixed(d); if (/^-0\.?0*$/.test(s)) s = s.slice(1); return s.replace("-", "−"); };
+const fmtMult = m => (Math.abs(m-1) < 0.0005) ? (m.toFixed(5).replace(/0+$/,'').replace(/\.$/,'.0')) : m.toFixed(3);
+const deg = r => r*180/PI;
+const nice = n => n.toLocaleString('en-IN');
+
+// ---- canvas helper -------------------------------------------------
+function makeCanvas(sim, aspect, draw){
+  const c = sim.querySelector('canvas'), ctx = c.getContext('2d');
+  const st = {c, ctx, W:0, H:0};
+  function resize(){
+    const w = sim.clientWidth - 2*parseFloat(getComputedStyle(sim).paddingLeft);
+    const h = Math.round(w*aspect);
+    const dpr = window.devicePixelRatio||1;
+    c.width = Math.round(w*dpr); c.height = Math.round(h*dpr);
+    c.style.height = h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    st.W = w; st.H = h; draw();
+  }
+  new ResizeObserver(resize).observe(sim); // fires once on observe, after st is assigned
+  return st;
+}
+function arrow(ctx, x0,y0,x1,y1, color, w=3, head=10){
+  const a = Math.atan2(y1-y0,x1-x0), L = Math.hypot(x1-x0,y1-y0);
+  const hh = Math.min(head, L*0.6);
+  ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=w; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1-Math.cos(a)*hh*0.6, y1-Math.sin(a)*hh*0.6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x1,y1);
+  ctx.lineTo(x1-hh*Math.cos(a-0.45), y1-hh*Math.sin(a-0.45));
+  ctx.lineTo(x1-hh*Math.cos(a+0.45), y1-hh*Math.sin(a+0.45));
+  ctx.closePath(); ctx.fill();
+}
+function label(ctx, text, x, y, color='#5a4f46', size=12, align='center'){
+  ctx.fillStyle=color; ctx.font=size+'px ui-sans-serif, -apple-system, Segoe UI, Helvetica, Arial, sans-serif'; ctx.textAlign=align; ctx.textBaseline='middle'; ctx.fillText(text,x,y);
+}
+function tween(from, to, ms, step, done){
+  const t0 = performance.now();
+  function f(t){ let k = Math.min(1,(t-t0)/ms); k = k<.5 ? 2*k*k : -1+(4-2*k)*k; step(from+(to-from)*k); if(k<1) requestAnimationFrame(f); else if(done) done(); }
+  requestAnimationFrame(f);
+}
+const complexStr = (x,y) => {
+  const ax=Math.abs(x)<0.0005, ay=Math.abs(y)<0.0005;
+  if(ax&&ay) return '0';
+  const xs = fmt(x,2).replace(/\.?0+$/,''), ys = (Math.abs(Math.abs(y)-1)<0.0005? (y<0?'−':'') : fmt(y,2).replace(/\.?0+$/,'').replace('-','−'))+'i';
+  if(ay) return xs.replace('-','−'); if(ax) return ys;
+  return xs.replace('-','−') + (y<0?' − ':' + ') + ys.replace('−','');
+};
+
+// ---- Sim 1: power machine -----------------------------------------
+(function(){
+  const sim=document.getElementById('sim-power'); if(!sim) return;
+  const range=sim.querySelector('input'), val=sim.querySelector('.val'), chips=sim.querySelector('.chips'), big=sim.querySelector('.big'), ro=sim.querySelector('.readout');
+  let base=2;
+  const names={'2':'2','3':'3','10':'10','1.5':'1.5','1.1':'1.1','0.5':'½'};
+  function draw(){
+    const n=+range.value; val.textContent=n;
+    let r=1; let html='<span class="chip">1</span>';
+    for(let k=0;k<n;k++){ r*=base; html+='<span class="chip">× '+names[base]+'</span>'; }
+    chips.innerHTML=html;
+    const shown = (Number.isInteger(r)||Math.abs(r-Math.round(r))<1e-9) ? nice(Math.round(r)) : (r>=100? r.toFixed(1) : r.toFixed(3));
+    big.textContent = (n===0? '1' : names[base]+'^'+n+' = '+shown);
+    ro.innerHTML = n===0 ? 'Multiply by '+names[base]+' <b>zero</b> times: you keep the 1 you started with. Answer <b>1</b>.'
+      : 'Start at 1, multiply by '+names[base]+' <b>'+n+'</b> time'+(n>1?'s':'')+'. The answer is <b>'+shown+'</b>'+(base<1?' (it shrank)':'')+'.';
+  }
+  sim.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ base=+b.dataset.base; sim.querySelectorAll('button').forEach(x=>x.classList.remove('primary')); b.classList.add('primary'); draw(); }));
+  range.addEventListener('input',draw); draw();
+})();
+
+// ---- Sims 2 & 3: number line arrow ---------------------------------
+function numberLineSim(id, start, note){
+  const sim=document.getElementById(id); if(!sim) return;
+  const ro=sim.querySelector('.readout');
+  let len=start, ang=0, busy=false;
+  let scale=4;
+  const st=makeCanvas(sim, 0.5, draw);
+  function draw(){
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const cx=W/2, cy=H*0.62;
+    const target=Math.max(4, Math.abs(len)*1.25); scale += (target-scale)*0.3; if(Math.abs(target-scale)<0.01) scale=target;
+    const ppu=(W/2-20)/scale;
+    ctx.strokeStyle='#bbb'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(10,cy); ctx.lineTo(W-10,cy); ctx.stroke();
+    const step = scale>40?20: scale>16?5: scale>8?2:1;
+    for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v+=step){
+      const x=cx+v*ppu; ctx.beginPath(); ctx.moveTo(x,cy-5); ctx.lineTo(x,cy+5); ctx.stroke(); label(ctx,String(v).replace('-','−'),x,cy+16);
+    }
+    // ghost arc when turning
+    if(ang%PI!==0){ ctx.strokeStyle='#e8d8c0'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.arc(cx,cy,Math.abs(len)*ppu,0,2*PI); ctx.stroke(); ctx.setLineDash([]); }
+    const x=cx+len*Math.cos(ang)*ppu, y=cy-len*Math.sin(ang)*ppu;
+    arrow(ctx,cx,cy,x,y,'#2e6f9e',4,12);
+    ctx.fillStyle='#2b2520'; ctx.beginPath(); ctx.arc(cx,cy,3,0,2*PI); ctx.fill();
+    if(Math.abs(target-scale)>0.01) requestAnimationFrame(draw);
+  }
+  function value(){ return len*Math.cos(ang); }
+  function readout(extra){
+    const v=value();
+    ro.innerHTML='The arrow is <b>'+fmt(v,2).replace('-','−')+'</b>: length <b>'+fmt(Math.abs(v),2)+'</b>, pointing <b>'+(v<0?'left':v>0?'right':'nowhere')+'</b>.'+(extra?' '+extra:'');
+  }
+  sim.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    if(busy) return;
+    const op=b.dataset.op;
+    if(op==='reset'){ len=start; ang=0; draw(); readout(); return; }
+    const f=+op;
+    if(Math.abs(len)*Math.abs(f)>1e6){ readout('Too big to draw. Reset.'); return; }
+    busy=true;
+    if(f<0){ const a0=ang; tween(0,PI,900,k=>{ang=a0+k; draw();},()=>{ang=a0+PI; busy=false; draw(); readout('That was a half-turn: the arrow swung through 180° and kept its length.');}); }
+    else { const l0=len, l1=len*f; tween(0,1,500,k=>{len=l0+(l1-l0)*k; draw();},()=>{len=l1; busy=false; draw(); readout(f>1?'Stretched by '+op+'×; no turning.':'Shrunk to half; no turning.');}); }
+  }));
+  readout();
+}
+numberLineSim('sim-line1',1);
+numberLineSim('sim-line2',3);
+
+// ---- Sim 4: the plane -----------------------------------------------
+(function(){
+  const sim=document.getElementById('sim-plane'); if(!sim) return;
+  const ro=sim.querySelector('.readout');
+  let len=1, ang=0, busy=false, scale=3, turns=0;
+  const st=makeCanvas(sim, 0.75, draw);
+  function draw(){
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const cx=W/2, cy=H/2; const target=Math.max(3,len*1.3); scale+=(target-scale)*0.3; if(Math.abs(target-scale)<0.01) scale=target;
+    const ppu=Math.min(W,H)/2/scale*0.92;
+    ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
+    for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(v===0) continue; ctx.beginPath(); ctx.moveTo(cx+v*ppu,0); ctx.lineTo(cx+v*ppu,H); ctx.moveTo(0,cy-v*ppu); ctx.lineTo(W,cy-v*ppu); ctx.stroke(); }
+    ctx.strokeStyle='#999'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+    for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(v===0) continue; label(ctx,String(v).replace('-','−'),cx+v*ppu,cy+12,'#777',11); label(ctx,(v===1?'':v===-1?'−':String(v).replace('-','−'))+'i',cx-12,cy-v*ppu,'#777',11); }
+    label(ctx,'across (the old line)',W-70,cy-14,'#999',11); label(ctx,'up (the new line)',cx+58,14,'#999',11);
+    ctx.strokeStyle='#efe3cc'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.arc(cx,cy,len*ppu,0,2*PI); ctx.stroke(); ctx.setLineDash([]);
+    arrow(ctx,cx,cy,cx+len*Math.cos(ang)*ppu,cy-len*Math.sin(ang)*ppu,'#2e6f9e',4,12);
+    ctx.fillStyle='#2b2520'; ctx.beginPath(); ctx.arc(cx,cy,3,0,2*PI); ctx.fill();
+    if(Math.abs(target-scale)>0.01) requestAnimationFrame(draw);
+  }
+  function readout(extra){
+    const x=len*Math.cos(ang), y=len*Math.sin(ang);
+    const a=((deg(ang)%360)+360)%360;
+    ro.innerHTML='The arrow points to <b>'+complexStr(x,y)+'</b> (across <b>'+fmt(x,2).replace('-','−')+'</b>, up <b>'+fmt(y,2).replace('-','−')+'</b>). Length <b>'+fmt(len,2)+'</b>, turned <b>'+Math.round(a)+'°</b> from the start'+(turns?', '+turns+' quarter-turn'+(turns>1?'s':'')+' so far':'')+'.'+(extra?' '+extra:'');
+  }
+  sim.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    if(busy) return; const op=b.dataset.op;
+    if(op==='reset'){ len=1; ang=0; turns=0; draw(); readout(); return; }
+    busy=true;
+    const rot = op==='i'?PI/2: op==='-i'?-PI/2: op==='-1'?PI:0;
+    const sc = op==='2'?2: op==='0.5'?0.5:1;
+    if(len*sc>1e4){busy=false; readout('Too big. Reset.'); return;}
+    const a0=ang,l0=len;
+    tween(0,1,700,k=>{ang=a0+rot*k; len=l0*(1+(sc-1)*k); draw();},()=>{ang=a0+rot; len=l0*sc; busy=false; if(op==='i') turns++; if(op==='-i') turns=Math.max(0,turns-1); draw();
+      readout(op==='i'?'A quarter-turn anticlockwise, same length.': op==='-i'?'A quarter-turn clockwise.': op==='-1'?'A half-turn.': sc>1?'Stretched by 2, no turn.':'Shrunk to half, no turn.');});
+  }));
+  readout();
+})();
+
+// ---- Sim 5: stretch and turn (draggable multiplier) --------------
+(function(){
+  const sim=document.getElementById('sim-mult'); if(!sim) return;
+  const ro=sim.querySelector('.readout');
+  let z={x:1,y:0}, m={x:1,y:1}, drag=false, busy=false, anim=null;
+  let scale=2.6;
+  const st=makeCanvas(sim, 0.8, draw);
+  function geo(){ const {W,H}=st; return {cx:W/2, cy:H/2, ppu:Math.min(W,H)/2/scale*0.92}; }
+  function draw(){
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const r={x:z.x*m.x-z.y*m.y, y:z.x*m.y+z.y*m.x};
+    const target=Math.max(2.6, Math.hypot(r.x,r.y)*1.25, Math.hypot(m.x,m.y)*1.25); scale+=(target-scale)*0.3; if(Math.abs(target-scale)<0.01) scale=target;
+    const {cx,cy,ppu}=geo();
+    ctx.strokeStyle='#e4e4e4'; ctx.lineWidth=1;
+    for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(!v) continue; ctx.beginPath(); ctx.moveTo(cx+v*ppu,0); ctx.lineTo(cx+v*ppu,H); ctx.moveTo(0,cy-v*ppu); ctx.lineTo(W,cy-v*ppu); ctx.stroke(); }
+    ctx.strokeStyle='#999'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+    for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(!v) continue; label(ctx,String(v).replace('-','−'),cx+v*ppu,cy+12,'#777',11); label(ctx,(v===1?'':v===-1?'−':String(v).replace('-','−'))+'i',cx-12,cy-v*ppu,'#777',11); }
+    const P=(p)=>[cx+p.x*ppu, cy-p.y*ppu];
+    const a=(anim||{}).a ?? m.x, b=(anim||{}).b ?? m.y;
+    // construction: a*z then + b*(i z)
+    const c1={x:a*z.x,y:a*z.y}, iz={x:-z.y,y:z.x}, c2={x:c1.x+b*iz.x, y:c1.y+b*iz.y};
+    ctx.setLineDash([5,4]); ctx.lineWidth=2.5;
+    ctx.strokeStyle='#7fb0d6'; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(...P(c1)); ctx.stroke();
+    ctx.strokeStyle='#9b7cc0'; ctx.beginPath(); ctx.moveTo(...P(c1)); ctx.lineTo(...P(c2)); ctx.stroke();
+    ctx.setLineDash([]);
+    if(Math.hypot(a*z.x,a*z.y)>0.05) label(ctx, fmt(a,1).replace('-','−')+' copies of the arrow', (cx+P(c1)[0])/2, (cy+P(c1)[1])/2-12, '#2e6f9e', 11);
+    if(Math.abs(b)>0.05) label(ctx, fmt(b,1).replace('-','−')+' turned copies', (P(c1)[0]+P(c2)[0])/2+6, (P(c1)[1]+P(c2)[1])/2, '#7a4e9e', 11, 'left');
+    arrow(ctx,cx,cy,...P(z),'#2e6f9e',4,12);
+    arrow(ctx,cx,cy,...P(c2),'#c2552e',4,12);
+    // multiplier handle
+    const [mx,my]=P(m); ctx.fillStyle='#f0a05a'; ctx.strokeStyle='#c2552e'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(mx,my,9,0,2*PI); ctx.fill(); ctx.stroke();
+    label(ctx,'multiplier (drag me)',mx,my-16,'#c2552e',11);
+    label(ctx,'your arrow',...P(z).map((v,i)=>v+(i?14:0)),'#2e6f9e',11);
+    if(Math.abs(target-scale)>0.01) requestAnimationFrame(draw);
+  }
+  function readout(extra){
+    const L=Math.hypot(m.x,m.y), A=deg(Math.atan2(m.y,m.x));
+    const r={x:z.x*m.x-z.y*m.y, y:z.x*m.y+z.y*m.x};
+    ro.innerHTML='Multiplier <b>'+complexStr(m.x,m.y)+'</b>: it <b>stretches by '+fmtMult(L)+'×</b> and <b>turns by '+fmt(A,1).replace('-','−')+'°</b>. Your arrow is at <b>'+complexStr(z.x,z.y)+'</b>; times the multiplier it would be at <b>'+complexStr(r.x,r.y)+'</b> (red).'+(extra?' '+extra:'');
+  }
+  function setM(x,y){ m={x,y}; anim=null; draw(); readout(); }
+  sim.querySelectorAll('button[data-m]').forEach(b=>b.addEventListener('click',()=>{ const [x,y]=b.dataset.m.split(',').map(Number); setM(x,y); sim.querySelectorAll('button[data-m]').forEach(q=>q.classList.remove('primary')); b.classList.add('primary'); }));
+  sim.querySelector('[data-act=apply]').addEventListener('click',()=>{
+    if(busy) return; busy=true;
+    const r={x:z.x*m.x-z.y*m.y, y:z.x*m.y+z.y*m.x};
+    if(Math.hypot(r.x,r.y)>50){busy=false; readout('Too big to draw. Reset the arrow.'); return;}
+    // animate: grow the construction then snap arrow
+    anim={a:0,b:0};
+    tween(0,1,500,k=>{anim.a=m.x*k; draw();},()=>tween(0,1,500,k=>{anim.b=m.y*k; draw();},()=>{ z=r; anim=null; busy=false; draw(); readout('Applied. The red arrow became your arrow.'); }));
+  });
+  sim.querySelector('[data-act=reset]').addEventListener('click',()=>{ z={x:1,y:0}; anim=null; draw(); readout(); });
+  const c=st.c;
+  function pt(e){ const r=c.getBoundingClientRect(); const {cx,cy,ppu}=geo(); return {x:(e.clientX-r.left-cx)/ppu, y:-(e.clientY-r.top-cy)/ppu}; }
+  c.addEventListener('pointerdown',e=>{ const p=pt(e); if(Math.hypot(p.x-m.x,p.y-m.y)<0.45){ drag=true; c.setPointerCapture(e.pointerId); e.preventDefault(); } });
+  c.addEventListener('pointermove',e=>{ if(!drag) return; const p=pt(e); const snap=v=>Math.round(v*10)/10; setM(snap(p.x),snap(p.y)); sim.querySelectorAll('button[data-m]').forEach(q=>q.classList.remove('primary')); });
+  c.addEventListener('pointerup',()=>drag=false); c.addEventListener('pointercancel',()=>drag=false);
+  readout();
+})();
+
+// ---- Sim 6: bank -----------------------------------------------------
+(function(){
+  const sim=document.getElementById('sim-bank'); if(!sim) return;
+  const [rN,rG]=sim.querySelectorAll('input'); const [vN,vG]=sim.querySelectorAll('.val'); const ro=sim.querySelector('.readout');
+  const Ns=[1,2,4,12,52,365,8760,525600,31536000];
+  const names=['once a year','twice a year','4 times (every 3 months)','12 times (monthly)','52 times (weekly)','365 times (daily)','8,760 times (hourly)','525,600 times (every minute)','31,536,000 times (every second)'];
+  const st=makeCanvas(sim, 0.6, draw);
+  function result(g,n){ return Math.exp(n*Math.log1p(g/n)); }
+  function draw(){
+    const n=Ns[+rN.value], g=+rG.value; vN.textContent=names[+rN.value]; vG.textContent=Math.round(g*100)+'%';
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const final=result(g,n), top=Math.max(final, Math.exp(g))*1.08;
+    const L=44,R=W-14,T=14,B=H-30; const X=t=>L+(R-L)*t, Y=v=>B-(B-T)*(v/top);
+    ctx.strokeStyle='#999'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(L,T); ctx.lineTo(L,B); ctx.lineTo(R,B); ctx.stroke();
+    label(ctx,'start of year',L+34,B+14,'#777',11); label(ctx,'end of year',R-30,B+14,'#777',11);
+    for(let v=1;v<=top;v++){ ctx.strokeStyle='#eee'; ctx.beginPath(); ctx.moveTo(L,Y(v)); ctx.lineTo(R,Y(v)); ctx.stroke(); label(ctx,'₹'+v*100,L-20,Y(v),'#777',10); }
+    // target line
+    ctx.strokeStyle='#c2552e'; ctx.setLineDash([3,4]); ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(L,Y(Math.exp(g))); ctx.lineTo(R,Y(Math.exp(g))); ctx.stroke(); ctx.setLineDash([]);
+    label(ctx,'heading for ₹'+fmt(100*Math.exp(g),2),R-6,Y(Math.exp(g))-9,'#c2552e',11,'right');
+    // staircase
+    ctx.strokeStyle='#2e6f9e'; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(X(0),Y(1));
+    const steps=Math.min(n,2000); let v=1;
+    if(n<=2000){ for(let k=1;k<=n;k++){ ctx.lineTo(X(k/n),Y(v)); v*=1+g/n; ctx.lineTo(X(k/n),Y(v)); } }
+    else { for(let k=1;k<=steps;k++){ ctx.lineTo(X(k/steps), Y(Math.exp((k/steps)*n*Math.log1p(g/n)))); } }
+    ctx.stroke();
+    ctx.fillStyle='#2e6f9e'; ctx.beginPath(); ctx.arc(X(1),Y(final),5,0,2*PI); ctx.fill();
+    label(ctx,'₹'+fmt(100*final,2),X(1)-8,Y(final)-12,'#2e6f9e',12,'right');
+    const slice=g/n;
+    ro.innerHTML='Interest paid <b>'+names[+rN.value]+'</b>, each time adding <b>'+(slice>=0.01? Math.round(slice*10000)/100+'%' : (slice*100).toPrecision(2)+'%')+'</b> of what you have. ₹100 becomes <b>₹'+fmt(100*final,2)+'</b>. As a power: (1 + '+g+'/'+nice(n)+')<sup>'+nice(n)+'</sup> = <b>'+final.toFixed(5)+'</b>.'+(g===1&&n>=365?' That is <em>e</em> = 2.71828…, to the digits shown.':'');
+  }
+  rN.addEventListener('input',draw); rG.addEventListener('input',draw); draw();
+})();
+
+// ---- shared: slice-count list & chain computation -------------------
+const NLIST=[1,2,3,4,5,6,8,10,12,16,20,25,32,40,50,64,80,100,128,160,200,250,320,400,500,640,800,1000,2000,4000,8000,16000,32000,64000,100000];
+function chain(g,t,n){ // (1 + (g+it)/n)^n, returns array of tips (subsampled for drawing) and final
+  const a=1+g/n, b=t/n; let x=1,y=0; const pts=[[1,0]]; const stride=Math.max(1,Math.floor(n/2000));
+  for(let k=1;k<=n;k++){ const nx=x*a-y*b, ny=x*b+y*a; x=nx; y=ny; if(k%stride===0||k===n) pts.push([x,y]); }
+  return {pts, x, y};
+}
+function planeGrid(ctx,W,H,cx,cy,ppu,scale){
+  ctx.strokeStyle='#e8e8e8'; ctx.lineWidth=1;
+  for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(!v) continue; ctx.beginPath(); ctx.moveTo(cx+v*ppu,0); ctx.lineTo(cx+v*ppu,H); ctx.moveTo(0,cy-v*ppu); ctx.lineTo(W,cy-v*ppu); ctx.stroke(); }
+  ctx.strokeStyle='#999'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+  for(let v=-Math.ceil(scale);v<=Math.ceil(scale);v++){ if(!v) continue; label(ctx,String(v).replace('-','−'),cx+v*ppu,cy+12,'#777',11); label(ctx,(v===1?'':v===-1?'−':String(v).replace('-','−'))+'i',cx-12,cy-v*ppu,'#777',11); }
+}
+
+// ---- Sim 7: turn machine with π --------------------------------------
+(function(){
+  const sim=document.getElementById('sim-chain'); if(!sim) return;
+  const rN=sim.querySelector('input[type=range]'), vN=sim.querySelector('.val'), ro=sim.querySelector('.readout'), play=sim.querySelector('[data-act=play]'), cb=sim.querySelector('[data-act=circle]');
+  let shown=null, playing=false;
+  const st=makeCanvas(sim, 0.8, draw);
+  function draw(){
+    const n=NLIST[+rN.value]; vN.textContent=nice(n);
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const res=chain(0,PI,n);
+    const k=shown===null?res.pts.length:shown;
+    const maxr=res.pts.reduce((m,p)=>Math.max(m,Math.hypot(p[0],p[1])),1);
+    const scale=Math.max(1.6, maxr*1.15);
+    const cx=W/2, cy=H/2+ (n<=2? 0.25*H : 0), ppu=Math.min(W,H)/2/scale*0.9;
+    planeGrid(ctx,W,H,cx,cy,ppu,scale);
+    if(cb.checked){ ctx.strokeStyle='#c9ddc9'; ctx.lineWidth=2; ctx.setLineDash([6,5]); ctx.beginPath(); ctx.arc(cx,cy,ppu,0,2*PI); ctx.stroke(); ctx.setLineDash([]); }
+    // target
+    ctx.fillStyle='#3f7d4e'; ctx.beginPath(); ctx.arc(cx-ppu,cy,6,0,2*PI); ctx.fill(); label(ctx,'target: −1',cx-ppu,cy+18,'#3f7d4e',11);
+    const P=p=>[cx+p[0]*ppu, cy-p[1]*ppu];
+    // faint arrows for small n
+    if(n<=12){ ctx.strokeStyle='#cfd8e3'; ctx.lineWidth=1; for(let i=0;i<Math.min(k,res.pts.length);i++){ ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(...P(res.pts[i])); ctx.stroke(); } }
+    // chain
+    ctx.strokeStyle='#7a4e9e'; ctx.lineWidth=n<=12?3:2; ctx.beginPath(); ctx.moveTo(...P(res.pts[0]));
+    for(let i=1;i<Math.min(k,res.pts.length);i++) ctx.lineTo(...P(res.pts[i])); ctx.stroke();
+    if(n<=40){ ctx.fillStyle='#7a4e9e'; for(let i=0;i<Math.min(k,res.pts.length);i++){ const [x,y]=P(res.pts[i]); ctx.beginPath(); ctx.arc(x,y,2.5,0,2*PI); ctx.fill(); } }
+    const last=res.pts[Math.min(k,res.pts.length)-1];
+    arrow(ctx,cx,cy,...P(last),'#c2552e',4,12);
+    label(ctx,'start: 1',cx+ppu,cy+18,'#2e6f9e',11);
+    const L=Math.hypot(last[0],last[1]), A=deg(Math.atan2(last[1],last[0])); const Apos=A<0?A+360:A;
+    const stepLen=Math.hypot(1,PI/n), stepTurn=deg(Math.atan(PI/n));
+    if(shown!==null && shown<res.pts.length){
+      ro.innerHTML='After <b>'+(shown-1)+'</b> of '+n+' slices: the arrow is at (<b>'+fmt(last[0],2)+'</b>, <b>'+fmt(last[1],2)+'</b>), length <b>'+fmt(L,2)+'</b>, turned <b>'+fmt(Apos,1)+'°</b>.';
+    } else {
+      ro.innerHTML='<b>'+nice(n)+'</b> slice'+(n>1?'s':'')+', each a sideways step of <b>'+fmt(PI/n, n>100?5:3)+'</b> (that is π ÷ '+nice(n)+'). Each step turns the arrow by <b>'+fmt(stepTurn, n>100?3:1)+'°</b> and stretches it by <b>'+fmtMult(stepLen)+'×</b>. It lands at (<b>'+fmt(last[0],3)+'</b>, <b>'+fmt(last[1],3)+'</b>): length <b>'+fmtMult(L)+'</b>, turned <b>'+fmt(Apos,n>50?2:1)+'°</b> in total.'+(n>=1000?' That is a half-turn to the precision shown, and the length is '+(L-1<0.001?'within a hair of':'close to')+' 1.':'');
+    }
+  }
+  rN.addEventListener('input',()=>{shown=null; playing=false; draw();});
+  cb.addEventListener('change',draw);
+  play.addEventListener('click',()=>{
+    if(playing){playing=false; shown=null; draw(); play.textContent='Play, one slice at a time'; return;}
+    const n=NLIST[+rN.value]; if(n>400){ ro.innerHTML='Playing one slice at a time only makes sense up to 400 slices. Slide down and try again.'; return; }
+    playing=true; shown=1; play.textContent='Stop';
+    const delay=n<=12?450: n<=50?120: 25;
+    (function step(){ if(!playing) return; shown++; draw(); if(shown<=n+1) setTimeout(step,delay); else { playing=false; shown=null; draw(); play.textContent='Play again, one slice at a time'; } })();
+  });
+  draw();
+})();
+
+// ---- Sim 8: string round a circle ----------------------------------
+(function(){
+  const sim=document.getElementById('sim-string'); if(!sim) return;
+  const r=sim.querySelector('input'), v=sim.querySelector('.val'), ro=sim.querySelector('.readout');
+  const st=makeCanvas(sim, 0.85, draw);
+  function draw(){
+    const s=+r.value; v.textContent=fmt(s,2);
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const R=Math.min(W*0.3, H*0.3), cx=W/2, cy=H*0.42;
+    ctx.strokeStyle='#999'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(cx-R*1.35,cy); ctx.lineTo(cx+R*1.35,cy); ctx.moveTo(cx,cy-R*1.35); ctx.lineTo(cx,cy+R*1.35); ctx.stroke();
+    label(ctx,'1',cx+R+12,cy+12,'#777',11); label(ctx,'−1',cx-R-14,cy+12,'#777',11); label(ctx,'i',cx-10,cy-R-10,'#777',11); label(ctx,'−i',cx-12,cy+R+10,'#777',11);
+    ctx.strokeStyle='#ccc'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(cx,cy,R,0,2*PI); ctx.stroke();
+    // radius tick marks along the arc every 1 radian
+    for(let k=1;k<=6;k++){ const a=k; ctx.strokeStyle='#bbb'; ctx.beginPath(); ctx.moveTo(cx+R*0.95*Math.cos(a),cy-R*0.95*Math.sin(a)); ctx.lineTo(cx+R*1.05*Math.cos(a),cy-R*1.05*Math.sin(a)); ctx.stroke(); }
+    // wrapped string
+    ctx.strokeStyle='#c2552e'; ctx.lineWidth=5; ctx.lineCap='round'; ctx.beginPath(); ctx.arc(cx,cy,R,0,-Math.min(s,2*PI),true); ctx.stroke();
+    if(s>2*PI){ ctx.strokeStyle='#e8a98f'; ctx.beginPath(); ctx.arc(cx,cy,R*1.07,0,-(s-2*PI),true); ctx.stroke(); }
+    // radius ruler (grey) and arrow
+    ctx.strokeStyle='#999'; ctx.lineWidth=1.5; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R,cy); ctx.stroke(); ctx.setLineDash([]); label(ctx,'radius',cx+R/2,cy+12,'#999',10);
+    arrow(ctx,cx,cy,cx+R*Math.cos(s),cy-R*Math.sin(s),'#2e6f9e',4,12);
+    // straight string below
+    const y0=H*0.86, x0=cx-R*PI, unit=R; // string laid flat, scaled so 1 radius = R px; 2π radii fit? width 2πR may exceed W; scale down if needed
+    const fit=Math.min(1, (W-30)/(2*PI*R));
+    const u=unit*fit, xs=W/2-PI*u;
+    ctx.strokeStyle='#ddd'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(xs,y0); ctx.lineTo(xs+6.5*u,y0); ctx.stroke();
+    ctx.strokeStyle='#c2552e'; ctx.beginPath(); ctx.moveTo(xs,y0); ctx.lineTo(xs+s*u,y0); ctx.stroke();
+    for(let k=0;k<=6;k++){ ctx.strokeStyle='#666'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(xs+k*u,y0-9); ctx.lineTo(xs+k*u,y0+9); ctx.stroke(); label(ctx,String(k),xs+k*u,y0+20,'#666',11); }
+    ctx.strokeStyle='#3f7d4e'; ctx.beginPath(); ctx.moveTo(xs+PI*u,y0-12); ctx.lineTo(xs+PI*u,y0+12); ctx.stroke(); label(ctx,'π',xs+PI*u,y0-20,'#3f7d4e',12);
+    ctx.beginPath(); ctx.moveTo(xs+2*PI*u,y0-12); ctx.lineTo(xs+2*PI*u,y0+12); ctx.stroke(); label(ctx,'2π',xs+2*PI*u,y0-20,'#3f7d4e',12);
+    label(ctx,'the same string, laid straight (one tick = one radius)',W/2,y0-34,'#777',11);
+    const x=Math.cos(s), y=Math.sin(s);
+    let where = Math.abs(s-PI)<0.006?' That is exactly halfway: the arrow points at <b>−1</b>.' : Math.abs(s-PI/2)<0.006?' A quarter of the way: the arrow points at <b>i</b>.' : Math.abs(s-2*PI)<0.006?' All the way round: back at <b>1</b>.' : s>2*PI?' More than a full lap; the extra is drawn outside.':'';
+    ro.innerHTML='<b>'+fmt(s,2)+'</b> radius-length'+(s===1?'':'s')+' of string wraps to an angle of <b>'+fmt(deg(s),1)+'°</b>. The arrow points to (<b>'+fmt(x,3)+'</b>, <b>'+fmt(y,3)+'</b>).'+where;
+  }
+  r.addEventListener('input',draw);
+  sim.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ r.value=b.dataset.s; draw(); }));
+  draw();
+})();
+
+// ---- Sim 9: any turn -------------------------------------------------
+(function(){
+  const sim=document.getElementById('sim-any'); if(!sim) return;
+  const [rT,rN]=sim.querySelectorAll('input[type=range]'); const [vT,vN]=sim.querySelectorAll('.val'); const ro=sim.querySelector('.readout');
+  const st=makeCanvas(sim, 0.8, draw);
+  function draw(){
+    const t=+rT.value, n=NLIST[+rN.value]; vT.textContent=fmt(t,2); vN.textContent=nice(n);
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const res=chain(0,t,n);
+    const maxr=res.pts.reduce((m,p)=>Math.max(m,Math.hypot(p[0],p[1])),1);
+    const scale=Math.max(1.6,maxr*1.15), cx=W/2, cy=H/2, ppu=Math.min(W,H)/2/scale*0.9;
+    planeGrid(ctx,W,H,cx,cy,ppu,scale);
+    ctx.strokeStyle='#c9ddc9'; ctx.lineWidth=2; ctx.setLineDash([6,5]); ctx.beginPath(); ctx.arc(cx,cy,ppu,0,2*PI); ctx.stroke(); ctx.setLineDash([]);
+    const P=p=>[cx+p[0]*ppu, cy-p[1]*ppu];
+    ctx.strokeStyle='#7a4e9e'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(...P(res.pts[0])); for(let i=1;i<res.pts.length;i++) ctx.lineTo(...P(res.pts[i])); ctx.stroke();
+    const ex=[Math.cos(t),Math.sin(t)]; ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(...P(ex),6,0,2*PI); ctx.fill();
+    arrow(ctx,cx,cy,...P([res.x,res.y]),'#c2552e',4,12);
+    const L=Math.hypot(res.x,res.y);
+    ro.innerHTML='Turn <b>'+fmt(t,2)+'</b> in <b>'+nice(n)+'</b> slices lands at (<b>'+fmt(res.x,3)+'</b>, <b>'+fmt(res.y,3)+'</b>), length <b>'+fmtMult(L)+'</b>. Walking '+fmt(t,2)+' along the circle (grey dot) gives (<b>'+fmt(ex[0],3)+'</b>, <b>'+fmt(ex[1],3)+'</b>). Gap between them: <b>'+Math.hypot(res.x-ex[0],res.y-ex[1]).toPrecision(2)+'</b>.';
+  }
+  rT.addEventListener('input',draw); rN.addEventListener('input',draw);
+  sim.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ rT.value=b.dataset.t; draw(); }));
+  draw();
+})();
+
+// ---- Sim 10: spiral --------------------------------------------------
+(function(){
+  const sim=document.getElementById('sim-spiral'); if(!sim) return;
+  const [rG,rT,rN]=sim.querySelectorAll('input[type=range]'); const [vG,vT,vN]=sim.querySelectorAll('.val'); const ro=sim.querySelector('.readout'); const cb=sim.querySelector('[data-act=exact]');
+  const st=makeCanvas(sim, 0.85, draw);
+  function draw(){
+    const g=+rG.value, t=+rT.value, n=NLIST[+rN.value]; vG.textContent=fmt(g,2); vT.textContent=fmt(t,2); vN.textContent=nice(n);
+    const {ctx,W,H}=st; ctx.clearRect(0,0,W,H);
+    const res=chain(g,t,n);
+    const maxr=res.pts.reduce((m,p)=>Math.max(m,Math.hypot(p[0],p[1])),1);
+    const scale=Math.max(1.6,maxr*1.15), cx=W/2, cy=H/2, ppu=Math.min(W,H)/2/scale*0.9;
+    planeGrid(ctx,W,H,cx,cy,ppu,scale);
+    ctx.strokeStyle='#c9ddc9'; ctx.lineWidth=1.5; ctx.setLineDash([6,5]); ctx.beginPath(); ctx.arc(cx,cy,ppu,0,2*PI); ctx.stroke(); ctx.setLineDash([]);
+    const P=p=>[cx+p[0]*ppu, cy-p[1]*ppu];
+    ctx.strokeStyle='#7a4e9e'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(...P(res.pts[0])); for(let i=1;i<res.pts.length;i++) ctx.lineTo(...P(res.pts[i])); ctx.stroke();
+    const EL=Math.exp(g), ex=[EL*Math.cos(t),EL*Math.sin(t)];
+    if(cb.checked){ ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(...P(ex),6,0,2*PI); ctx.fill(); }
+    arrow(ctx,cx,cy,...P([res.x,res.y]),'#c2552e',4,12);
+    const L=Math.hypot(res.x,res.y); let A=deg(Math.atan2(res.y,res.x)); if(A<0) A+=360;
+    ro.innerHTML='Growth <b>'+fmt(g,2).replace('-','−')+'</b> and turn <b>'+fmt(t,2)+'</b>, in <b>'+nice(n)+'</b> slices: lands at (<b>'+fmt(res.x,3)+'</b>, <b>'+fmt(res.y,3)+'</b>), length <b>'+fmt(L,3)+'</b>, direction <b>'+fmt(A,1)+'°</b>. Exact answer: length <em>e</em><sup>'+fmt(g,2).replace('-','−')+'</sup> = <b>'+fmt(EL,3)+'</b>, direction '+fmt(t,2)+' radius-lengths = <b>'+fmt(deg(t)%360,1)+'°</b>'+(t>=2*PI?' (after '+Math.floor(t/(2*PI))+' full lap'+(t>=4*PI?'s':'')+')':'')+'.';
+  }
+  [rG,rT,rN].forEach(r=>r.addEventListener('input',draw)); cb.addEventListener('change',draw); draw();
+})();
+
+const ii=document.getElementById('ii'); if(ii) ii.textContent=Math.exp(-PI/2).toFixed(4)+'…';
+})();
+</script>
+</body>
+</html>

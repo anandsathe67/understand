@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>understand</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--muted:#666;--line:#e3e3e3;--accent:#0b5fa5;--card:#f7f7f7}
+@media (prefers-color-scheme:dark){:root{--bg:#121212;--fg:#ececec;--muted:#9a9a9a;--line:#2a2a2a;--accent:#7cb7ff;--card:#1c1c1c;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:32px max(16px,env(safe-area-inset-left)) 64px}
+main{max-width:720px;margin:0 auto}
+h1{font-size:2.2rem;margin:0 0 .25em;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 2em}
+h2{font-size:1.25rem;margin:2em 0 .5em}
+.topic{border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:0 0 16px;background:var(--card)}
+.topic h3{margin:0 0 .3em;font-size:1.15rem}
+.topic p{margin:.2em 0 .8em;color:var(--muted)}
+.links a{display:inline-block;margin:0 14px 6px 0;color:var(--accent);text-decoration:none;font-weight:600}
+.links a:hover{text-decoration:underline}
+.links span{color:var(--muted);font-weight:400}
+ul{padding-left:1.2em}
+a{color:var(--accent)}
+small{color:var(--muted)}
+</style>
+</head>
+<body>
+<main>
+<h1>understand</h1>
+<p class="lede">Interactive explainers for curious 10-year-olds, built one idea at a time with simulations you can poke. Plus the prompts that made them and the reviews that fixed them.</p>
+
+<h2>Topics</h2>
+
+<div class="topic">
+<h3>Euler's formula for solid shapes: corners − edges + faces = 2</h3>
+<p>Count a football, find the pattern, then prove it can never fail. 12 sections, 16 live shapes. For a 10-year-old alone, two sittings.</p>
+<div class="links">
+<a href="topics/eulers-polyhedron-formula/cold/">The Number That Never Changes</a> <span>built from the prompt alone</span><br>
+<a href="topics/eulers-polyhedron-formula/briefed/">Let's Squash a Football</a> <span>built with a page contract</span><br>
+<a href="https://github.com/anandsathe67/understand/blob/main/topics/eulers-polyhedron-formula/prompt.md">the prompt</a>
+</div>
+</div>
+
+<div class="topic">
+<h3>Euler's identity: e<sup>iπ</sup> + 1 = 0</h3>
+<p>Multiplying is stretching and turning. Do a tiny turn many times and you walk round a circle. 10 sections, 10 live sims. A 12-to-14-year-old alone, or a 10-year-old with a parent.</p>
+<div class="links">
+<a href="topics/eulers-identity/cold/">Let's Walk Round a Circle</a> <span>built from the prompt alone</span><br>
+<a href="topics/eulers-identity/briefed/">Spinning to Minus One</a> <span>built with a page contract</span><br>
+<a href="https://github.com/anandsathe67/understand/blob/main/topics/eulers-identity/prompt.md">the prompt</a>
+</div>
+</div>
+
+<h2>How they were made</h2>
+<ul>
+<li><a href="https://github.com/anandsathe67/understand/blob/main/reviews/01-adversarial-review.md">Adversarial review</a> of the prompts and first pages</li>
+<li><a href="https://github.com/anandsathe67/understand/blob/main/reviews/02-learner-pass.md">Learner pass</a>: each section read as a 10-year-old</li>
+<li><a href="https://github.com/anandsathe67/understand/blob/main/reviews/03-cold-run-comparison.md">Cold run</a>: the revised prompts handed to fresh agents, compared</li>
+<li><a href="https://github.com/anandsathe67/understand/tree/main/skills">Two Claude Code skills</a> that repeat the process for any topic</li>
+</ul>
+
+<p><small>Modelled on <a href="https://aatishb.com/myriad/lets-build-a-brain/">"Let's Build a Brain"</a> by Aatish Bhatia and Arkarup Banerjee. Source on <a href="https://github.com/anandsathe67/understand">GitHub</a>.</small></p>
+</main>
+</body>
+</html>

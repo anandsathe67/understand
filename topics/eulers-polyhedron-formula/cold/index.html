@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Number That Never Changes</title>
+<meta name="description" content="An interactive explanation of Euler's rule for solid shapes (corners − edges + faces = 2) for curious ten-year-olds, with live simulations.">
+<style>
+:root{--bg:#fbf7f0;--ink:#2b2520;--muted:#6b625a;--accent:#c8472a;--blue:#2a6f97;--green:#3a8a5c;--gold:#b88a1b;--line:#e3d9c8;--card:#fffdf9;--corner:#d9472b;--edge:#2a6f97;--face:#8a6d00;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;font-size:19px;line-height:1.55}
+main{max-width:720px;margin:0 auto;padding:0 16px 60px}
+header.hero{padding:56px 0 18px;border-bottom:1px solid var(--line);margin-bottom:28px}
+h1{font-size:44px;line-height:1.08;margin:0 0 10px;font-weight:700;letter-spacing:-0.5px}
+.sub{font-size:21px;color:var(--muted);margin:0 0 6px;font-style:italic}
+.byline{font-size:15px;color:var(--muted);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+h2{font-size:30px;line-height:1.2;margin:56px 0 14px;letter-spacing:-0.3px}
+h2 .n{display:block;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600;margin-bottom:6px}
+h3{font-size:22px;margin:30px 0 8px}
+p{margin:0 0 16px}
+b{font-weight:700}
+.term{font-weight:700;color:#1f1a16;background:linear-gradient(transparent 60%,#fbe7a2 60%)}
+a{color:var(--blue)}
+ul,ol{padding-left:24px;margin:0 0 16px}
+li{margin-bottom:6px}
+.questions{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px 10px;margin:22px 0}
+.questions li{margin-bottom:10px}
+.sim{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:22px -6px;box-shadow:0 2px 10px rgba(80,60,30,0.06)}
+.sim canvas{width:100%;display:block;border-radius:9px;background:#f4efe6;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px}
+.controls select,.controls button{font:inherit;font-size:15px;padding:7px 11px;border-radius:8px;border:1px solid #cdbfa8;background:#fff;color:var(--ink);cursor:pointer}
+.controls button:hover{background:#f6efe2}
+.controls button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.controls button.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.controls button:disabled{opacity:.5;cursor:default}
+.btngroup{display:inline-flex;gap:0;border-radius:8px;overflow:hidden}
+.btngroup button{border-radius:0;margin-left:-1px}
+.btngroup button:first-child{border-radius:8px 0 0 8px}.btngroup button:last-child{border-radius:0 8px 8px 0}
+label.slider{display:inline-flex;align-items:center;gap:8px}
+label.slider input{width:130px}
+.hint{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;color:#5a4a30;margin:10px 2px 4px;min-height:1.2em}
+.readout{font-size:18px;margin:8px 2px 4px;line-height:1.5}
+.num{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;font-weight:700;color:#1f1a16;background:#fbe7a2;padding:1px 6px;border-radius:5px;white-space:nowrap}
+.caption{font-size:15px;color:var(--muted);font-style:italic;margin:6px 2px 0}
+.notice{background:#f3eee4;border-left:4px solid var(--blue);padding:12px 18px 4px;margin:0 0 22px;border-radius:0 10px 10px 0}
+.notice h4{margin:0 0 8px;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.notice li{margin-bottom:8px;font-size:17.5px}
+.hold{background:#e9f2ec;border:2px solid #9ccab0;border-radius:12px;padding:14px 18px;margin:22px 0}
+.hold h4{margin:0 0 6px;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.hold p{margin:0}
+.tryit{background:#fff6dc;border:2px dashed #d9a441;border-radius:12px;padding:16px 20px 6px;margin:26px 0}
+.tryit h4{margin:0 0 8px;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;color:#9a6a10;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.tryit p,.tryit li{font-size:17.5px}
+.history{font-size:16.5px;background:#f1ece3;border-radius:10px;padding:12px 16px;margin:18px 0;color:#4a4036}
+.history b{color:var(--ink)}
+.history::before{content:"A bit of history · ";letter-spacing:1px;text-transform:uppercase;font-size:12.5px;color:var(--accent);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-weight:600}
+.callback{font-size:17px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:0 0 18px;color:#4a4036}
+.callback::before{content:"↩ Go back · ";color:var(--accent);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.stop{text-align:center;margin:54px 0;padding:22px;border-top:3px double #cdbfa8;border-bottom:3px double #cdbfa8}
+.stop h3{margin:0 0 8px;font-size:24px}
+.stop p{margin:0;color:var(--muted)}
+table.disc{width:100%;border-collapse:collapse;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15.5px;margin:0 0 12px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+table.disc th,table.disc td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+table.disc th{background:#f3eee4;font-weight:600}
+table.disc td.c,table.disc th.c{color:var(--corner)}table.disc td.e,table.disc th.e{color:var(--edge)}table.disc td.f,table.disc th.f{color:var(--face)}
+table.disc .hintcol{background:#fff6dc}table.disc .revcol{background:#e9f2ec;white-space:nowrap}
+table.disc td.empty{color:var(--muted);font-style:italic}
+.tablewrap{overflow-x:auto;margin:0 -6px 8px;padding:0 6px}
+.reveal{display:none;background:#e9f2ec;border-radius:10px;padding:12px 16px;margin:0 0 16px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.btnrow button{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;border:1px solid #cdbfa8;background:#fff;cursor:pointer}
+.btnrow button:disabled{opacity:.5}
+.step{background:#f3eee4;border-radius:10px;padding:10px 14px;margin:0 0 10px;font-size:16.5px}
+.calcline{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:20px;font-weight:700;margin:6px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-variant-numeric:tabular-nums}
+.calcline .was{color:#8a7f72}.calcline .arrow{color:var(--accent)}.calcline .chg{color:var(--accent);background:#fbe7a2;padding:0 4px;border-radius:4px}
+.explain{font-size:16px;color:#4a4036}
+.done{background:#e9f2ec;border-radius:8px;padding:8px 12px;margin-top:8px;font-weight:600}
+.chips{margin:8px 0 2px}
+.chipnote{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px;color:#4a4036;margin-top:4px}
+.chipnote .pl{color:#3a8a5c}.chipnote .pf{color:#2a6f97}.chipnote .mi{color:#d9472b}
+.tally{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:0 0 16px;font-size:17px;min-height:2.5em;color:#4a4036}
+.bigcalc{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:22px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:0 0 18px;text-align:center;font-variant-numeric:tabular-nums;line-height:1.7}
+.bigcalc small{display:block;font-size:14px;font-weight:400;color:var(--muted)}
+footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--line);font-size:15.5px;color:var(--muted);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+footer h4{color:var(--ink);margin:18px 0 6px;font-size:15px;letter-spacing:1.5px;text-transform:uppercase}
+.part{text-align:center;margin:60px 0 0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:3px;text-transform:uppercase;font-size:13px;color:var(--accent);font-weight:600}
+.recap{font-size:23px;line-height:1.45;background:#e9f2ec;border-radius:14px;padding:20px 24px;margin:22px 0;font-style:italic}
+@media (max-width:600px){body{font-size:17.5px}h1{font-size:34px}h2{font-size:25px}.readout{font-size:16.5px}.calcline{font-size:17px}.sim{margin:18px -8px;padding:10px}.bigcalc{font-size:18px}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+<h1>The Number That Never Changes</h1>
+<p class="sub">Corners, edges and faces — and the small rule hiding inside every football, die, gemstone and tent</p>
+<p class="byline">An interactive explanation for curious ten-year-olds. Everything you can drag, you should drag. Everything you can click, click.</p>
+</header>
+
+<p>It's Saturday morning and there's a football lying on the wet grass. Go and look at it properly. Black patches and white patches. The black ones have five sides. The white ones have six. Now count the black ones — really count them, turning the ball round. There are twelve.</p>
+<p>Every proper football in the world has exactly twelve black patches. Not eleven. Not thirteen. Big balls, small balls, balls made in different factories on different continents: twelve. Nobody decided this at a meeting. Nobody <i>could</i> have decided otherwise. By the end of this page you will know why — and you'll be able to prove it to someone else.</p>
+<p>On the way we'll look at a pair of dice, a cut gemstone, a camping tent, a dome, a virus, a famous molecule and a city with seven bridges. They're all made of the same three things: flat patches, straight lines where patches meet, and sharp points where lines meet. And hidden in all of them is one tiny rule, so short you could write it on a fingernail.</p>
+
+<div class="questions">
+<p><b>Puzzles this page will answer:</b></p>
+<ol>
+<li>Why does every football have exactly 12 black pentagons, whatever its size?</li>
+<li>Is there a secret number shared by a die, a pyramid, a tent and a ball with 32 patches?</li>
+<li>Can you build a shape that breaks the rule? (You'll try. It's harder than it sounds.)</li>
+<li>Why is a donut different from a ball — and how does a shape "know" it has a hole?</li>
+<li>What does a 290-year-old puzzle about seven bridges have to do with any of this?</li>
+</ol>
+</div>
+
+<p><b>How this page works.</b> The pictures are not pictures. Each one is a little machine that builds a real shape out of numbers and draws it for you. You can spin the shapes with your finger or mouse, click bits of them, and change settings. Under every machine there's a sentence that tells you what it's counting right now, and a "things to notice" list with settings worth trying. The page is in two halves. The first half finds the rule and proves it. The second half uses it. There's a marked place to stop between them — this is at least two sittings.</p>
+
+<!-- ============ 1 ============ -->
+<h2 id="s1"><span class="n">Section 1</span>Every solid shape is made of three kinds of thing</h2>
+<p>Think of a camping tent. There are pegs hammered into the ground at the sharp points. There are poles running between the pegs. And there's cloth stretched flat between the poles. Pegs, poles, cloth. Points, lines, patches.</p>
+<p>A die is the same. Eight sharp points you could prick your finger on. Twelve straight lines you could run your fingernail along. Six flat patches, one per number. Try it on the cube below. Pick what you want to count, then click them one by one. Each one you click gets a number so you don't lose track. Drag to spin the shape — some of them are round the back.</p>
+
+<div class="sim" id="simA"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Pick <b>Corners</b> and the cube. Find all eight. Then switch to <b>Edges</b> (twelve) and <b>Faces</b> (six). You can't see them all at once from any angle — you have to turn it.</li>
+<li>Pick the <b>tetrahedron</b>. It's the simplest solid there is. Try to find a solid with fewer corners or fewer faces. (You can't — three patches can't close up a space.)</li>
+<li>Pick the <b>football</b>. Don't count everything yet — just click one corner, then look: how many lines meet there? How many patches? Try a few corners. It's always the same.</li>
+<li>Click an edge of any shape. Notice it always has exactly two ends, and exactly one patch on each side.</li>
+</ul>
+</div>
+
+<p>Now you've seen them, let's give the three kinds of thing their proper names. The sharp points are <span class="term">corners</span>. The straight lines are <span class="term">edges</span>. The flat patches are <span class="term">faces</span>. From now on the page will say corners, edges and faces, but if you ever get muddled, think pegs, poles and cloth.</p>
+
+<div class="hold">
+<h4>Hold on to this idea</h4>
+<p>An edge is a line with exactly two ends, and exactly two faces meet along it — one on each side, like two fields sharing a fence. And a corner is a point where several edges and several faces all meet. We'll need this in the second half, when we count a football.</p>
+</div>
+
+<div class="tryit">
+<h4>Try it at home · toothpicks and clay</h4>
+<p>You need a box of toothpicks and some modelling clay, plasticine or Blu Tack (not soft play dough — it sags and the toothpicks fall out). Roll little balls of clay for the corners. Push toothpicks into them for the edges. Build a cube (8 balls, 12 sticks), then a pyramid with a square bottom (5 balls, 8 sticks), then a tent shape (6 balls, 9 sticks).</p>
+<p>Now the odd bit: where are the faces? There's no cloth. But look through the model — each "window" of air between the sticks is a face. Count the windows on your cube. There are six. <b>Why this works:</b> a face is just the patch framed by its edges; it doesn't need to be filled in. The sim above draws the faces filled in, but you could switch them off and nothing about the counting would change.</p>
+</div>
+
+<!-- ============ 2 ============ -->
+<h2 id="s2"><span class="n">Section 2</span>Count enough shapes and a pattern shows up</h2>
+<p>Now we're going to be detectives. Below is a shape machine with a menu of twelve shapes and a table. For each shape you add, the table writes down its number of corners, edges and faces. Your job is to find a pattern hiding in those three columns.</p>
+<p><b>Don't read past the table until you've tried.</b> Add at least five shapes, and make them different kinds: a pyramid, a prism, something with lots of faces. Then stare at the numbers. Try adding two of the columns together. Try subtracting. If you get really stuck there's a "stuck?" button, but the first time you spot it yourself is much better than being told.</p>
+
+<div class="sim" id="simB"></div>
+
+<div class="tablewrap"><table class="disc" id="tableB"></table></div>
+<div class="btnrow"><button id="stuckB">Stuck? Give me a hint</button><button id="revealB">I think I've found it — check my answer</button></div>
+<div class="reveal" id="stuckMsg"><p>Here's a column that adds the corners and the faces together. Compare it with the edges column. What do you notice?</p></div>
+<div class="reveal" id="revealMsg">
+<p><b>Here it is.</b> Corners plus faces is always exactly two more than edges. Another way to say the same thing: take the corners, take away the edges, add the faces, and you get 2. For the cube: 8 − 12 + 6 = 2. For the tetrahedron: 4 − 6 + 4 = 2. For the football: 60 − 90 + 32 = 2.</p>
+<p>From here on, every shape machine on the page writes this little sum under the shape. Watch for it.</p>
+</div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>The three numbers can be tiny (4, 6, 4) or big (60, 90, 32) and the pattern doesn't care.</li>
+<li>Add the <b>octahedron</b> and the <b>cube</b>. Their corners and faces are swapped (6 and 8, then 8 and 6) and their edges are the same. The pattern still works for both.</li>
+<li>Add the <b>geodesic ball</b> with 80 triangles. Lots of everything, and still the same answer.</li>
+</ul>
+</div>
+
+<p>This rule — corners, take away edges, add faces, always 2 — is named after a Swiss mathematician called Leonhard Euler (say "OIL-er"), who wrote it down in 1750. People call it <span class="term">Euler's rule</span>. You've just rediscovered it with a table, which is pretty much how he did it too.</p>
+
+<!-- ============ 3 ============ -->
+<h2 id="s3"><span class="n">Section 3</span>Checking a thousand shapes is not the same as proving</h2>
+<p>You checked twelve shapes. Maybe the thirteenth breaks the rule. So here's a machine that makes shapes in endless families: prisms, twisted prisms, pyramids and double pyramids with any number of sides. Slide the slider. Every single one of them obeys the rule.</p>
+
+<div class="sim" id="simC"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Prism, slider at 3: that's the tent from Section 1. Slider at 4: that's a cube (a box). Each extra side adds exactly 2 corners, 3 edges and 1 face. 2 − 3 + 1 = 0, so the answer can't move.</li>
+<li>Pyramid: each extra side adds 1 corner, 2 edges and 1 face. 1 − 2 + 1 = 0. Again, no change.</li>
+<li>Double pyramid, slider at 4: that's the octahedron. Slider at 14: 16 corners, 42 edges, 28 faces. Still 2.</li>
+</ul>
+</div>
+
+<p>So now you've checked, let's say, a hundred shapes. Is the rule proved? <b>No.</b> And this is the most important idea on the page, so let's be careful about it.</p>
+<p>Imagine you taste ten apples from a tree and they're all sweet. You could say "the apples on this tree are sweet" and you'd probably be right. But you haven't <i>proved</i> it. Maybe the eleventh apple is sour. To be sure, you'd need to understand something about the tree itself — something that makes <i>every</i> apple sweet, including ones that haven't grown yet.</p>
+<p>That's the difference. <b>Checking</b> means trying lots of examples and seeing that it works for those. <b>Proving</b> means finding a reason why it <i>has</i> to work — for every shape, including shapes nobody has ever built or imagined. The sliders above go up to 14. A proof has to work for a prism with a billion sides, and for a shape as lumpy and weird as you like.</p>
+<p>The rest of the first half of this page is a real proof. It has three steps, and each one is a thing you can do with your hands (or your finger on the screen). Nowhere in it will you need to trust us.</p>
+
+<div class="history">René Descartes, the French philosopher, seems to have noticed something very close to this rule around <b>1630</b>, but he never published it — his notes were lost, copied once by Leibniz in 1676, and only found again in 1860. Euler wrote the rule in a letter to his friend Christian Goldbach in <b>November 1750</b>, saying he was surprised nobody had noticed it before. Euler tried to prove it and his proof had a gap. The first proof that really held up came from Adrien-Marie Legendre in 1794, and the one we're about to do is from Augustin-Louis Cauchy, in 1813.</div>
+
+<div class="tryit">
+<h4>Try it at home · straws and pipe cleaners</h4>
+<p>Drinking straws make good edges, and a pipe cleaner pushed into the end of two straws and bent makes a corner that holds. (String threaded through the straws works too, but it's fiddly.) Build a triangle first. Then build a pyramid on it: three more straws meeting at a point above it. That's a tetrahedron: 4 corners, 6 straws, 4 air-windows. 4 − 6 + 4 = 2.</p>
+<p>Now add one more corner: push a new straw out from any corner, with a fresh pipe-cleaner corner on its loose end. Count again. 5 corners, 7 straws, and still 4 windows (the new straw doesn't frame a new window — it just sticks out). 5 − 7 + 4 = 2. <b>Why this works:</b> you added one plus (a corner) and one minus (an edge). Remember that trick — it's Section 7.</p>
+</div>
+
+<!-- ============ 4 ============ -->
+<h2 id="s4"><span class="n">Section 4</span>Squash any shape flat and nothing changes</h2>
+<p>Here's step one of the proof, and it's a strange one. Imagine your shape is a beach ball with the edges drawn on it in marker pen. Now cut out one face with scissors. You've made a hole. Grab the edges of the hole and pull them wide — wider and wider — until the whole ball has been stretched out flat on the table, like a rubber sheet pinned down around the hole.</p>
+<p>Every corner is still there (it's a dot now). Every edge is still there (a line, maybe curved). Every face is still there (a patch on the sheet). And the face you cut out? It's still there too: it's the <i>outside</i>, everything beyond the edge of the sheet. Try it. Slide the slider slowly.</p>
+
+<div class="sim" id="simD"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Cube, slider all the way across: a square inside a square, with four lines between them. Count the patches: 4 strips, 1 small square in the middle, plus the outside. That's 6 — the cube's 6 faces. The 8 dots and 12 lines are all still there.</li>
+<li>Press <b>Pop a different face</b> before squashing. The flat map looks different each time, but the counts never change.</li>
+<li>Try the <b>football</b>. The map gets crowded in the middle — the patches far from the hole end up tiny — but there are still 60 dots, 90 lines and 32 patches including the outside.</li>
+<li>Try the <b>tetrahedron</b>: a triangle with a dot in the middle and three lines. 4 dots, 6 lines, 4 patches (3 small triangles plus the outside).</li>
+</ul>
+</div>
+
+<p>Why does this help? Because a solid is awkward to take apart — you can't reach round the back. A flat map lies still on the table. And since stretching never adds or removes anything, <b>whatever we find out about the flat map is true of the solid it came from.</b> From now on we'll say dots, lines and patches when we mean the flat map, and corners, edges and faces for the solid, but they're the same things.</p>
+<p>One important thing: for the stretching to work, the shape has to be ball-like — one piece, no holes through it, and every face a simple patch with no hole in it. All the shapes you've met so far are like that. Keep this in mind, because in Section 11 we'll meet shapes that aren't, and the rule will go wrong for them in exactly the way this step predicts.</p>
+
+<div class="history">This "pop a face and flatten it" trick is the heart of Cauchy's proof from <b>1813</b>. Cauchy was 24. The flat drawings are sometimes called Schlegel diagrams, after Victor Schlegel, who studied them in the 1880s.</div>
+
+<div class="tryit">
+<h4>Try it at home · a paper net</h4>
+<p>Draw six squares on paper in a cross shape (one column of four squares with one square stuck on each side of the second square). Cut round the outside. Before you fold it, count: this flat cross has <b>14</b> corners, <b>19</b> edges and <b>6</b> faces. 14 − 19 + 6 = 1. Only 1! Now count the outside as a patch too, like the sim does: 14 − 19 + 7 = 2. There it is.</p>
+<p>Fold it into a cube and tape it. Corners that were separate get glued together, and so do edges: now it's 8 corners, 12 edges, 6 faces. 8 − 12 + 6 = 2. <b>Why this works:</b> the flat cross is a map, just like the squashed shapes in the sim. The only thing that was "missing" was the outside patch. Try the same with eight triangles for an octahedron: a strip of 8 triangles, alternating up and down.</p>
+</div>
+
+<!-- ============ 5 ============ -->
+<h2 id="s5"><span class="n">Section 5</span>Take away one line and the total stays the same</h2>
+<p>Step two. We've got a flat map on the table. Now we're going to wreck it, carefully, one line at a time — and watch the total.</p>
+<p>Pick a line that has a different patch on each side (remember the fence between two fields). Rub it out. The two patches join into one big patch. So: one line fewer, and one patch fewer. What happens to the sum?</p>
+<p>This is the bit that trips people up, so let's do it slowly with the cube. Before: 8 − 12 + 6 = 2. We take away one line, so there are 11 lines instead of 12. But lines are the thing we <i>subtract</i>. Subtracting 11 instead of 12 means we're taking away <i>less</i> — so the total goes <b>up</b> by 1. Taking away a take-away makes things bigger. Then the patches: 5 instead of 6, and patches are a thing we add, so the total goes <b>down</b> by 1. Up 1, down 1. After: 8 − 11 + 5 = 2. Still 2.</p>
+<p>Try it yourself. The machine shows the sum before and after every click, and underneath it shows the same thing as counters: green dots and blue squares are the pluses, red bars are the minuses, and each plus cancels a minus. Watch how many are left over.</p>
+
+<div class="sim" id="simE"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Take away any line of the cube's map. Then another. Then another. The sum under the map is always 2. The leftover counters are always 2.</li>
+<li>Try taking away a line of the outer boundary. The patch next to it merges with the <i>outside</i>. That's allowed — the outside is a patch like any other.</li>
+<li>Keep going until every line you click gets refused. What's left is a map with no closed patches at all — a "tree" of lines. Count: 8 dots, 7 lines, 1 patch (just the outside). 8 − 7 + 1 = 2.</li>
+<li>Now try to click one of those leftover lines. The machine stops you. Why? Because that line has the <i>same</i> patch on both sides, so rubbing it out wouldn't merge anything. Those lines need a different move, which is the next section.</li>
+</ul>
+</div>
+
+<!-- ============ 6 ============ -->
+<h2 id="s6"><span class="n">Section 6</span>Take away a dangling line, with its dot, and it still stays the same</h2>
+<p>By the end of Section 5, your map was a bare tree of lines with no patches, and some of those lines were dangling: one end attached, one end loose, like a twig. Here's the second move. Snap off a dangling line <i>together with the loose dot on its end</i>. That's one dot fewer and one line fewer.</p>
+<p>Same arithmetic, other way round. One dot fewer: dots are added, so the total goes <b>down</b> 1. One line fewer: lines are subtracted, so subtracting less makes the total go <b>up</b> 1. Down 1, up 1. From 8 − 7 + 1 = 2 to 7 − 6 + 1 = 2.</p>
+<p>And now the magic: a tree always has a twig somewhere (a line with a loose end). So you can keep snapping twigs until there's nothing left but one lonely dot. Try to get all the way down.</p>
+
+<div class="sim" id="simF"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Get the cube all the way down to a single dot. At the end it's 1 dot, 0 lines, 1 patch (the outside is everything). 1 − 0 + 1 = 2.</li>
+<li>Try a line in the middle of a tree, not a twig — one that has lines carrying on at both ends. The machine refuses: that line holds two parts of the map together, and the rule is only about maps in one piece. You have to snap from the ends inwards, like eating a twig from its tip.</li>
+<li>It doesn't matter what order you do things in. Mix the two moves up. Take away a patch-line, snap a twig, take away another patch-line. The sum never wobbles.</li>
+<li>Try the <b>dodecahedron</b>: 20 dots, 30 lines, 12 patches. It takes 30 clicks to get to a dot. Every one of them leaves 2.</li>
+</ul>
+</div>
+
+<!-- ============ 7 ============ -->
+<h2 id="s7"><span class="n">Section 7</span>Adding never changes it either</h2>
+<p>You might wonder: fine, taking things away keeps it at 2 — but could <i>adding</i> things push it to 3? Let's try. There are three ways to add to a map without breaking it:</p>
+<ul>
+<li><b>Put a new dot in the middle of a line.</b> That cuts the line in two. One more dot (up 1), one more line (down 1). No change.</li>
+<li><b>Draw a new line across a patch, from one of its dots to another.</b> That cuts the patch in two. One more line (down 1), one more patch (up 1). No change.</li>
+<li><b>Draw a dangling line out from a dot, with a new dot on its end.</b> One more dot, one more line. No change.</li>
+</ul>
+<p>Those are exactly the moves of Sections 5 and 6 run backwards. Have a go. Each tool adds one plus and one minus, so the counters still cancel to 2.</p>
+
+<div class="sim" id="simG"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Start from the tetrahedron and add a dot to every line. 10 dots, 12 lines, 4 patches: 10 − 12 + 4 = 2.</li>
+<li>Try drawing a line between two dots that <i>aren't</i> in the same patch, so the line would have to cross another line. The machine refuses. Crossing lines would secretly make a new dot where they cross, and we'd be cheating by not counting it.</li>
+<li>Build something ridiculous. Lines everywhere, twigs off twigs. Then switch to <b>Take away</b> and tear it back down to one dot.</li>
+</ul>
+</div>
+
+<div class="callback">Go back to <a href="#s3">Section 3</a> and slide the prism slider up by one. Each extra side adds 2 corners, 3 edges and 1 face. Can you see those three additions as the moves from this section? (Two dots on lines, then one line across a patch — try it in the map above on a tent.)</div>
+
+<!-- ============ 8 ============ -->
+<h2 id="s8"><span class="n">Section 8</span>And that's the whole proof</h2>
+<p>Let's put the three steps together and see why they add up to a proof — a real one, that works for shapes nobody has built.</p>
+<ol>
+<li>Take <i>any</i> ball-like shape. Pop one face and squash it flat (Section 4). The counts of corners, edges and faces don't change, and the popped face becomes the outside.</li>
+<li>Take lines away one at a time (Sections 5 and 6). Each move takes one plus and one minus, so the total never moves.</li>
+<li>You can always keep going until you reach a single dot — because any map with lines in it either has a patch (so there's a fence line to rub out) or is a tree (so there's a twig to snap).</li>
+<li>A single dot scores 1 − 0 + 1 = 2. The total never changed on the way down. So it was 2 at the start.</li>
+</ol>
+<p>Notice what we did <i>not</i> do. We didn't check lots of shapes and hope. We didn't use anything special about cubes or footballs. We showed that <i>whatever</i> shape you start with, the same three moves drag it down to a dot without ever disturbing the total. That is what proving means: a reason that works for all of them at once.</p>
+<p>Here's a machine that runs the whole proof on any shape, including the football, so you can watch it happen without 90 clicks. Press "Run the whole proof" and keep an eye on the sum.</p>
+
+<div class="sim" id="simH"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Run it on the <b>football</b>: 60 − 90 + 32 at the start, 1 − 0 + 1 at the end, and 2 on every one of the 90 lines in between.</li>
+<li>Run it on the <b>hexagon ball with 30 hexagons</b>: 80 dots and 120 lines. Nobody checked this shape in Section 2. The proof doesn't care.</li>
+<li>Use <b>One step</b> instead and read the sentence under the map after each step. It names which of the two moves it just made.</li>
+</ul>
+</div>
+
+<div class="callback">Go back to <a href="#s2">Section 2</a> and look at your table again. Every row was really the same event: a map with one plus more than its minuses, twice over. Now you know why no row could ever have come out as 1 or 3.</div>
+
+<div class="stop">
+<h3>A good place to stop</h3>
+<p>You've found the rule and you've proved it. That's a whole afternoon's worth. The second half uses the rule to explain footballs, domes, viruses and a Nobel Prize, and then goes looking for shapes that break it.</p>
+</div>
+
+<p class="part">Part two · Using the rule</p>
+
+<!-- ============ 9 ============ -->
+<h2 id="s9"><span class="n">Section 9</span>A football must have exactly 12 pentagons</h2>
+<p>Back to the ball on the grass. Here's what we know about a football without counting anything: every patch is a pentagon (5 sides) or a hexagon (6 sides), and at every corner exactly three patches meet. You can check both facts on the ball below — click a corner, click a few patches. Now we'll use the rule to work out how many pentagons there must be. We won't count them; we'll <i>deduce</i> them.</p>
+
+<div class="sim" id="simI"></div>
+<div class="tally" id="tallyI">Click a face or a corner on the ball above.</div>
+
+<p><b>Step 1: play the counting game six times over.</b> Corners − edges + faces = 2. If you count every corner six times, every edge six times and every face six times, you get six times the answer: 12. For the football that's 360 − 540 + 192 = 12. (Check it in the readout above.) Why six? You'll see — it's the number that makes all the sharing come out in whole numbers.</p>
+
+<p><b>Step 2: hand everything out to the patches.</b> Remember the idea you held on to from Section 1: every edge has exactly two faces, one each side, and at a football's corners exactly three faces meet. So we can give each corner's 6 counts to the 3 patches that meet there — 2 each. Give each edge's 6 counts to the 2 patches it sits between — 3 each. And each face keeps its own 6. Nothing is lost: all 12 of the total is now sitting in the patches' pockets.</p>
+
+<p><b>Step 3: what does each patch end up with?</b></p>
+<div class="bigcalc">
+A hexagon: 6 corners × 2 = 12, minus 6 edges × 3 = 18, plus its own 6.&nbsp; 12 − 18 + 6 = <b>0</b>
+<small>Every hexagon holds exactly nothing.</small>
+A pentagon: 5 corners × 2 = 10, minus 5 edges × 3 = 15, plus its own 6.&nbsp; 10 − 15 + 6 = <b>1</b>
+<small>Every pentagon holds exactly one.</small>
+</div>
+<p><b>Step 4: add up the pockets.</b> The pockets must hold 12 in total (Step 1). Hexagons hold 0 each, so they contribute nothing no matter how many there are. Pentagons hold 1 each. So there must be exactly <b>12 pentagons</b>. Not because anyone decided; because the rule leaves no other possibility. Press "Show each face's tally" above and you'll see every hexagon marked 0 and every pentagon marked 1.</p>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Switch to the <b>dodecahedron</b>: 12 pentagons and no hexagons at all. Twelve pentagons, 3 at every corner — the rule is satisfied with zero hexagons.</li>
+<li>Switch to the <b>hexagon ball with 30 hexagons</b>, then the one with <b>80</b>. More and more hexagons, and always exactly 12 pentagons. The hexagons can be anything; the pentagons can't.</li>
+<li>Click a corner on each shape. Always 3 edges and 3 faces. That's what makes the "2 each" and "3 each" sharing work.</li>
+<li>Try a hexagon-only ball in your head: all pockets would hold 0, so the total would be 0, not 12. You cannot close up a ball with hexagons alone. That's why beehive-pattern balls don't exist.</li>
+</ul>
+</div>
+
+<div class="callback">Go back to <a href="#s1">Section 1</a>, pick the football and click one corner. Three edges, three patches. The whole 12-pentagon proof hangs on that.</div>
+
+<!-- ============ 10 ============ -->
+<h2 id="s10"><span class="n">Section 10</span>Domes, virus shells and a Nobel Prize</h2>
+<p>The same trick works turned inside out. On the football, three patches meet at every corner. Now think of triangles instead, with five or six meeting at each corner. That's a <span class="term">geodesic dome</span>. Start with an icosahedron (20 triangles). Cut every triangle into smaller triangles. Then puff the whole thing out into a ball. The architect Buckminster Fuller made these famous in the 1950s. The giant sphere at the Montreal Expo in 1967 is one.</p>
+<p>Count the corners below where only five triangles meet. Cut the triangles as finely as you like. There are always exactly 12 of them. The reason is the same as for the pentagons.</p>
+
+<div class="sim" id="simJ"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Slider at 1: it's the plain icosahedron, 12 corners, and <i>all</i> of them are 5-way. Slider at 2: 42 corners, 12 of them 5-way. Slider at 4: 162 corners, still exactly 12 red ones.</li>
+<li>The 12 red corners sit exactly where the original icosahedron's corners were. Everything added in between is 6-way.</li>
+<li>Pick a red corner and look at the ball around it. It's slightly pointier there. Domes have 12 slightly pointy spots, and so do the viruses below.</li>
+</ul>
+</div>
+
+<p><b>Virus shells.</b> Many viruses keep their insides in a protein shell. The shell is built like a geodesic dome, out of nearly identical pieces. In 1962 Donald Caspar and Aaron Klug worked out that such shells must have 12 five-way spots. The reason is the one you've just seen. Biologists now describe a virus shell by how many triangles it's cut into. That's the same slider you just moved.</p>
+<p><b>The Buckyball.</b> In 1985, three chemists found a molecule of 60 carbon atoms. The atoms sit exactly like the corners of a football: 60 corners, 90 bonds, 12 pentagons and 20 hexagons. Harold Kroto, Robert Curl and Richard Smalley named it buckminsterfullerene, after Fuller's domes. In <b>1996</b> they won the Nobel Prize in Chemistry for it. Go back to Section 9's ball and imagine a carbon atom at every corner. That's the molecule. It has to have 12 pentagons, and so it does.</p>
+
+<h3>A cousin puzzle: the seven bridges</h3>
+<p>Euler solved this puzzle fourteen years before his letter about corners and edges. It is about the town of Königsberg (now Kaliningrad). The river there had an island, a fork, and seven bridges. Townspeople wondered: can you go for a walk that crosses every bridge exactly once? Try it.</p>
+
+<div class="sim" id="simK"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>Count the bridges touching each piece of land: north bank 3, south bank 3, island 5, east bank 3. All odd.</li>
+<li>Every time your walk passes <i>through</i> a piece of land, it uses up two of its bridges: one in, one out. So a piece of land with an odd number of bridges can only be where you start or where you finish. A walk has one start and one finish. So at most two pieces of land can be odd. Here all four are. That's the proof that the walk is impossible. Euler wrote it up in <b>1736</b>.</li>
+<li>Why is it a cousin? Because it only cares about what's joined to what. Distances and shapes don't matter. Dots and lines, just like our flat maps. People say this puzzle started a whole new kind of mathematics, all about joins and connections.</li>
+</ul>
+</div>
+
+<!-- ============ 11 ============ -->
+<h2 id="s11"><span class="n">Section 11</span>Stranger shapes</h2>
+<p>Puzzle number 3 at the top of the page was: can you build a shape that breaks the rule? The proof says no — for ball-like shapes. So the way to break it is to build something that isn't ball-like. Let's go looking.</p>
+
+<h3>A picture frame gives 0, and two holes give −2</h3>
+<p>Here's a square picture frame: a block with a hole through the middle. Count it (mark all the faces — the four walls inside the hole count too).</p>
+
+<div class="sim" id="simL1"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>The frame: 16 corners, 32 edges, 16 faces. 16 − 32 + 16 = <b>0</b>. Not 2.</li>
+<li>The block with two holes: 24 − 48 + 22 = <b>−2</b>. Every hole takes 2 away.</li>
+<li>Why does the proof fail? Try the rubber-sheet step in your head: pop one face of the frame and stretch. You can't flatten it — the hole is in the way, so the sheet ends up with a loop of lines going round the hole that can't be rubbed out without cutting. A donut "knows" it has a hole, because its number is 0.</li>
+</ul>
+</div>
+<div class="history">The first person to notice that holes change the number was Simon Lhuilier, a Swiss mathematician, in <b>1813</b> — the same year as Cauchy's proof. Each hole takes 2 off.</div>
+
+<h3>A dent is fine</h3>
+<p>You might think a dent is a bit like a hole. It isn't. A cube with its top pushed in is still ball-like — you could still pop a face and stretch it flat, you'd just have an extra ring of lines. Count it.</p>
+
+<div class="sim" id="simL2"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>12 corners, 20 edges, 10 faces. 12 − 20 + 10 = 2. The dent added 4 corners, 8 edges and 4 faces: 4 − 8 + 4 = 0.</li>
+<li>Switch to the plain cube and compare. A dent is just the top face replaced by five faces. Hollows, bumps and lumps never change the answer; only holes right through do.</li>
+</ul>
+</div>
+
+<h3>The rule works on maps too</h3>
+<p>Our flat maps were squashed shapes. But a real map works too: countries are patches, borders are lines, and the places where three or more borders meet are dots. The sea around an island counts as one big country (it's the outside, remember). Here's an island with six countries and the sea. Redraw its borders however you like.</p>
+
+<div class="sim" id="simL3"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li>At the start: 12 border-points, 17 borders, 7 countries counting the sea. 12 − 17 + 7 = 2.</li>
+<li>Make a new country by drawing a border across an old one. Merge two countries by rubbing out the border between them. Still 2.</li>
+<li>Draw a border from the coast out into the sea with a dangling border-point on its end (a pier!). Still 2.</li>
+</ul>
+</div>
+
+<h3>Monsters that seem to break it</h3>
+<p>Finally, some shapes that give 3. These are the ones people argued about for a hundred years after Euler. Look carefully at each one and work out which of the "ball-like" conditions it breaks.</p>
+
+<div class="sim" id="simL4"></div>
+
+<div class="notice">
+<h4>A few things to notice</h4>
+<ul>
+<li><b>Two cubes touching at one corner:</b> 15 − 24 + 12 = 3. It's really two shapes, each worth 2, sharing a single corner that gets counted once instead of twice. 2 + 2 − 1 = 3. It isn't one ball-like thing; it's two balls kissing.</li>
+<li><b>Two cubes sharing an edge:</b> 14 − 23 + 12 = 3. Same idea: 2 + 2, minus the shared edge-with-two-corners, which is worth 2 − 1 = 1.</li>
+<li><b>A small cube sitting on a big one:</b> 16 − 24 + 11 = 3. Mark the faces and look at the big cube's top: it's one patch with a square hole in it, where the small cube sits. A patch with a hole isn't a simple patch, so the squash-flat step breaks. Switch to the version <b>with one cut line</b>: one extra edge turns the ring-shaped face into a proper patch, and the count goes back to 16 − 25 + 11 = 2.</li>
+<li>Build the kissing cubes with toothpicks and clay (one shared clay ball). Count your model. You'll get 3 — and now you know why.</li>
+</ul>
+</div>
+
+<p>So here, honestly, is the full rule. For any shape that is <b>in one piece</b>, has <b>no holes through it</b>, and whose faces are all <b>simple patches</b> (no holes in them either), corners − edges + faces = 2. Those three conditions are exactly what the proof needed: one piece so the dot-and-line map stays connected; no holes so it can be squashed flat; simple patches so each fence-line really sits between two patches. The monsters each break one of the three.</p>
+
+<!-- ============ 12 ============ -->
+<h2 id="s12"><span class="n">Section 12</span>Make your own</h2>
+<p>Time to build a shape nobody has named. Get a potato, a block of cheese, a bar of soap or a lump of firm clay. You also need a table knife. Slice off flat faces at random angles. Six, seven, ten slices, wherever you like. Stop when it looks like a rough gemstone. (That's genuinely how a gem cutter starts.) Now mark every corner with a pen dot. Count the corners. Count the edges. Count the faces. Predict the answer before you add them up. If you get 2, the rule held for a shape that has never existed before. If you don't, count again. One edge is always hiding.</p>
+<p>Or build one on screen. Start from a single dot. Grow a map with the tools below, as big and messy as you like. Then tear it down again.</p>
+
+<div class="sim" id="simM"></div>
+
+<p>Grown-up mathematicians have a name for the number. Corners − edges + faces is called the <span class="term">Euler characteristic</span> of the shape. It's 2 for anything ball-like. It's 0 for anything donut-like, −2 for two holes, and so on. There is a whole subject about what stays the same when you stretch and squash, but don't tear. It's called <span class="term">topology</span>. The seven bridges of Königsberg are usually called its first problem. You've now done a real piece of it.</p>
+
+<div class="recap">The whole reason, in one sentence: squash any ball-like shape flat, take it apart with moves that always remove one plus and one minus together, and you end with a single dot, which scores 2.</div>
+
+<footer>
+<h4>About this page</h4>
+<p>Written in the style of <a href="https://aatishb.com/myriad/lets-build-a-brain/">"Let's Build a Brain"</a> by Aatish Bhatia and Arkarup Banerjee. Their approach is one change at a time, shown before it's named, with simulations you can poke. This page tries to copy it. Any clumsiness is ours, not theirs.</p>
+<h4>What the simulations really do, and what they skip</h4>
+<p>Every shape is built from a list of corner positions and a list of faces (each face a list of corners). Edges are worked out from the faces. Every count on the page is computed live from those lists. Nothing is typed in by hand. The flat maps are made with a "spring" layout (Tutte's method, 1963). The popped face is pinned in a circle. Every other dot slides to the average position of its neighbours. For the ball-like shapes offered here, that always gives a map with no crossing lines. The squashing animation is a straight blend between the 3-D picture and the flat map, not real rubber physics. The map editor counts patches by walking round the lines. Its totals are genuine, not looked up.</p>
+<p>"Allowed" shapes for the proof are: one connected piece, no holes through it, every face a simple patch, and every edge with exactly two ends. The picture frames, kissing cubes and cube-on-cube deliberately break those conditions. The dented cube uses a sloped pit. A straight-walled pit also gives 2. The hexagon balls with 30 and 80 hexagons are drawn with slightly curved faces, made by puffing the corners onto a sphere. That doesn't affect any count. The Königsberg drawing is schematic. Real bridge positions differ, but the connections (3, 3, 3 and 5 bridge-ends) are the historical ones. Face-hiding in the 3-D views uses a simple painter's method. At odd angles the picture frame can draw a far wall over a near one. Counts are unaffected.</p>
+<h4>Dates</h4>
+<p>Descartes' manuscript is usually dated to around 1630. A copy made by Leibniz in 1676 was found in 1860. Euler's letter to Goldbach is dated 14 November 1750. His own attempted proof was published in 1752. Legendre's proof appeared in 1794, Cauchy's and Lhuilier's in 1813. The Königsberg paper was presented in 1735 and carries the date 1736 (it was printed in 1741). Caspar and Klug's virus paper is from 1962. Buckminsterfullerene was discovered in 1985, and the Nobel Prize in Chemistry was awarded in 1996. Tutte's spring-layout method dates from 1963. These are the dates we could verify. If you find one wrong, the footer is the right place to fix it.</p>
+</footer>
+
+</main>
+<script>
+(function(){'use strict';
+/* ===== vector & matrix helpers ===== */
+const add=(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]];
+const sub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+const mul=(a,s)=>[a[0]*s,a[1]*s,a[2]*s];
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const len=a=>Math.hypot(a[0],a[1],a[2]);
+const norm=a=>{const l=len(a)||1;return [a[0]/l,a[1]/l,a[2]/l];};
+const lerp=(a,b,t)=>a+(b-a)*t;
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const ease=t=>t*t*(3-2*t);
+const I3=()=>[[1,0,0],[0,1,0],[0,0,1]];
+function matMul(A,B){const C=[[0,0,0],[0,0,0],[0,0,0]];for(let i=0;i<3;i++)for(let j=0;j<3;j++)C[i][j]=A[i][0]*B[0][j]+A[i][1]*B[1][j]+A[i][2]*B[2][j];return C;}
+function matVec(A,v){return [A[0][0]*v[0]+A[0][1]*v[1]+A[0][2]*v[2],A[1][0]*v[0]+A[1][1]*v[1]+A[1][2]*v[2],A[2][0]*v[0]+A[2][1]*v[1]+A[2][2]*v[2]];}
+function rotX(a){const c=Math.cos(a),s=Math.sin(a);return [[1,0,0],[0,c,-s],[0,s,c]];}
+function rotY(a){const c=Math.cos(a),s=Math.sin(a);return [[c,0,s],[0,1,0],[-s,0,c]];}
+function rotAxis(ax,a){const [x,y,z]=ax,c=Math.cos(a),s=Math.sin(a),t=1-c;return [[t*x*x+c,t*x*y-s*z,t*x*z+s*y],[t*x*y+s*z,t*y*y+c,t*y*z-s*x],[t*x*z-s*y,t*y*z+s*x,t*z*z+c]];}
+function signedArea2(poly){let a=0;for(let i=0;i<poly.length;i++){const p=poly[i],q=poly[(i+1)%poly.length];a+=p[0]*q[1]-q[0]*p[1];}return a/2;}
+function pointInPoly(p,poly){let inside=false;for(let i=0,j=poly.length-1;i<poly.length;j=i++){const a=poly[i],b=poly[j];if(((a[1]>p[1])!==(b[1]>p[1]))&&(p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0]))inside=!inside;}return inside;}
+function distSeg(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1];const l2=dx*dx+dy*dy;let t=l2?((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l2:0;t=clamp(t,0,1);return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy);}
+function segsCross(a,b,c,d){const o=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]);const o1=o(a,b,c),o2=o(a,b,d),o3=o(c,d,a),o4=o(c,d,b);return (o1>0)!==(o2>0)&&(o3>0)!==(o4>0)&&o1!==0&&o2!==0&&o3!==0&&o4!==0;}
+
+/* ===== shapes ===== */
+function centroidOf(verts,f){return mul(f.reduce((s,v)=>add(s,verts[v]),[0,0,0]),1/f.length);}
+function faceNormal(verts,f){let n=[0,0,0];for(let i=0;i<f.length;i++){const a=verts[f[i]],b=verts[f[(i+1)%f.length]];n[0]+=(a[1]-b[1])*(a[2]+b[2]);n[1]+=(a[2]-b[2])*(a[0]+b[0]);n[2]+=(a[0]-b[0])*(a[1]+b[1]);}return norm(n);}
+const ekey=(a,b)=>a<b?a+'_'+b:b+'_'+a;
+function orientFaces(verts,faces){
+  const emap=new Map();
+  faces.forEach((f,fi)=>{for(let i=0;i<f.length;i++){const k=ekey(f[i],f[(i+1)%f.length]);if(!emap.has(k))emap.set(k,[]);emap.get(k).push(fi);}});
+  const done=new Array(faces.length).fill(false);
+  for(let seed=0;seed<faces.length;seed++){if(done[seed])continue;
+    const comp=[];const stack=[seed];const seen=new Set([seed]);
+    while(stack.length){const f=stack.pop();comp.push(f);const fv=faces[f];for(let i=0;i<fv.length;i++){for(const g of emap.get(ekey(fv[i],fv[(i+1)%fv.length])))if(!seen.has(g)){seen.add(g);stack.push(g);}}}
+    const cc=mul(comp.reduce((s,f)=>add(s,centroidOf(verts,faces[f])),[0,0,0]),1/comp.length);
+    let best=comp[0],bd=-1;for(const f of comp){const d=len(sub(centroidOf(verts,faces[f]),cc));if(d>bd){bd=d;best=f;}}
+    if(dot(faceNormal(verts,faces[best]),sub(centroidOf(verts,faces[best]),cc))<0)faces[best].reverse();
+    done[best]=true;const q=[best];
+    while(q.length){const f=q.shift();const fv=faces[f];
+      for(let i=0;i<fv.length;i++){const a=fv[i],b=fv[(i+1)%fv.length];
+        for(const g of emap.get(ekey(a,b))){if(done[g])continue;const gv=faces[g];let same=false;
+          for(let j=0;j<gv.length;j++)if(gv[j]===a&&gv[(j+1)%gv.length]===b){same=true;break;}
+          if(same)gv.reverse();done[g]=true;q.push(g);}}}
+  }
+}
+function finalize(def){
+  let verts=def.verts.map(v=>[...v]);
+  const c=mul(verts.reduce((s,v)=>add(s,v),[0,0,0]),1/verts.length);
+  verts=verts.map(v=>sub(v,c));
+  const r=Math.max(...verts.map(len));verts=verts.map(v=>mul(v,1/r));
+  const faces=def.faces.map(f=>[...f]);orientFaces(verts,faces);
+  const emap=new Map(),edges=[];const faceEdges=faces.map(()=>[]);
+  faces.forEach((f,fi)=>{for(let i=0;i<f.length;i++){const k=ekey(f[i],f[(i+1)%f.length]);if(!emap.has(k)){emap.set(k,edges.length);edges.push([f[i],f[(i+1)%f.length]]);}faceEdges[fi].push(emap.get(k));}});
+  (def.extraEdges||[]).forEach(([a,b])=>{const k=ekey(a,b);if(!emap.has(k)){emap.set(k,edges.length);edges.push([a,b]);}});
+  const edgeFaces=edges.map(()=>[]);faceEdges.forEach((fe,fi)=>fe.forEach(ei=>edgeFaces[ei].push(fi)));
+  const vertFaces=verts.map(()=>[]);faces.forEach((f,fi)=>f.forEach(v=>vertFaces[v].push(fi)));
+  const vertEdges=verts.map(()=>[]);edges.forEach((e,ei)=>{vertEdges[e[0]].push(ei);vertEdges[e[1]].push(ei);});
+  const normals=faces.map(f=>faceNormal(verts,f));
+  return {verts,faces,edges,faceEdges,edgeFaces,vertFaces,vertEdges,normals,noCull:!!def.noCull,extraEdges:def.extraEdges||[]};
+}
+function sortAround(c,n,ids,pts){n=norm(n);const ref=Math.abs(n[0])<0.9?[1,0,0]:[0,1,0];const u=norm(cross(n,ref));const w=cross(n,u);return ids.slice().sort((a,b)=>{const pa=sub(pts[a],c),pb=sub(pts[b],c);return Math.atan2(dot(pa,w),dot(pa,u))-Math.atan2(dot(pb,w),dot(pb,u));});}
+function ring(n,r,z,off=0){const v=[];for(let i=0;i<n;i++){const a=off+2*Math.PI*i/n+Math.PI/2;v.push([r*Math.cos(a),r*Math.sin(a),z]);}return v;}
+function tetraDef(){return {verts:[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]],faces:[[0,1,2],[0,3,1],[0,2,3],[1,3,2]]};}
+function cubeBlock(cx,cy,cz,s){const v=[];for(let i=0;i<8;i++)v.push([cx+(i&1?s:-s),cy+(i&2?s:-s),cz+(i&4?s:-s)]);return {verts:v,faces:[[0,1,3,2],[4,6,7,5],[0,4,5,1],[2,3,7,6],[0,2,6,4],[1,5,7,3]]};}
+function cubeDef(){return cubeBlock(0,0,0,1);}
+function octaDef(){const v=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];const f=[];for(const x of [0,1])for(const y of [2,3])for(const z of [4,5])f.push([x,y,z]);return {verts:v,faces:f};}
+function icosaDef(){const t=(1+Math.sqrt(5))/2;const v=[[-1,t,0],[1,t,0],[-1,-t,0],[1,-t,0],[0,-1,t],[0,1,t],[0,-1,-t],[0,1,-t],[t,0,-1],[t,0,1],[-t,0,-1],[-t,0,1]];
+  const f=[[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]];return {verts:v,faces:f};}
+function dualDef(p){const verts=p.faces.map(f=>norm(centroidOf(p.verts,f)));const faces=p.verts.map((v,vi)=>sortAround([0,0,0],v,p.vertFaces[vi],verts));return {verts,faces};}
+function prismDef(n){const h=0.9;const v=[...ring(n,1,-h),...ring(n,1,h)];const f=[[...Array(n).keys()],[...Array(n).keys()].map(i=>n+i)];for(let i=0;i<n;i++)f.push([i,(i+1)%n,n+(i+1)%n,n+i]);return {verts:v,faces:f};}
+function antiprismDef(n){const h=0.8;const v=[...ring(n,1,-h),...ring(n,1,h,Math.PI/n)];const f=[[...Array(n).keys()],[...Array(n).keys()].map(i=>n+i)];for(let i=0;i<n;i++){f.push([i,(i+1)%n,n+i]);f.push([n+i,(i+1)%n,n+(i+1)%n]);}return {verts:v,faces:f};}
+function pyramidDef(n){const v=[...ring(n,1,-0.55),[0,0,1]];const f=[[...Array(n).keys()]];for(let i=0;i<n;i++)f.push([i,(i+1)%n,n]);return {verts:v,faces:f};}
+function bipyramidDef(n){const v=[...ring(n,1,0),[0,0,1.1],[0,0,-1.1]];const f=[];for(let i=0;i<n;i++){f.push([i,(i+1)%n,n]);f.push([i,(i+1)%n,n+1]);}return {verts:v,faces:f};}
+function truncIcosaDef(){const ico=finalize(icosaDef());const pts=[],key=new Map();
+  const P=(a,b)=>{const k=a+'_'+b;if(!key.has(k)){key.set(k,pts.length);pts.push(add(mul(ico.verts[a],2/3),mul(ico.verts[b],1/3)));}return key.get(k);};
+  const faces=[];ico.faces.forEach(([a,b,c])=>faces.push([P(a,b),P(b,a),P(b,c),P(c,b),P(c,a),P(a,c)]));
+  ico.verts.forEach((v,vi)=>{const nb=ico.vertEdges[vi].map(ei=>{const e=ico.edges[ei];return e[0]===vi?e[1]:e[0];});faces.push(sortAround(v,v,nb.map(w=>P(vi,w)),pts));});
+  return {verts:pts,faces};}
+function geodesicDef(f){const ico=icosaDef();const V=ico.verts.map(norm);const pts=[],key=new Map();
+  const K=p=>{const k=p.map(x=>x.toFixed(5)).join(',');if(!key.has(k)){key.set(k,pts.length);pts.push(p);}return key.get(k);};
+  const faces=[];
+  for(const [a,b,c] of ico.faces){const A=V[a],B=V[b],C=V[c];const g=[];
+    for(let i=0;i<=f;i++){g.push([]);for(let j=0;j<=f-i;j++)g[i].push(K(norm(add(add(mul(A,(f-i-j)/f),mul(B,i/f)),mul(C,j/f)))));}
+    for(let i=0;i<f;i++)for(let j=0;j<f-i;j++){faces.push([g[i][j],g[i+1][j],g[i][j+1]]);if(j<f-i-1)faces.push([g[i+1][j],g[i+1][j+1],g[i][j+1]]);}}
+  return {verts:pts,faces};}
+function frameDef(){const o=[[-3,-3],[3,-3],[3,3],[-3,3]],n=[[-1,-1],[1,-1],[1,1],[-1,1]];const verts=[];
+  for(const z of [-1,1]){for(const p of o)verts.push([p[0],p[1],z]);for(const p of n)verts.push([p[0],p[1],z]);}
+  const O=(k,i)=>k*8+(i%4),N=(k,i)=>k*8+4+(i%4);const faces=[];
+  for(const k of [0,1])for(let i=0;i<4;i++)faces.push([O(k,i),O(k,i+1),N(k,i+1),N(k,i)]);
+  for(let i=0;i<4;i++){faces.push([O(0,i),O(0,i+1),O(1,i+1),O(1,i)]);faces.push([N(0,i),N(0,i+1),N(1,i+1),N(1,i)]);}
+  return {verts,faces};}
+function frame2Def(){const L=[[0,0],[5,0],[5,3],[0,3],[1,1],[2,1],[2,2],[1,2],[3,1],[4,1],[4,2],[3,2]];const verts=[];
+  for(const z of [0,1])for(const p of L)verts.push([p[0],p[1],z]);
+  const top=[[0,1,9,8,5,4],[3,2,10,11,6,7],[0,4,7,3],[1,2,10,9],[5,8,11,6]];const faces=[];
+  for(const k of [0,1])for(const f of top)faces.push(f.map(i=>i+12*k));
+  const rings=[[0,1,2,3],[4,5,6,7],[8,9,10,11]];
+  for(const r of rings)for(let i=0;i<4;i++){const a=r[i],b=r[(i+1)%4];faces.push([a,b,b+12,a+12]);}
+  return {verts,faces};}
+function dentDef(){const c=cubeBlock(0,0,0,1);const top=[4,6,7,5];const inner=[[-0.55,-0.55,-0.1],[-0.55,0.55,-0.1],[0.55,0.55,-0.1],[0.55,-0.55,-0.1]];
+  const verts=[...c.verts,...inner];const faces=c.faces.filter(f=>f.join()!==top.join());
+  for(let i=0;i<4;i++)faces.push([top[i],top[(i+1)%4],8+(i+1)%4,8+i]);faces.push([8,9,10,11]);return {verts,faces};}
+function unionDefs(list){const verts=[],key=new Map(),faces=[];const K=p=>{const k=p.map(x=>x.toFixed(4)).join(',');if(!key.has(k)){key.set(k,verts.length);verts.push(p);}return key.get(k);};
+  for(const d of list){const map=d.verts.map(K);for(const f of d.faces)faces.push(f.map(i=>map[i]));}
+  return {verts,faces,find:p=>key.get(p.map(x=>x.toFixed(4)).join(','))};}
+function twoCubesCornerDef(){return unionDefs([cubeBlock(-1,-1,-1,1),cubeBlock(1,1,1,1)]);}
+function twoCubesEdgeDef(){return unionDefs([cubeBlock(-1,-1,0,1),cubeBlock(1,1,0,1)]);}
+function cubeOnCubeDef(cut){const big=cubeBlock(0,0,0,2);const sm=cubeBlock(0,0,3,1);sm.faces=sm.faces.filter(f=>f.join()!==[0,1,3,2].join());
+  const u=unionDefs([big,sm]);if(cut)u.extraEdges=[[u.find([2,2,2]),u.find([1,1,2])]];return u;}
+
+const SHAPES={};
+function reg(key,label,build,caption){SHAPES[key]={key,label,build,caption};}
+reg('tetra','Tetrahedron (4 triangles)',tetraDef,'A tetrahedron: the simplest solid, four triangles.');
+reg('cube','Cube (a die)',cubeDef,'A cube, like a die.');
+reg('octa','Octahedron (8 triangles)',octaDef,'An octahedron: two square pyramids glued base to base.');
+reg('dodeca','Dodecahedron (12 pentagons)',()=>dualDef(finalize(icosaDef())),'A dodecahedron: twelve pentagons.');
+reg('icosa','Icosahedron (20 triangles)',icosaDef,'An icosahedron: twenty triangles.');
+reg('prism3','Triangular prism (a tent)',()=>prismDef(3),'A triangular prism, like a ridge tent.');
+reg('prism5','Pentagonal prism',()=>prismDef(5),'A prism with five-sided ends.');
+reg('prism6','Hexagonal prism (a pencil)',()=>prismDef(6),'A hexagonal prism, like an unsharpened pencil.');
+reg('pyr4','Square pyramid (Egypt)',()=>pyramidDef(4),'A square pyramid.');
+reg('pyr5','Pentagonal pyramid',()=>pyramidDef(5),'A pyramid on a five-sided base.');
+reg('football','Football (truncated icosahedron)',truncIcosaDef,'A football: 12 pentagons and 20 hexagons.');
+reg('geo2','Geodesic ball, 80 triangles',()=>geodesicDef(2),'A geodesic ball: an icosahedron with each triangle split into 4.');
+reg('geo3','Geodesic ball, 180 triangles',()=>geodesicDef(3),'A geodesic ball: each triangle split into 9.');
+reg('gp2','Hexagon ball with 30 hexagons',()=>dualDef(finalize(geodesicDef(2))),'Twelve pentagons and thirty hexagons.');
+reg('gp3','Hexagon ball with 80 hexagons',()=>dualDef(finalize(geodesicDef(3))),'Twelve pentagons and eighty hexagons.');
+reg('frame','Picture frame (one hole)',frameDef,'A square picture frame: a block with a hole through it.');
+reg('frame2','Block with two holes',frame2Def,'A block with two holes.');
+reg('dent','Cube with a dent',dentDef,'A cube with its top pushed in.');
+reg('cubesCorner','Two cubes touching at a corner',twoCubesCornerDef,'Two cubes that share one corner.');
+reg('cubesEdge','Two cubes sharing an edge',twoCubesEdgeDef,'Two cubes that share one edge.');
+reg('cubeOnCube','Small cube sitting on a big cube',()=>cubeOnCubeDef(false),'A small cube glued onto the top of a bigger one. The big top face has a hole in it.');
+reg('cubeOnCubeCut','...with one cut line added',()=>cubeOnCubeDef(true),'The same, with one extra line cut from the outer corner to the small cube.');
+const cache={};
+function getShape(key){if(!cache[key]){const s=finalize(SHAPES[key].build());s.key=key;s.label=SHAPES[key].label;s.caption=SHAPES[key].caption;cache[key]=s;}return cache[key];}
+
+/* ===== flat layouts (rubber sheet) ===== */
+function flatLayout(shape,outerFace,angles){
+  const n=shape.verts.length;const outer=shape.faces[outerFace];
+  const pos=shape.verts.map(()=>[0,0]);const fixed=new Array(n).fill(false);
+  outer.forEach((v,i)=>{const a=angles?angles[i]:2*Math.PI*i/outer.length;pos[v]=[Math.cos(a),Math.sin(a)];fixed[v]=true;});
+  const adj=shape.verts.map(()=>[]);shape.edges.forEach(([a,b])=>{adj[a].push(b);adj[b].push(a);});
+  for(let it=0;it<2000;it++){let maxd=0;for(let v=0;v<n;v++){if(fixed[v])continue;let x=0,y=0;for(const u of adj[v]){x+=pos[u][0];y+=pos[u][1];}x/=adj[v].length;y/=adj[v].length;maxd=Math.max(maxd,Math.abs(x-pos[v][0]),Math.abs(y-pos[v][1]));pos[v]=[x,y];}if(maxd<1e-7)break;}
+  if(n>14){const stretched=pos.map((p,i)=>{if(fixed[i])return p;const r=Math.hypot(p[0],p[1]);if(r<1e-9)return p;const r2=Math.pow(r,0.6);return [p[0]*r2/r,p[1]*r2/r];});
+    if(!hasCrossing(stretched,shape.edges))return stretched;}
+  return pos;}
+function hasCrossing(pos,edges){for(let i=0;i<edges.length;i++)for(let j=i+1;j<edges.length;j++){const [a,b]=edges[i],[c,d]=edges[j];if(a===c||a===d||b===c||b===d)continue;if(segsCross(pos[a],pos[b],pos[c],pos[d]))return true;}return false;}
+
+/* ===== planar map (flat graph with faces) ===== */
+class PlanarMap{
+  constructor(pos,edges){this.pos=pos.map(p=>[p[0],p[1]]);this.edges=edges.map(e=>[e[0],e[1]]);this.alive=pos.map(()=>true);this.compute();}
+  snapshot(){return {pos:this.pos.map(p=>[...p]),edges:this.edges.map(e=>[...e]),alive:[...this.alive]};}
+  restore(s){this.pos=s.pos.map(p=>[...p]);this.edges=s.edges.map(e=>[...e]);this.alive=[...s.alive];this.compute();}
+  get V(){return this.alive.filter(Boolean).length;}
+  get E(){return this.edges.length;}
+  get F(){return this.faces.length;}
+  key(a,b){return a*100000+b;}
+  compute(){
+    const n=this.pos.length;const adj=this.pos.map(()=>[]);
+    this.edges.forEach(([a,b],ei)=>{adj[a].push({v:b,ei});adj[b].push({v:a,ei});});
+    const ang=(v,u)=>Math.atan2(this.pos[u][1]-this.pos[v][1],this.pos[u][0]-this.pos[v][0]);
+    adj.forEach((lst,v)=>lst.sort((p,q)=>ang(v,p.v)-ang(v,q.v)));
+    this.adj=adj;const dirFace=new Map();const faces=[];
+    for(const [a0,b0] of this.edges)for(const [a,b] of [[a0,b0],[b0,a0]]){
+      if(dirFace.has(this.key(a,b)))continue;const fid=faces.length;const cyc=[];let u=a,v=b,guard=0;
+      do{dirFace.set(this.key(u,v),fid);cyc.push(u);const lst=adj[v];const idx=lst.findIndex(p=>p.v===u);const nxt=lst[(idx+1)%lst.length].v;u=v;v=nxt;guard++;}while(!(u===a&&v===b)&&guard<200000);
+      faces.push({verts:cyc,area:signedArea2(cyc.map(i=>this.pos[i]))});}
+    if(this.edges.length===0){const v=this.alive.findIndex(Boolean);faces.push({verts:[v],area:0});}
+    this.faces=faces;this.dirFace=dirFace;
+    let outer=0;faces.forEach((f,i)=>{if(f.area<faces[outer].area)outer=i;});this.outer=outer;}
+  degree(v){return this.adj[v].length;}
+  edgeKind(ei){const [a,b]=this.edges[ei];const fa=this.dirFace.get(this.key(a,b)),fb=this.dirFace.get(this.key(b,a));if(fa!==fb)return 'merge';if(this.degree(a)===1||this.degree(b)===1)return 'leaf';return 'bridge';}
+  deleteEdge(ei){const kind=this.edgeKind(ei);if(kind==='bridge')return kind;const [a,b]=this.edges[ei];this.edges.splice(ei,1);
+    if(kind==='leaf'){const victim=this.degree(b)===1?b:a;this.alive[victim]=false;}this.compute();return kind;}
+  splitEdge(ei){const [a,b]=this.edges[ei];const m=[(this.pos[a][0]+this.pos[b][0])/2,(this.pos[a][1]+this.pos[b][1])/2];const nv=this.pos.length;this.pos.push(m);this.alive.push(true);this.edges.splice(ei,1,[a,nv],[nv,b]);this.compute();return nv;}
+  segmentClear(p,q,skipV){for(const [a,b] of this.edges){if(skipV.includes(a)||skipV.includes(b))continue;if(segsCross(p,q,this.pos[a],this.pos[b]))return false;}
+    for(let v=0;v<this.pos.length;v++){if(!this.alive[v]||skipV.includes(v))continue;if(distSeg(this.pos[v],p,q)<0.02)return false;}return true;}
+  addEdge(a,b){if(a===b)return 'same';if(this.adj[a].some(p=>p.v===b))return 'exists';
+    if(!this.segmentClear(this.pos[a],this.pos[b],[a,b]))return 'cross';
+    const fa=new Set(this.adj[a].map(p=>this.dirFace.get(this.key(a,p.v))));const shared=this.adj[b].some(p=>fa.has(this.dirFace.get(this.key(b,p.v))));
+    if(!shared&&this.adj[a].length&&this.adj[b].length)return 'cross';
+    this.edges.push([a,b]);this.compute();return 'ok';}
+  addLeaf(a,p){if(!this.segmentClear(this.pos[a],p,[a]))return 'cross';const nv=this.pos.length;this.pos.push([p[0],p[1]]);this.alive.push(true);this.edges.push([a,nv]);this.compute();return 'ok';}
+  faceOfPoint(p){for(let i=0;i<this.faces.length;i++){if(i===this.outer)continue;if(pointInPoly(p,this.faces[i].verts.map(v=>this.pos[v])))return i;}return this.outer;}
+}
+/* ===== UI helpers ===== */
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+function plural(n,s,p){return n+' '+(n===1?s:(p||s+'s'));}
+function formula(V,E,F){return `<span class="num">${V} − ${E} + ${F} = ${V-E+F}</span>`;}
+function shade(hex,k){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgb(${Math.round(r*k)},${Math.round(g*k)},${Math.round(b*k)})`;}
+const FACE_COLORS={3:'#f4bf8a',4:'#a9cce6',5:'#cdb3e4',6:'#b8dbae',7:'#f1e2a1',8:'#f0a8a8'};
+const COL={corner:'#d9472b',edge:'#2a6f97',face:'#f6c531',ink:'#2b2520',pop:'#e8872b'};
+const LIGHT=norm([-0.4,0.6,0.75]);
+const observer=('IntersectionObserver' in window)?new IntersectionObserver(es=>es.forEach(e=>{const v=e.target.__view;if(v){v.visible=e.isIntersecting;if(v.visible)v.needsDraw=true;}}),{rootMargin:'100px'}):null;
+
+/* Base: canvas sizing + animation loop + pointer */
+class CanvasSim{
+  constructor(root,height){this.root=root;root.classList.add('sim');this.height=height||340;this.visible=!observer;this.needsDraw=true;}
+  mountCanvas(){this.canvas=el('canvas');this.root.appendChild(this.canvas);this.ctx=this.canvas.getContext('2d');this.root.__view=this;if(observer)observer.observe(this.root);
+    const ro=new ResizeObserver(()=>this.resize());ro.observe(this.root);this.resize();this.setupPointer();
+    const loop=()=>{if(this.visible){if(this.tick&&this.tick())this.needsDraw=true;if(this.needsDraw){this.needsDraw=false;this.draw();}}requestAnimationFrame(loop);};requestAnimationFrame(loop);}
+  resize(){const w=this.root.clientWidth-24;if(w<50)return;this.dpr=window.devicePixelRatio||1;this.W=w;this.H=w<480?Math.min(this.height,Math.round(w*0.95)):this.height;this.canvas.width=Math.round(this.W*this.dpr);this.canvas.height=Math.round(this.H*this.dpr);this.canvas.style.height=this.H+'px';this.needsDraw=true;}
+  setupPointer(){const c=this.canvas;let last=null,moved=0,id=null;
+    c.addEventListener('pointerdown',e=>{id=e.pointerId;c.setPointerCapture(id);last=[e.clientX,e.clientY];moved=0;this.dragging=true;e.preventDefault();});
+    c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();this.hover=[e.clientX-r.left,e.clientY-r.top];if(this.onHover){this.onHover(this.hover);}
+      if(id!==e.pointerId||!last)return;const dx=e.clientX-last[0],dy=e.clientY-last[1];moved+=Math.abs(dx)+Math.abs(dy);if(this.onDrag)this.onDrag(dx,dy);last=[e.clientX,e.clientY];});
+    const up=e=>{if(id!==e.pointerId)return;if(moved<6){const r=c.getBoundingClientRect();this.click(e.clientX-r.left,e.clientY-r.top);}last=null;id=null;this.dragging=false;};
+    c.addEventListener('pointerup',up);c.addEventListener('pointercancel',()=>{last=null;id=null;this.dragging=false;});
+    c.addEventListener('pointerleave',()=>{this.hover=null;if(this.onHover)this.onHover(null);});}
+  click(){}
+  draw(){}
+}
+
+/* ===== 3-D shape viewer ===== */
+class PolyView extends CanvasSim{
+  constructor(root,opts){super(root,opts.height);this.opts=Object.assign({formula:true,spin:true},opts);
+    this.ctrl=el('div','controls');root.appendChild(this.ctrl);
+    if(opts.shapes&&opts.shapes.length>1){this.select=el('select');opts.shapes.forEach(k=>{const o=el('option');o.value=k;o.textContent=SHAPES[k].label;this.select.appendChild(o);});this.ctrl.appendChild(this.select);this.select.addEventListener('change',()=>this.setShape(this.select.value));}
+    if(opts.modes){this.modeBtns={};const grp=el('div','btngroup');for(const m of opts.modes){const b=el('button','mode',{corner:'Corners',edge:'Edges',face:'Faces'}[m]);b.addEventListener('click',()=>this.setMode(m));grp.appendChild(b);this.modeBtns[m]=b;}this.ctrl.appendChild(grp);
+      const all=el('button','','Show all');all.addEventListener('click',()=>this.selectAll());const clr=el('button','','Clear');clr.addEventListener('click',()=>this.clearSel());this.ctrl.appendChild(all);this.ctrl.appendChild(clr);}
+    if(opts.controls)opts.controls(this.ctrl,this);
+    this.mountCanvas();
+    this.hint=el('div','hint');root.appendChild(this.hint);
+    this.readout=el('div','readout');root.appendChild(this.readout);
+    this.caption=el('div','caption');root.appendChild(this.caption);
+    this.rot=matMul(rotX(-0.5),rotY(0.65));this.spin=this.opts.spin;this.sel={corner:[],edge:[],face:[]};this.mode=opts.modes?opts.modes[0]:null;
+    this.onDrag=(dx,dy)=>{if(this.opts.lockRotate&&this.opts.lockRotate())return;this.rot=matMul(matMul(rotY(dx*0.01),rotX(dy*0.01)),this.rot);this.spin=false;this.needsDraw=true;};
+    if(opts.shapes)this.setShape(opts.shapes[0]);if(this.mode)this.setMode(this.mode);}
+  tick(){if(this.spin&&!this.dragging){this.rot=matMul(rotY(0.004),this.rot);return true;}return false;}
+  setShape(k){this.shape=typeof k==='string'?getShape(k):k;if(this.select&&typeof k==='string')this.select.value=k;this.clearSel();this.update();}
+  setMode(m){this.mode=m;for(const k in this.modeBtns)this.modeBtns[k].classList.toggle('active',k===m);this.updateHint();}
+  clearSel(){this.sel={corner:[],edge:[],face:[]};this.updateHint();this.needsDraw=true;}
+  selectAll(){const s=this.shape,n={corner:s.verts.length,edge:s.edges.length,face:s.faces.length}[this.mode];this.sel[this.mode]=[...Array(n).keys()];this.updateHint();this.needsDraw=true;}
+  counts(){const s=this.shape;return {V:s.verts.length,E:s.edges.length,F:s.faces.length};}
+  update(){const s=this.shape;const {V,E,F}=this.counts();
+    this.readout.innerHTML=this.opts.readout?this.opts.readout(s,this):`This shape has <b>${plural(V,'corner')}</b>, <b>${plural(E,'edge')}</b> and <b>${plural(F,'face')}</b>.`+(this.opts.formula?' '+formula(V,E,F):'');
+    this.caption.innerHTML=this.opts.caption?this.opts.caption(s,this):(s.caption||'');this.updateHint();this.needsDraw=true;}
+  updateHint(){if(!this.mode){if(this.opts.hint)this.hint.innerHTML=this.opts.hint(this);return;}const {V,E,F}=this.counts();const n={corner:V,edge:E,face:F}[this.mode];const found=this.sel[this.mode].length;const name=this.mode+'s';
+    this.hint.innerHTML=found===0?`Click a ${this.mode} to mark it. Drag the shape to turn it round.`:found<n?`Marked <b>${found}</b> ${found===1?this.mode:name} so far. Keep turning — some are hiding round the back.`:`<b>That's all ${n} ${name}.</b> ${this.opts.allMsg?this.opts.allMsg(this):''}`;}
+  faceColor(fi){if(this.opts.faceColor)return this.opts.faceColor(fi,this.shape);return FACE_COLORS[this.shape.faces[fi].length]||'#e6d9c0';}
+  project(R){const s=this.shape,W=this.W,H=this.H;const pts=s.verts.map(v=>matVec(R,v));const scale=Math.min(W,H)*0.43*(this.opts.zoom||1);
+    const P=pts.map(p=>{const k=1/(1-p[2]*0.15);return [W/2+p[0]*scale*k,H/2-p[1]*scale*k];});return {pts,P};}
+  draw(){const ctx=this.ctx,W=this.W,H=this.H,s=this.shape;if(!s||!W)return;ctx.setTransform(this.dpr,0,0,this.dpr,0,0);ctx.clearRect(0,0,W,H);
+    const {pts,P}=this.project(this.rot);
+    const faces=s.faces.map((f,fi)=>{const poly=f.map(i=>P[i]);const n=matVec(this.rot,s.normals[fi]);return {fi,poly,front:signedArea2(poly)<0,depth:f.reduce((a,i)=>a+pts[i][2],0)/f.length,light:dot(n,LIGHT)};}).sort((a,b)=>a.depth-b.depth);
+    const vis=new Set();
+    for(const F of faces){if(!F.front&&!s.noCull)continue;vis.add(F.fi);ctx.beginPath();F.poly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+      const hl=this.sel.face.indexOf(F.fi)>=0;const col=hl?COL.face:this.faceColor(F.fi);ctx.fillStyle=shade(col,0.62+0.38*Math.max(0,F.light));ctx.fill();ctx.strokeStyle='rgba(40,30,20,0.6)';ctx.lineWidth=1.2;ctx.lineJoin='round';ctx.stroke();}
+    this.frame={pts,P,faces,vis};
+    for(const [a,b] of s.extraEdges){const ei=s.edges.findIndex(e=>(e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a));if(s.edgeFaces[ei].length===0&&s.vertFaces[a].some(f=>vis.has(f))){ctx.beginPath();ctx.moveTo(P[a][0],P[a][1]);ctx.lineTo(P[b][0],P[b][1]);ctx.strokeStyle=COL.pop;ctx.lineWidth=3;ctx.stroke();}}
+    const eVis=ei=>s.edgeFaces[ei].some(f=>vis.has(f))||s.edgeFaces[ei].length===0;const vVis=vi=>s.vertFaces[vi].some(f=>vis.has(f));
+    this.sel.edge.forEach((ei,k)=>{if(!eVis(ei))return;const [a,b]=s.edges[ei];ctx.beginPath();ctx.moveTo(P[a][0],P[a][1]);ctx.lineTo(P[b][0],P[b][1]);ctx.strokeStyle=COL.edge;ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();this.label(ctx,(P[a][0]+P[b][0])/2,(P[a][1]+P[b][1])/2,k+1,COL.edge);});
+    if(!this.opts.noDots)for(let vi=0;vi<s.verts.length;vi++){if(!vVis(vi))continue;ctx.beginPath();ctx.arc(P[vi][0],P[vi][1],s.verts.length>70?1.6:2.6,0,7);ctx.fillStyle='#3a3028';ctx.fill();}
+    this.sel.corner.forEach((vi,k)=>{if(!vVis(vi))return;ctx.beginPath();ctx.arc(P[vi][0],P[vi][1],7,0,7);ctx.fillStyle=COL.corner;ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();this.label(ctx,P[vi][0]+12,P[vi][1]-10,k+1,COL.corner);});
+    this.sel.face.forEach((fi,k)=>{if(!vis.has(fi))return;const F=faces.find(f=>f.fi===fi);const c=F.poly.reduce((a,p)=>[a[0]+p[0],a[1]+p[1]],[0,0]).map(x=>x/F.poly.length);this.label(ctx,c[0],c[1],k+1,'#8a6d00');});
+    if(this.opts.decorate)this.opts.decorate(this,ctx,this.frame);}
+  label(ctx,x,y,text,color){ctx.font='bold 13px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';const w=ctx.measureText(String(text)).width+10;ctx.fillStyle='#fff';ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect?ctx.roundRect(x-w/2,y-9,w,18,6):ctx.rect(x-w/2,y-9,w,18);ctx.fill();ctx.stroke();ctx.fillStyle=color;ctx.fillText(String(text),x,y+0.5);}
+  pick(x,y,mode){const s=this.shape,fr=this.frame;if(!fr)return null;mode=mode||this.mode;let best=null;
+    if(mode==='face'){for(const F of fr.faces){if(!fr.vis.has(F.fi))continue;if(pointInPoly([x,y],F.poly)&&(!best||F.depth>best.depth))best=F;}return best?{type:'face',idx:best.fi}:null;}
+    if(mode==='edge'){for(let ei=0;ei<s.edges.length;ei++){if(!(s.edgeFaces[ei].some(f=>fr.vis.has(f))||s.edgeFaces[ei].length===0))continue;const [a,b]=s.edges[ei];const d=distSeg([x,y],fr.P[a],fr.P[b]);if(d>11)continue;const depth=(fr.pts[a][2]+fr.pts[b][2])/2;if(!best||depth>best.depth)best={idx:ei,depth};}return best?{type:'edge',idx:best.idx}:null;}
+    if(mode==='corner'){for(let vi=0;vi<s.verts.length;vi++){if(!s.vertFaces[vi].some(f=>fr.vis.has(f)))continue;const d=Math.hypot(x-fr.P[vi][0],y-fr.P[vi][1]);if(d>14)continue;const depth=fr.pts[vi][2];if(!best||depth>best.depth)best={idx:vi,depth};}return best?{type:'corner',idx:best.idx}:null;}
+    return null;}
+  click(x,y){if(this.opts.onClick&&this.opts.onClick(this,x,y)===true)return;if(!this.mode)return;const hit=this.pick(x,y);if(!hit)return;const arr=this.sel[hit.type];const i=arr.indexOf(hit.idx);if(i>=0)arr.splice(i,1);else arr.push(hit.idx);this.updateHint();this.needsDraw=true;if(this.opts.onPick)this.opts.onPick(this,hit,i<0);}
+}
+
+/* ===== rubber-sheet view ===== */
+class SheetView extends CanvasSim{
+  constructor(root,opts){super(root,opts.height||360);this.opts=opts;
+    this.ctrl=el('div','controls');root.appendChild(this.ctrl);
+    this.select=el('select');opts.shapes.forEach(k=>{const o=el('option');o.value=k;o.textContent=SHAPES[k].label;this.select.appendChild(o);});this.ctrl.appendChild(this.select);this.select.addEventListener('change',()=>this.setShape(this.select.value));
+    const pb=el('button','','Pop a different face');pb.addEventListener('click',()=>{this.pop=(this.pop+1)%this.shape.faces.length;this.flat=null;this.needsDraw=true;this.update();});this.ctrl.appendChild(pb);
+    const sl=el('label','slider','Squash it flat <input type="range" min="0" max="100" value="0">');this.slider=sl.querySelector('input');this.slider.addEventListener('input',()=>{this.s=this.slider.value/100;this.needsDraw=true;this.update();});this.ctrl.appendChild(sl);
+    this.mountCanvas();this.readout=el('div','readout');root.appendChild(this.readout);this.caption=el('div','caption');root.appendChild(this.caption);
+    this.rot=matMul(rotX(-0.5),rotY(0.65));this.s=0;this.spin=true;
+    this.onDrag=(dx,dy)=>{if(this.s>0)return;this.rot=matMul(matMul(rotY(dx*0.01),rotX(dy*0.01)),this.rot);this.spin=false;this.flat=null;this.needsDraw=true;};
+    this.setShape(opts.shapes[0]);}
+  tick(){if(this.spin&&!this.dragging&&this.s===0){this.rot=matMul(rotY(0.004),this.rot);this.flat=null;return true;}return false;}
+  setShape(k){this.shape=getShape(k);let best=0;this.shape.faces.forEach((f,i)=>{if(f.length>this.shape.faces[best].length)best=i;});this.pop=best;this.flat=null;this.s=0;this.slider.value=0;this.update();this.needsDraw=true;}
+  alignedRot(t){const n=matVec(this.rot,this.shape.normals[this.pop]);const z=[0,0,1];const ax=cross(n,z);const l=len(ax);const ang=Math.acos(clamp(dot(n,z),-1,1));if(l<1e-6)return ang>1?matMul(rotX(Math.PI*t),this.rot):this.rot;return matMul(rotAxis(mul(ax,1/l),ang*t),this.rot);}
+  project(R){const s=this.shape,W=this.W,H=this.H;const pts=s.verts.map(v=>matVec(R,v));const scale=Math.min(W,H)*0.4;const P=pts.map(p=>{const k=1/(1-p[2]*0.15);return [W/2+p[0]*scale*k,H/2-p[1]*scale*k];});return {pts,P};}
+  update(){const s=this.shape,V=s.verts.length,E=s.edges.length,F=s.faces.length;const sides=s.faces[this.pop].length;
+    if(this.s<1)this.readout.innerHTML=`This shape has <b>${plural(V,'corner')}</b>, <b>${plural(E,'edge')}</b> and <b>${plural(F,'face')}</b>. ${formula(V,E,F)}`;
+    else this.readout.innerHTML=`Flat map: <b>${plural(V,'dot')}</b>, <b>${plural(E,'line')}</b> and <b>${plural(F,'patch')}</b> — that's ${F-1} inside plus the outside, which is the face we popped. ${formula(V,E,F)} Same numbers as before.`;
+    this.caption.innerHTML=`${s.caption} The orange ${sides}-sided face is the one we pop open; when the map is flat, everything outside the orange boundary is that face.`;}
+  draw(){const ctx=this.ctx,W=this.W,H=this.H,s=this.shape;if(!W)return;ctx.setTransform(this.dpr,0,0,this.dpr,0,0);ctx.clearRect(0,0,W,H);
+    const t=clamp(this.s/0.35,0,1),u=clamp((this.s-0.35)/0.65,0,1);const R=this.alignedRot(t);const {pts,P}=this.project(R);
+    if(u>0&&!this.flat){const R1=this.alignedRot(1);const P1=this.project(R1).P;const outer=s.faces[this.pop];const angles=outer.map(v=>Math.atan2(-(P1[v][1]-H/2),P1[v][0]-W/2));const fl=flatLayout(s,this.pop,angles);const r=Math.min(W,H)*0.44;this.flat=fl.map(p=>[W/2+p[0]*r,H/2-p[1]*r]);}
+    const Q=u>0?P.map((p,i)=>[lerp(p[0],this.flat[i][0],ease(u)),lerp(p[1],this.flat[i][1],ease(u))]):P;
+    const faces=s.faces.map((f,fi)=>{const poly=f.map(i=>Q[i]);const n=matVec(R,s.normals[fi]);return {fi,poly,front:signedArea2(f.map(i=>P[i]))<0,depth:f.reduce((a,i)=>a+pts[i][2],0)/f.length,light:dot(n,LIGHT)};}).sort((a,b)=>a.depth-b.depth);
+    const popPoly=faces.find(F=>F.fi===this.pop).poly;
+    if(u>=1){ctx.beginPath();ctx.rect(0,0,W,H);popPoly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.fillStyle='rgba(232,135,43,0.16)';ctx.fill('evenodd');}
+    for(const F of faces){if(u===0&&!F.front)continue;const isPop=F.fi===this.pop;ctx.beginPath();F.poly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();
+      if(isPop){if(u===0){ctx.fillStyle=COL.pop;ctx.fill();}continue;}
+      const col=FACE_COLORS[s.faces[F.fi].length]||'#e6d9c0';ctx.globalAlpha=u>0&&u<1?0.7:1;ctx.fillStyle=shade(col,u>0?0.92:0.62+0.38*Math.max(0,F.light));ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle='rgba(40,30,20,0.6)';ctx.lineWidth=1.2;ctx.stroke();}
+    ctx.beginPath();popPoly.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.closePath();ctx.strokeStyle=COL.pop;ctx.lineWidth=u>0?4:1.5;ctx.stroke();
+    if(u>=1){ctx.font='italic 14px Georgia,serif';ctx.fillStyle='#9a5a16';ctx.textAlign='left';ctx.fillText('outside = the popped face',8,H-10);}
+    const vis=new Set(faces.filter(F=>u>0||F.front).map(F=>F.fi));
+    for(let vi=0;vi<s.verts.length;vi++){if(!s.vertFaces[vi].some(f=>vis.has(f)))continue;ctx.beginPath();ctx.arc(Q[vi][0],Q[vi][1],s.verts.length>70?1.6:2.8,0,7);ctx.fillStyle='#3a3028';ctx.fill();}}
+}
+
+/* ===== chips: pluses and minuses cancelling ===== */
+function chipsSVG(V,E,F,labels){const plus=V+F,minus=E,cols=Math.max(plus,minus,1);const cw=Math.min(22,560/cols),r=cw*0.36;const w=cols*cw+8,h=cw*2+34;let s=`<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w*1.4}px;display:block">`;
+  const paired=Math.min(plus,minus);
+  for(let i=0;i<plus;i++){const x=4+i*cw+cw/2,y=cw*0.5+4;const fade=i<paired?0.35:1;if(i<V)s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#3a8a5c" opacity="${fade}"/>`;else s+=`<rect x="${x-r}" y="${y-r}" width="${2*r}" height="${2*r}" rx="2" fill="#2a6f97" opacity="${fade}"/>`;
+    if(i>=paired)s+=`<circle cx="${x}" cy="${y}" r="${r+3}" fill="none" stroke="#f6c531" stroke-width="2"/>`;}
+  for(let i=0;i<minus;i++){const x=4+i*cw+cw/2,y=cw*1.5+8;const fade=i<paired?0.35:1;s+=`<rect x="${x-r}" y="${y-r*0.35}" width="${2*r}" height="${r*0.7}" rx="2" fill="#d9472b" opacity="${fade}"/>`;if(i>=paired)s+=`<circle cx="${x}" cy="${y}" r="${r+3}" fill="none" stroke="#f6c531" stroke-width="2"/>`;}
+  for(let i=0;i<paired;i++){const x=4+i*cw+cw/2;s+=`<line x1="${x}" y1="${cw*0.5+4+r}" x2="${x}" y2="${cw*1.5+8-r*0.35}" stroke="#bbb" stroke-width="1"/>`;}
+  s+='</svg>';const left=plus-minus;
+  return `<div class="chips">${s}<div class="chipnote"><span class="pl">●</span> ${V} ${labels.v[1]} + <span class="pf">■</span> ${F} ${labels.f[1]} = ${plus} pluses; <span class="mi">▬</span> ${E} ${labels.e[1]} = ${minus} minuses. ${paired} pairs cancel out, leaving <b>${left}</b>.</div></div>`;}
+
+/* ===== flat-map editor ===== */
+const PALETTE=['#f4bf8a','#a9cce6','#cdb3e4','#b8dbae','#f1e2a1','#f0a8a8','#a7dcd6','#e6c7a4'];
+class MapEditor extends CanvasSim{
+  constructor(root,opts){super(root,opts.height||360);this.opts=opts;this.labels=opts.labels||{v:['dot','dots'],e:['line','lines'],f:['patch','patches']};
+    this.ctrl=el('div','controls');root.appendChild(this.ctrl);
+    if(opts.shapes){this.select=el('select');opts.shapes.forEach(k=>{const o=el('option');o.value=k;o.textContent=SHAPES[k].label;this.select.appendChild(o);});this.ctrl.appendChild(this.select);this.select.addEventListener('change',()=>this.load());}
+    this.toolBtns={};const names={take:'Take away',split:'Add a dot on a line',line:'Add a line between two dots',leaf:'Add a dangling dot'};
+    if(opts.tools.length>1){const grp=el('div','btngroup');for(const t of opts.tools){const b=el('button','mode',names[t]);b.addEventListener('click',()=>this.setTool(t));grp.appendChild(b);this.toolBtns[t]=b;}this.ctrl.appendChild(grp);}
+    const undo=el('button','','Undo');undo.addEventListener('click',()=>this.undo());this.ctrl.appendChild(undo);
+    const reset=el('button','','Start again');reset.addEventListener('click',()=>this.load());this.ctrl.appendChild(reset);
+    if(opts.autoplay){const st=el('button','','One step');st.addEventListener('click',()=>this.autoStep());this.ctrl.appendChild(st);this.playBtn=el('button','primary','Run the whole proof');this.playBtn.addEventListener('click',()=>this.togglePlay());this.ctrl.appendChild(this.playBtn);}
+    this.mountCanvas();this.msg=el('div','hint');root.appendChild(this.msg);this.readout=el('div','readout');root.appendChild(this.readout);this.chips=el('div');root.appendChild(this.chips);
+    this.caption=el('div','caption',opts.caption||'');root.appendChild(this.caption);
+    this.history=[];this.tool=opts.tools[0];this.pending=null;this.setTool(this.tool);this.load();}
+  setTool(t){this.tool=t;this.pending=null;for(const k in this.toolBtns)this.toolBtns[k].classList.toggle('active',k===t);this.needsDraw=true;this.sayTool();}
+  sayTool(){const L=this.labels;const m={take:`Click a ${L.e[0]} to take it away.`,split:`Click a ${L.e[0]} to put a new ${L.v[0]} in the middle of it.`,line:`Click one ${L.v[0]}, then another ${L.v[0]} in the same ${L.f[0]}, to draw a new ${L.e[0]} between them.`,leaf:`Click a ${L.v[0]}, then click an empty spot, to add a dangling ${L.e[0]} with a new ${L.v[0]} on its end.`}[this.tool];this.msg.innerHTML=m;}
+  load(){this.stopPlay();this.history=[];this.pending=null;this.log=[];
+    if(this.opts.graph){const g=this.opts.graph();this.map=new PlanarMap(g.pos,g.edges);}
+    else{const s=getShape(this.select?this.select.value:this.opts.shapes[0]);let best=0;s.faces.forEach((f,i)=>{if(f.length>s.faces[best].length)best=i;});this.map=new PlanarMap(flatLayout(s,best),s.edges);}
+    this.fitMap();this.before=null;this.update(null);this.sayTool();this.needsDraw=true;}
+  fitMap(){const pos=this.map.pos.filter((p,i)=>this.map.alive[i]);let minx=Infinity,maxx=-Infinity,miny=Infinity,maxy=-Infinity;for(const p of pos){minx=Math.min(minx,p[0]);maxx=Math.max(maxx,p[0]);miny=Math.min(miny,p[1]);maxy=Math.max(maxy,p[1]);}
+    const cx=(minx+maxx)/2,cy=(miny+maxy)/2,span=Math.max(maxx-minx,maxy-miny,1e-6);this.map.pos=this.map.pos.map(p=>[(p[0]-cx)/span*2,(p[1]-cy)/span*2]);this.map.compute();}
+  toScreen(p){const r=Math.min(this.W,this.H)*0.44;return [this.W/2+p[0]*r,this.H/2-p[1]*r];}
+  fromScreen(x,y){const r=Math.min(this.W,this.H)*0.44;return [(x-this.W/2)/r,-(y-this.H/2)/r];}
+  counts(){const m=this.map;return {V:m.V,E:m.E,F:m.F};}
+  update(step){const {V,E,F}=this.counts();const L=this.labels;let html='';
+    if(step){const b=step.before;html+=`<div class="step">${step.note}<div class="calcline"><span class="was">${b.V} − ${b.E} + ${b.F} = ${b.V-b.E+b.F}</span><span class="arrow">→</span><span class="now">${this.hl(V,b.V)} − ${this.hl(E,b.E)} + ${this.hl(F,b.F)} = ${V-E+F}</span></div><div class="explain">${this.explain(b,{V,E,F})}</div></div>`;}
+    html+=`<div>Right now: <b>${plural(V,L.v[0],L.v[1])}</b>, <b>${plural(E,L.e[0],L.e[1])}</b> and <b>${plural(F,L.f[0],L.f[1])}</b>${F>0&&E>0?' (counting the outside)':''}. ${formula(V,E,F)}</div>`;
+    if(V===1&&E===0&&this.history.length)html+=`<div class="done">Down to a single ${L.v[0]}. One ${L.v[0]}, no ${L.e[1]}, one ${L.f[0]} (the outside, which is everything). ${formula(1,0,1)}. It was 2 at the start, it never changed, and it's 2 at the end.</div>`;
+    this.readout.innerHTML=html;this.chips.innerHTML=this.opts.chips===false?'':chipsSVG(V,E,F,L);}
+  hl(now,before){return now!==before?`<b class="chg">${now}</b>`:String(now);}
+  explain(b,a){const L=this.labels;const parts=[];
+    if(a.V!==b.V){const d=a.V-b.V;parts.push(`${cap(L.v[1])}: ${b.V} → ${a.V}. ${d<0?'One fewer to add, so the total goes <b>down</b> by 1.':'One more to add, so the total goes <b>up</b> by 1.'}`);}
+    if(a.E!==b.E){const d=a.E-b.E;parts.push(`${cap(L.e[1])}: ${b.E} → ${a.E}. ${d<0?'One fewer to <i>take away</i>, so the total goes <b>up</b> by 1 (taking away less leaves more).':'One more to take away, so the total goes <b>down</b> by 1.'}`);}
+    if(a.F!==b.F){const d=a.F-b.F;parts.push(`${cap(L.f[1])}: ${b.F} → ${a.F}. ${d<0?'One fewer to add, so the total goes <b>down</b> by 1.':'One more to add, so the total goes <b>up</b> by 1.'}`);}
+    parts.push('<b>Up 1 and down 1: the total is still '+(a.V-a.E+a.F)+'.</b>');return parts.join(' ');}
+  pushHistory(){this.history.push(this.map.snapshot());if(this.history.length>200)this.history.shift();}
+  undo(){const s=this.history.pop();if(!s)return;this.map.restore(s);this.update(null);this.msg.innerHTML='Undone.';this.needsDraw=true;}
+  hitEdge(x,y){let best=null,bd=12;this.map.edges.forEach(([a,b],ei)=>{const d=distSeg([x,y],this.toScreen(this.map.pos[a]),this.toScreen(this.map.pos[b]));if(d<bd){bd=d;best=ei;}});return best;}
+  hitVertex(x,y){let best=null,bd=14;this.map.pos.forEach((p,i)=>{if(!this.map.alive[i])return;const q=this.toScreen(p);const d=Math.hypot(x-q[0],y-q[1]);if(d<bd){bd=d;best=i;}});return best;}
+  click(x,y){const L=this.labels,m=this.map;this.stopPlay();
+    if(this.tool==='take'){const ei=this.hitEdge(x,y);if(ei==null){this.msg.innerHTML=`Click right on a ${L.e[0]}.`;return;}const kind=m.edgeKind(ei);
+      if(kind==='bridge'){this.msg.innerHTML=`<b>Not allowed.</b> That ${L.e[0]} has the same ${L.f[0]} on both sides and it's holding two parts together. Take it away and the map falls into two pieces. Try a different ${L.e[0]}.`;return;}
+      if(kind==='leaf'&&!this.opts.allowLeaf){this.msg.innerHTML=`<b>Hold on.</b> That ${L.e[0]} is dangling — it has the same ${L.f[0]} on both sides, so taking it away wouldn't join two ${L.f[1]}. We deal with dangling ${L.e[1]} in the next section. Pick a ${L.e[0]} with a different ${L.f[0]} on each side.`;return;}
+      const before=this.counts();this.pushHistory();m.deleteEdge(ei);
+      const note=kind==='merge'?`Took away a ${L.e[0]} that had a different ${L.f[0]} on each side. The two ${L.f[1]} joined into one.`:`Took away a dangling ${L.e[0]} and the ${L.v[0]} on its loose end.`;
+      this.update({before,note});this.msg.innerHTML=kind==='merge'?`One ${L.e[0]} fewer, one ${L.f[0]} fewer.`:`One ${L.e[0]} fewer, one ${L.v[0]} fewer.`;this.needsDraw=true;return;}
+    if(this.tool==='split'){const ei=this.hitEdge(x,y);if(ei==null){this.msg.innerHTML=`Click right on a ${L.e[0]}.`;return;}const before=this.counts();this.pushHistory();m.splitEdge(ei);this.update({before,note:`Put a new ${L.v[0]} in the middle of a ${L.e[0]}. The ${L.e[0]} became two ${L.e[1]}.`});this.needsDraw=true;return;}
+    if(this.tool==='line'){const vi=this.hitVertex(x,y);if(vi==null){this.msg.innerHTML=`Click right on a ${L.v[0]}.`;return;}if(this.pending==null){this.pending=vi;this.msg.innerHTML=`Now click a second ${L.v[0]} in the same ${L.f[0]}.`;this.needsDraw=true;return;}
+      const a=this.pending;this.pending=null;const before=this.counts();const snap=m.snapshot();const res=m.addEdge(a,vi);
+      if(res!=='ok'){this.msg.innerHTML={same:`That's the same ${L.v[0]}. Pick two different ones.`,exists:`Those two are already joined.`,cross:`That ${L.e[0]} would cross another ${L.e[0]} or leave the ${L.f[0]}. Lines may only run across the inside of one ${L.f[0]}. Try another pair.`}[res];this.needsDraw=true;return;}
+      this.history.push(snap);this.update({before,note:`Drew a new ${L.e[0]} across a ${L.f[0]}, cutting it into two ${L.f[1]}.`});this.needsDraw=true;return;}
+    if(this.tool==='leaf'){if(this.pending==null){const vi=this.hitVertex(x,y);if(vi==null){this.msg.innerHTML=`First click a ${L.v[0]} to start from.`;return;}this.pending=vi;this.msg.innerHTML=`Now click an empty spot for the new ${L.v[0]}.`;this.needsDraw=true;return;}
+      const a=this.pending;this.pending=null;const p=this.fromScreen(x,y);const before=this.counts();const snap=m.snapshot();const res=m.addLeaf(a,p);
+      if(res!=='ok'){this.msg.innerHTML=`That would cross a ${L.e[0]}. Try an empty spot nearer the ${L.v[0]} you started from.`;this.needsDraw=true;return;}
+      this.history.push(snap);this.update({before,note:`Added a dangling ${L.e[0]} with a brand-new ${L.v[0]} on its end.`});this.needsDraw=true;return;}}
+  autoStep(){const m=this.map,L=this.labels;if(m.E===0){this.stopPlay();return false;}let pick=null;
+    for(let ei=0;ei<m.E;ei++){const [a,b]=m.edges[ei];const fa=m.dirFace.get(m.key(a,b)),fb=m.dirFace.get(m.key(b,a));if(fa!==fb&&(fa===m.outer||fb===m.outer)){pick=ei;break;}}
+    if(pick==null)for(let ei=0;ei<m.E;ei++)if(m.edgeKind(ei)==='merge'){pick=ei;break;}
+    if(pick==null)for(let ei=0;ei<m.E;ei++)if(m.edgeKind(ei)==='leaf'){pick=ei;break;}
+    if(pick==null)return false;const before=this.counts();this.pushHistory();const kind=m.deleteEdge(pick);
+    this.update({before,note:kind==='merge'?`Step ${this.history.length}: took away a ${L.e[0]} between two ${L.f[1]}.`:`Step ${this.history.length}: took away a dangling ${L.e[0]} and its ${L.v[0]}.`});this.needsDraw=true;return true;}
+  togglePlay(){if(this.timer)this.stopPlay();else{if(this.map.E===0)this.load();this.timer=setInterval(()=>{if(!this.autoStep())this.stopPlay();},this.map.E>60?120:this.map.E>25?250:450);this.playBtn.textContent='Pause';}}
+  stopPlay(){if(this.timer){clearInterval(this.timer);this.timer=null;}if(this.playBtn)this.playBtn.textContent='Run the whole proof';}
+  onHover(h){this.needsDraw=true;}
+  draw(){const ctx=this.ctx,W=this.W,H=this.H,m=this.map;if(!W||!m)return;ctx.setTransform(this.dpr,0,0,this.dpr,0,0);ctx.clearRect(0,0,W,H);
+    ctx.fillStyle=this.opts.outerColor||'rgba(232,135,43,0.12)';ctx.fillRect(0,0,W,H);
+    m.faces.forEach((f,i)=>{if(i===m.outer)return;ctx.beginPath();f.verts.forEach((v,k)=>{const q=this.toScreen(m.pos[v]);k?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]);});ctx.closePath();const key=f.verts.reduce((a,b)=>a+b,0)+f.verts.length;ctx.fillStyle=PALETTE[key%PALETTE.length];ctx.fill('nonzero');});
+    if(m.E===0&&m.V===1){ctx.fillStyle='rgba(232,135,43,0.12)';ctx.fillRect(0,0,W,H);}
+    let hoverE=null,hoverV=null;if(this.hover){if(this.tool==='take'||this.tool==='split')hoverE=this.hitEdge(this.hover[0],this.hover[1]);else hoverV=this.hitVertex(this.hover[0],this.hover[1]);}
+    m.edges.forEach(([a,b],ei)=>{const p=this.toScreen(m.pos[a]),q=this.toScreen(m.pos[b]);ctx.beginPath();ctx.moveTo(p[0],p[1]);ctx.lineTo(q[0],q[1]);const h=ei===hoverE;ctx.strokeStyle=h?(this.tool==='take'?COL.corner:COL.edge):'#2b2520';ctx.lineWidth=h?5:2;ctx.lineCap='round';ctx.stroke();});
+    m.pos.forEach((p,i)=>{if(!m.alive[i])return;const q=this.toScreen(p);const big=i===this.pending||i===hoverV;ctx.beginPath();ctx.arc(q[0],q[1],big?8:(m.pos.length>50?3:4.5),0,7);ctx.fillStyle=big?COL.corner:'#2b2520';ctx.fill();if(big){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();}});
+    const L=this.labels;ctx.font='italic 14px Georgia,serif';ctx.fillStyle='#9a5a16';ctx.textAlign='left';ctx.fillText(this.opts.outerLabel||`outside (counts as a ${L.f[0]})`,8,H-10);}
+}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+/* ===== Königsberg bridges ===== */
+class Bridges extends CanvasSim{
+  constructor(root){super(root,280);this.ctrl=el('div','controls');root.appendChild(this.ctrl);const r=el('button','','Start again');r.addEventListener('click',()=>this.reset());this.ctrl.appendChild(r);
+    this.lands={N:{x:0,y:0,w:400,h:58,label:'north bank'},S:{x:0,y:202,w:400,h:58,label:'south bank'},I:{x:70,y:88,w:140,h:84,label:'the island',round:true},E:{x:255,y:92,w:145,h:76,label:'east bank'}};
+    this.bridges=[['N','I',112,58,112,88],['N','I',168,58,168,88],['S','I',112,172,112,202],['S','I',168,172,168,202],['I','E',210,130,255,130],['N','E',325,58,325,92],['S','E',325,168,325,202]];
+    this.mountCanvas();this.msg=el('div','readout');root.appendChild(this.msg);this.caption=el('div','caption','The river Pregel at Königsberg in the 1730s, drawn simply: two banks, an island, a bit of land between the river\'s two arms, and seven bridges.');root.appendChild(this.caption);this.reset();}
+  reset(){this.at=null;this.used=new Set();this.msg.innerHTML='Click a piece of land to start your walk there. Then click bridges to cross them. Can you cross all seven, each exactly once?';this.needsDraw=true;}
+  sx(x){return x*this.W/400;}sy(y){return y*this.H/260;}
+  click(x,y){const X=x*400/this.W,Y=y*260/this.H;
+    if(this.at===null){for(const k in this.lands){const l=this.lands[k];if(X>=l.x&&X<=l.x+l.w&&Y>=l.y&&Y<=l.y+l.h){this.at=k;this.msg.innerHTML=`You're on the ${l.label}. Now click a bridge that touches it.`;this.needsDraw=true;return;}}this.msg.innerHTML='Click on a piece of land first.';return;}
+    let best=null,bd=16;this.bridges.forEach((b,i)=>{const d=distSeg([X,Y],[b[2],b[3]],[b[4],b[5]]);if(d<bd){bd=d;best=i;}});if(best===null)return;const b=this.bridges[best];
+    if(this.used.has(best)){this.msg.innerHTML='You already crossed that one. Each bridge once only.';return;}
+    if(b[0]!==this.at&&b[1]!==this.at){this.msg.innerHTML=`That bridge doesn't touch the ${this.lands[this.at].label}.`;return;}
+    this.used.add(best);this.at=b[0]===this.at?b[1]:b[0];this.needsDraw=true;
+    if(this.used.size===7){this.msg.innerHTML='<b>Seven out of seven?!</b> That should be impossible — please tell us how you did it.';return;}
+    const open=this.bridges.some((bb,i)=>!this.used.has(i)&&(bb[0]===this.at||bb[1]===this.at));
+    this.msg.innerHTML=`Crossed <b>${this.used.size} of 7</b>. You're on the ${this.lands[this.at].label}.`+(open?'':' <b>Stuck</b> — no uncrossed bridge touches this land. Start again and try another route.');}
+  draw(){const ctx=this.ctx,W=this.W,H=this.H;if(!W)return;ctx.setTransform(this.dpr,0,0,this.dpr,0,0);ctx.fillStyle='#bcd7ea';ctx.fillRect(0,0,W,H);
+    for(const k in this.lands){const l=this.lands[k];ctx.fillStyle=k===this.at?'#d8e9b0':'#e9dfb8';ctx.beginPath();if(l.round)ctx.ellipse(this.sx(l.x+l.w/2),this.sy(l.y+l.h/2),this.sx(l.w/2),this.sy(l.h/2),0,0,7);else ctx.rect(this.sx(l.x),this.sy(l.y),this.sx(l.w),this.sy(l.h));ctx.fill();ctx.strokeStyle='#9a8a60';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.fillStyle='#5a4a30';ctx.font='13px system-ui,sans-serif';ctx.textAlign='center';ctx.fillText(l.label,this.sx(l.x+l.w/2),this.sy(l.y+l.h/2)+5);}
+    this.bridges.forEach((b,i)=>{ctx.beginPath();ctx.moveTo(this.sx(b[2]),this.sy(b[3]));ctx.lineTo(this.sx(b[4]),this.sy(b[5]));ctx.strokeStyle=this.used.has(i)?'#aaa':'#7a4b1e';ctx.lineWidth=10;ctx.lineCap='butt';ctx.stroke();});}
+}
+
+/* ===== page wiring ===== */
+const $=s=>document.querySelector(s);
+const L3={v:['corner','corners'],e:['edge','edges'],f:['face','faces']};
+function initPage(){
+  /* Sim A: click to count */
+  new PolyView($('#simA'),{shapes:['cube','tetra','pyr4','prism3','octa','dodeca','icosa','football'],modes:['corner','edge','face'],formula:false,
+    allMsg:v=>'Now try another kind of thing, or another shape.'});
+
+  /* Sim B: discovery table */
+  const rows=[];let hinted=false,revealed=false;
+  const simB=new PolyView($('#simB'),{shapes:['tetra','cube','octa','pyr4','pyr5','prism3','prism5','prism6','dodeca','icosa','football','geo2'],formula:false,
+    controls:(ctrl,v)=>{const b=el('button','primary','Add this shape to the table');b.addEventListener('click',()=>{const s=v.shape;if(rows.some(r=>r.key===s.key)){v.hint.innerHTML='That one is already in the table. Pick another shape from the menu.';return;}rows.push({key:s.key,label:s.label,V:s.verts.length,E:s.edges.length,F:s.faces.length});v.hint.innerHTML='';renderTable();});ctrl.appendChild(b);},
+    hint:v=>'Look at the shape, then add it to the table. Add at least five before you start hunting for the pattern.'});
+  function renderTable(){const t=$('#tableB');let h='<tr><th>Shape</th><th class="c">Corners</th><th class="e">Edges</th><th class="f">Faces</th>'+(hinted?'<th class="hintcol">Corners + faces</th>':'')+(revealed?'<th class="revcol">Corners − edges + faces</th>':'')+'</tr>';
+    for(const r of rows)h+=`<tr><td>${r.label}</td><td class="c">${r.V}</td><td class="e">${r.E}</td><td class="f">${r.F}</td>`+(hinted?`<td class="hintcol">${r.V+r.F}</td>`:'')+(revealed?`<td class="revcol">${r.V} − ${r.E} + ${r.F} = <b>${r.V-r.E+r.F}</b></td>`:'')+'</tr>';
+    if(!rows.length)h+='<tr><td colspan="6" class="empty">Nothing here yet. Add a shape from the sim above.</td></tr>';t.innerHTML=h;}
+  renderTable();
+  $('#stuckB').addEventListener('click',()=>{hinted=true;renderTable();$('#stuckB').disabled=true;$('#stuckMsg').style.display='block';});
+  $('#revealB').addEventListener('click',()=>{revealed=true;hinted=true;renderTable();$('#revealMsg').style.display='block';$('#revealB').disabled=true;simB.opts.formula=true;simB.update();});
+
+  /* Sim C: endless families */
+  const famNames={prism:'prism',anti:'twisted prism',pyr:'pyramid',bipyr:'double pyramid'};
+  let fam='prism',nn=5;
+  const simC=new PolyView($('#simC'),{formula:true,
+    controls:(ctrl,v)=>{const sel=el('select');for(const k in famNames){const o=el('option');o.value=k;o.textContent=famNames[k];sel.appendChild(o);}sel.addEventListener('change',()=>{fam=sel.value;rebuild();});ctrl.appendChild(sel);
+      const sl=el('label','slider','Sides: <b id="simCn">5</b> <input type="range" min="3" max="14" value="5">');sl.querySelector('input').addEventListener('input',e=>{nn=+e.target.value;$('#simCn').textContent=nn;rebuild();});ctrl.appendChild(sl);},
+    readout:(s,v)=>{const V=s.verts.length,E=s.edges.length,F=s.faces.length;const desc={prism:`A prism with ${nn}-sided ends`,anti:`A twisted prism with ${nn}-sided ends`,pyr:`A pyramid on a ${nn}-sided base`,bipyr:`A double pyramid around a ${nn}-sided middle`}[fam];return `${desc} has <b>${plural(V,'corner')}</b>, <b>${plural(E,'edge')}</b> and <b>${plural(F,'face')}</b>. ${formula(V,E,F)}`;},
+    caption:()=>({prism:'A prism: two matching ends joined by rectangles. A tent, a pencil, a chocolate bar.',anti:'A twisted prism (an antiprism): the top end is turned half a step, so the sides become triangles.',pyr:'A pyramid: a flat base with every corner joined to one point on top.',bipyr:'A double pyramid: two pyramids glued base to base. Four sides gives the octahedron.'}[fam])});
+  function rebuild(){const d={prism:prismDef,anti:antiprismDef,pyr:pyramidDef,bipyr:bipyramidDef}[fam](nn);const s=finalize(d);simC.setShape(s);}
+  rebuild();
+
+  /* Sim D: rubber sheet */
+  new SheetView($('#simD'),{shapes:['cube','tetra','pyr4','prism3','octa','prism6','dodeca','icosa','football']});
+
+  /* Sim E: take away a line (merge only) */
+  new MapEditor($('#simE'),{shapes:['cube','tetra','pyr4','prism3','octa','prism5'],tools:['take'],allowLeaf:false,labels:{v:['dot','dots'],e:['line','lines'],f:['patch','patches']},caption:'The flat map of the shape you chose, popped open through its biggest face. Click a line to take it away.'});
+  /* Sim F: all the way down */
+  new MapEditor($('#simF'),{shapes:['cube','tetra','pyr4','prism3','octa','prism5','dodeca'],tools:['take'],allowLeaf:true,caption:'Keep taking lines away. Lines between two patches merge the patches; dangling lines take their loose dot with them. Can you get to a single dot?'});
+  /* Sim G: adding */
+  new MapEditor($('#simG'),{shapes:['cube','tetra','pyr4','prism3'],tools:['split','line','leaf','take'],allowLeaf:true,caption:'Grow the map. Each tool adds exactly two things, one plus and one minus, so the total cannot move.'});
+  /* Sim H: proof machine */
+  new MapEditor($('#simH'),{shapes:['cube','dodeca','football','icosa','geo2','gp2','prism6','pyr5'],tools:['take'],allowLeaf:true,autoplay:true,caption:'Any shape from the menu, flattened and then taken apart one line at a time while the total is checked at every step.'});
+
+  /* Sim I: football proof */
+  let tallyOn=false;
+  const simI=new PolyView($('#simI'),{shapes:['football','dodeca','gp2','gp3'],modes:['face','corner'],
+    faceColor:(fi,s)=>s.faces[fi].length===5?'#3b3a45':'#f4f2ea',
+    controls:(ctrl,v)=>{const b=el('button','','Show each face\'s tally');b.addEventListener('click',()=>{tallyOn=!tallyOn;b.classList.toggle('active',tallyOn);v.needsDraw=true;});ctrl.appendChild(b);},
+    decorate:(v,ctx,fr)=>{if(!tallyOn)return;for(const F of fr.faces){if(!fr.vis.has(F.fi))continue;const c=F.poly.reduce((a,p)=>[a[0]+p[0],a[1]+p[1]],[0,0]).map(x=>x/F.poly.length);const n=v.shape.faces[F.fi].length;v.label(ctx,c[0],c[1],n===5?'1':'0',n===5?'#d9472b':'#777');}},
+    readout:(s,v)=>{const V=s.verts.length,E=s.edges.length,F=s.faces.length;const p5=s.faces.filter(f=>f.length===5).length,p6=F-p5;
+      return `<b>${p5} pentagons</b> and <b>${p6} hexagons</b>: ${plural(V,'corner')}, ${plural(E,'edge')}, ${plural(F,'face')}. ${formula(V,E,F)}<br>Six times over: ${V}×6 − ${E}×6 + ${F}×6 = ${V*6} − ${E*6} + ${F*6} = <b>${6*(V-E+F)}</b>.<br>Tallies: ${p5} pentagons × 1 + ${p6} hexagons × 0 = <b>${p5}</b>.`;},
+    onPick:(v,hit,added)=>{if(!added)return;const s=v.shape;if(hit.type==='face'){const n=s.faces[hit.idx].length;$('#tallyI').innerHTML=`<b>You clicked a ${n===5?'pentagon':'hexagon'}.</b> It has ${n} corners, each shared by 3 faces, so it gets ${n} × 2 = ${n*2} corner-counts. It has ${n} edges, each shared by 2 faces, so it gets ${n} × 3 = ${n*3} edge-counts. It keeps its own 6 face-counts. Tally: ${n*2} − ${n*3} + 6 = <b>${n*2-n*3+6}</b>.`;}
+      else{const d=s.vertEdges[hit.idx].length;$('#tallyI').innerHTML=`<b>You clicked a corner.</b> ${d} edges meet there, and ${s.vertFaces[hit.idx].length} faces. Every corner on this shape is like that.`;}},
+    allMsg:()=>''});
+
+  /* Sim J: geodesic */
+  let freq=2,mark5=true;
+  const simJ=new PolyView($('#simJ'),{formula:true,
+    controls:(ctrl,v)=>{const sl=el('label','slider','Splits per edge: <b id="simJn">2</b> <input type="range" min="1" max="4" value="2">');sl.querySelector('input').addEventListener('input',e=>{freq=+e.target.value;$('#simJn').textContent=freq;v.setShape(finalize(geodesicDef(freq)));});ctrl.appendChild(sl);
+      const b=el('button','active','Mark the 5-way corners');b.addEventListener('click',()=>{mark5=!mark5;b.classList.toggle('active',mark5);v.needsDraw=true;});ctrl.appendChild(b);},
+    decorate:(v,ctx,fr)=>{if(!mark5)return;const s=v.shape;for(let vi=0;vi<s.verts.length;vi++){if(s.vertEdges[vi].length!==5)continue;if(!s.vertFaces[vi].some(f=>fr.vis.has(f)))continue;ctx.beginPath();ctx.arc(fr.P[vi][0],fr.P[vi][1],7,0,7);ctx.fillStyle=COL.corner;ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();}},
+    readout:(s)=>{const V=s.verts.length,E=s.edges.length,F=s.faces.length;const five=s.verts.filter((_,i)=>s.vertEdges[i].length===5).length;return `Each edge of the icosahedron split into ${freq}: <b>${plural(V,'corner')}</b>, <b>${plural(E,'edge')}</b> and <b>${plural(F,'face')}</b>. ${formula(V,E,F)}<br>Exactly <b>${five}</b> corners have 5 edges (marked red); the other ${V-five} have 6.`;},
+    caption:()=>`A geodesic ball: every triangle of an icosahedron cut into ${freq*freq} smaller triangles, then puffed out to a sphere. All ${freq*freq*20} triangles are nearly the same size.`});
+  simJ.setShape(finalize(geodesicDef(2)));
+
+  /* Sim K: bridges */
+  new Bridges($('#simK'));
+
+  /* Sim L1: donut */
+  new PolyView($('#simL1'),{shapes:['frame','frame2','cube'],modes:['face','edge','corner'],formula:true,caption:s=>s.caption+' Try marking all the faces: the inside walls of the hole count too.'});
+  /* Sim L2: dent */
+  new PolyView($('#simL2'),{shapes:['dent','cube'],modes:['face','edge','corner'],formula:true});
+  /* Sim L3: map */
+  new MapEditor($('#simL3'),{graph:()=>({pos:[[-0.9,0.1],[-0.5,0.8],[0.3,0.9],[0.9,0.4],[0.8,-0.5],[0.2,-0.9],[-0.6,-0.7],[-0.95,-0.3],[-0.2,0.3],[0.3,0.2],[0.1,-0.3],[-0.4,-0.2]],
+      edges:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],[1,8],[8,9],[9,3],[9,10],[10,5],[10,11],[11,7],[11,8],[0,11]]}),
+    tools:['take','split','line','leaf'],allowLeaf:true,labels:{v:['border-point','border-points'],e:['border','borders'],f:['country','countries']},outerColor:'rgba(120,170,220,0.35)',outerLabel:'the sea (counts as a country)',
+    caption:'An island with seven countries — six on land plus the sea around it. Borders are the lines; border-points are where borders meet. Redraw the borders however you like.'});
+  /* Sim L4: monsters */
+  new PolyView($('#simL4'),{shapes:['cubesCorner','cubesEdge','cubeOnCube','cubeOnCubeCut'],modes:['face','edge','corner'],formula:true,
+    caption:s=>({cubesCorner:'Two cubes that touch at exactly one corner. Each cube on its own gives 2; together they share one corner, so 2 + 2 − 1 = 3.',cubesEdge:'Two cubes that share one edge (and its two corners). 2 + 2, minus the shared bit (2 corners − 1 edge = 1), gives 3.',cubeOnCube:'The top of the big cube is one face with a hole in it, where the small cube sits. A face with a hole is not an allowed patch.',cubeOnCubeCut:'One orange line cut from the outer corner to the small cube turns the ring-shaped face into a proper patch. Now it gives 2 again.'}[s.key])});
+  /* Sim M: scribble pad */
+  new MapEditor($('#simM'),{graph:()=>({pos:[[0,0]],edges:[]}),tools:['leaf','line','split','take'],allowLeaf:true,chips:true,caption:'Start from one dot. Build any map you like with the tools, then check the total.'});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initPage);else initPage();
+})();
+</script></body></html>

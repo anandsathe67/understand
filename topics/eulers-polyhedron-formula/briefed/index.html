@@ -1,0 +1,1936 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let's Squash a Football</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F5F8; --fg:#15212C; --muted:#53626D; --rule:#D0D9E0; --panel:#FFFFFF; --panel-2:#F7F9FA;
+  --line:#15212C; --dim:#98A5AF; --solid:#E3EAF0;
+  --corner:#CC3B28; --edge:#1B64A8; --face:#EDB12A; --face-soft:#FBEEC4;
+  --outside:#DAE2E9; --grid:rgba(21,33,44,.075); --home-bg:#FFFFFF;
+  --pent:#1C2630; --hex:#F6F7F8;
+  --map1:#F6D27A; --map2:#9CCDE8; --map3:#F3A595; --map4:#B5DCA5; --map5:#CBBBEE; --map6:#F5C08F;
+  --focus:#1B64A8; --good:#24774A; --bad:#B2361F;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E151B; --fg:#E4EAEF; --muted:#9AA9B5; --rule:#27333D; --panel:#151E26; --panel-2:#1A2530;
+    --line:#D9E2E9; --dim:#4F5E6A; --solid:#3C4A56;
+    --corner:#FF6B57; --edge:#62ACF2; --face:#F2BE45; --face-soft:#3A3120;
+    --outside:#1C2731; --grid:rgba(228,234,239,.06); --home-bg:#121A21;
+    --pent:#0A0E12; --hex:#DDE3E8;
+    --map1:#8C7330; --map2:#2D607D; --map3:#86463A; --map4:#3F6A3B; --map5:#584B8C; --map6:#875F31;
+    --focus:#62ACF2; --good:#6CC08F; --bad:#FF8A6B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E151B; --fg:#E4EAEF; --muted:#9AA9B5; --rule:#27333D; --panel:#151E26; --panel-2:#1A2530;
+  --line:#D9E2E9; --dim:#4F5E6A; --solid:#3C4A56;
+  --corner:#FF6B57; --edge:#62ACF2; --face:#F2BE45; --face-soft:#3A3120;
+  --outside:#1C2731; --grid:rgba(228,234,239,.06); --home-bg:#121A21;
+  --pent:#0A0E12; --hex:#DDE3E8;
+  --map1:#8C7330; --map2:#2D607D; --map3:#86463A; --map4:#3F6A3B; --map5:#584B8C; --map6:#875F31;
+  --focus:#62ACF2; --good:#6CC08F; --bad:#FF8A6B;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  background-image:
+    linear-gradient(to bottom, transparent 0, transparent 220px, var(--bg) 640px),
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 34.64px),
+    repeating-linear-gradient(60deg, var(--grid) 0 1px, transparent 1px 34.64px),
+    repeating-linear-gradient(-60deg, var(--grid) 0 1px, transparent 1px 34.64px);
+  background-size:100% 640px;
+  background-repeat:no-repeat;
+  color:var(--fg);
+  font-family:var(--body);
+  font-size:1.125rem;
+  line-height:1.62;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-block:0 3rem;
+  -webkit-text-size-adjust:100%;
+  overflow-wrap:break-word;
+}
+.page{max-width:46rem;margin:0 auto}
+p,ul,ol{max-width:65ch}
+a{color:var(--edge);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.hero{padding-block:3.2rem 0.5rem}
+.kicker{font:600 .78rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--edge);margin:0}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,10vw,4.7rem);line-height:.98;letter-spacing:-.025em;margin:.35em 0 .35em;text-wrap:balance}
+.dek{font-size:1.22rem;line-height:1.5;color:var(--muted);margin:0 0 1.2rem}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.6vw,2.05rem);line-height:1.12;letter-spacing:-.01em;margin:3.6rem 0 .9rem;text-wrap:balance;display:flex;gap:.75rem;align-items:flex-start}
+.badge{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:2.4rem;height:2.4rem;margin-top:-.15rem;background:var(--fg);color:var(--bg);font:600 1rem/1 var(--mono);border-radius:3px}
+.badge.poly{border-radius:0}
+.badge.tri{padding-top:.55rem}
+h3{font-family:var(--display);font-weight:800;font-size:1.28rem;line-height:1.2;margin:2.4rem 0 .45rem;text-wrap:balance}
+.w-c{color:var(--corner);font-weight:700}
+.w-e{color:var(--edge);font-weight:700}
+.w-f{font-weight:700;background:linear-gradient(transparent 58%, var(--face-soft) 58%)}
+.questions{padding-left:1.2rem}
+.questions li{margin:.25rem 0}
+.notice-h{font-weight:700;margin-bottom:.3rem}
+.notice{margin-top:0}
+.notice li{margin:.35rem 0}
+
+/* simulations */
+.sim{margin:1.9rem 0;background:var(--panel);border:1.5px solid var(--fg);border-radius:3px}
+.sim-head{display:flex;justify-content:space-between;gap:1rem;font:600 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.55rem .85rem;border-bottom:1.5px solid var(--fg)}
+.sim-head span:last-child{color:var(--muted);text-align:right}
+.stage{position:relative;line-height:0}
+.stage canvas{display:block;width:100%;height:300px;touch-action:pan-y;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage canvas.tap{touch-action:manipulation;cursor:pointer}
+.ctrls{display:flex;flex-wrap:wrap;align-items:center;gap:.65rem 1.1rem;padding:.8rem .85rem;border-top:1px solid var(--rule);font-size:.98rem}
+.ctrl{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.ctrl output{font-family:var(--mono);font-variant-numeric:tabular-nums;min-width:1.6em}
+select,button,input[type=number]{font:inherit;font-size:.95rem;color:var(--fg);background:var(--panel);border:1.5px solid var(--fg);border-radius:3px;padding:.3rem .6rem;min-height:2.3rem;max-width:100%}
+button{cursor:pointer;background:var(--panel-2)}
+button:hover{background:var(--face-soft)}
+button:disabled{opacity:.5;cursor:default}
+input[type=range]{accent-color:var(--edge);width:9rem;max-width:100%}
+input[type=checkbox]{accent-color:var(--edge);width:1.1rem;height:1.1rem}
+input[type=number]{width:5.2rem;font-family:var(--mono)}
+.seg{display:inline-flex;border:1.5px solid var(--fg);border-radius:3px;overflow:hidden;position:relative}
+.seg input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.seg label{display:flex;align-items:center;gap:.4rem;padding:.3rem .7rem;min-height:2.2rem;cursor:pointer;border-left:1px solid var(--rule)}
+.seg label:first-of-type{border-left:0}
+.seg input:checked + label{background:var(--fg);color:var(--bg)}
+.seg input:focus-visible + label{outline:3px solid var(--focus);outline-offset:-3px}
+.key{display:inline-block;flex:0 0 auto}
+.key.c{width:.7rem;height:.7rem;border-radius:50%;background:var(--corner)}
+.key.e{width:1rem;height:.26rem;background:var(--edge)}
+.key.f{width:.75rem;height:.75rem;background:var(--face)}
+.readout{padding:.8rem .85rem;border-top:1px solid var(--rule);font-size:1.04rem;line-height:1.55;min-height:3.4em}
+.readout b,.eq,.tally,td{font-variant-numeric:tabular-nums}
+.eq{display:inline-block;font-family:var(--mono);font-weight:600;font-size:.98rem;white-space:nowrap}
+.caption{margin:0;padding:.7rem .85rem .85rem;border-top:1px solid var(--rule);font-size:.9rem;line-height:1.5;color:var(--muted)}
+.tally{display:flex;flex-wrap:wrap;align-items:flex-start;gap:.2rem .7rem;font-family:var(--mono);font-weight:600;font-size:clamp(1.25rem,5vw,1.7rem);padding:.85rem .85rem .2rem;border-top:1px solid var(--rule);line-height:1.1}
+.tally .cell{display:inline-flex;flex-direction:column;align-items:center;min-width:2.2em}
+.tally small{font:400 .7rem/1.6 var(--body);color:var(--muted);letter-spacing:.03em}
+.tally .op{color:var(--muted)}
+.n-c{color:var(--corner)} .n-e{color:var(--edge)} .n-f{color:var(--fg);background:var(--face-soft);padding:0 .2em}
+.n-t{border-bottom:3px solid var(--fg)}
+.good{color:var(--good)} .bad{color:var(--bad)}
+
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;padding:.8rem .85rem;border-bottom:1px solid var(--rule)}
+.chips button{font-size:.88rem;min-height:2rem;padding:.2rem .55rem}
+.chips button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.98rem;min-width:30rem}
+th,td{padding:.45rem .7rem;text-align:right;border-bottom:1px solid var(--rule)}
+th{font:600 .72rem/1.3 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);vertical-align:bottom}
+th:first-child,td:first-child{text-align:left}
+td.tc{color:var(--corner)} td.te{color:var(--edge)}
+td.sum,th.sum{background:var(--face-soft)}
+td.tot{font-family:var(--mono);font-weight:600}
+.tbl-btn{padding:.8rem .85rem 0}
+
+.calc{padding:.8rem .85rem;border-top:1px solid var(--rule)}
+.calc-rows{list-style:none;padding:0;margin:0 0 .6rem;font-family:var(--mono);font-size:.95rem}
+.calc-rows li{display:flex;flex-wrap:wrap;gap:.2rem .8rem;padding:.3rem 0;border-bottom:1px dashed var(--rule)}
+.calc-rows li span{font-family:var(--body);color:var(--muted);min-width:7.5rem}
+.calc p{margin:.4rem 0 0}
+
+/* boxes */
+.home{margin:2.3rem 0;padding:1.05rem 1.2rem 1.15rem;border:2px dashed var(--fg);border-radius:3px;background:var(--home-bg)}
+.home .tag{display:flex;align-items:center;gap:.5rem;font:600 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--corner)}
+.home .tag svg{width:1.1rem;height:1.1rem;flex:0 0 auto}
+.home h4{font-family:var(--display);font-weight:800;font-size:1.2rem;line-height:1.2;margin:.3rem 0 .5rem}
+.home p:last-child,.hold p:last-child{margin-bottom:0}
+.hold{margin:2rem 0;padding:1rem 1.2rem;background:var(--face-soft);border-radius:3px}
+.hold .tag{font:600 .72rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;margin:0 0 .35rem}
+.hold p{margin-top:0}
+.proof{counter-reset:st;list-style:none;padding:0}
+.proof li{counter-increment:st;position:relative;padding-left:2.6rem;margin:.8rem 0}
+.proof li::before{content:counter(st);position:absolute;left:0;top:.05rem;width:1.8rem;height:1.8rem;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--fg);font:600 .9rem/1 var(--mono)}
+.recap{font-family:var(--display);font-weight:600;font-size:1.32rem;line-height:1.4;margin:2.6rem 0;text-wrap:balance}
+.mine{display:flex;flex-wrap:wrap;gap:.7rem 1.2rem;padding:.8rem .85rem}
+.mine label{display:flex;flex-direction:column;font-size:.9rem;color:var(--muted);gap:.2rem}
+footer{margin-top:3.5rem;padding-top:1.2rem;border-top:1.5px solid var(--fg);font-size:.92rem;color:var(--muted)}
+footer p{max-width:70ch}
+@media (max-width:520px){
+  body{font-size:1.06rem}
+  .ctrls{gap:.55rem .8rem}
+  input[type=range]{width:8rem}
+}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important}}
+</style>
+<div class="page">
+<header class="hero">
+  <p class="kicker">An explorable about solid shapes</p>
+  <h1>Let's Squash a Football</h1>
+  <p class="dek">Every solid you can hold obeys one small rule about its corners, edges and faces. Every diagram on this page is a live model built from real corner positions. Spin it, tap it, squash it flat, and see why the rule can never break.</p>
+  <figure class="sim" style="margin-top:0">
+    <div class="sim-head"><span>A football</span><span>drag to spin</span></div>
+    <div class="stage"><canvas id="heroCanvas" tabindex="0" role="img" aria-label="A spinning model of a classic football made of dark pentagons and light hexagons"></canvas></div>
+    <figcaption class="caption">This is the exact shape of a classic black-and-white football, before it is pumped up round. It is built from 60 corner positions. The computer works out every edge and every patch from those.</figcaption>
+  </figure>
+</header>
+
+<main>
+<p>The match is over and everyone has gone in for a drink. A black-and-white football sits alone on the grass. Pick it up and count the black patches. There are 12. Find another ball of the same classic design, from any shop in any country, and count again. Still 12.</p>
+<p>That's odd. Footballs come in different sizes. Some are stitched by hand and some are glued by machines. Nobody ever passed a law about black patches. So why does everyone end up with exactly 12?</p>
+<p>The answer hides in a tiny rule. It works for a dice, for a camping tent, and for the cut gemstone in a ring. It works for almost any solid shape with flat sides. By the end of this page you'll be able to prove it yourself, using only adding and subtracting. Proving is more than checking. Checking means counting twenty shapes and getting 2 each time. Proving means showing the rule can never fail, on any shape at all. Along the way we'll answer:</p>
+<ul class="questions">
+  <li>Why does every classic football have exactly 12 black pentagons?</li>
+  <li>Why do a dice, a tent and a gemstone all give the same answer?</li>
+  <li>Why does a giant dome built from triangles always have 12 special spots?</li>
+  <li>Can you build a shape that breaks the rule?</li>
+  <li>Why is a donut different from a ball?</li>
+</ul>
+<p>We'll start by counting a cube, and add one idea at a time.</p>
+
+<!-- 1 -->
+<h2 id="s1"><span class="badge">1</span><span>Every solid is made of corners, edges and faces</span></h2>
+<p>Think about a closed cardboard box. It has flat cardboard panels. Where two panels meet there is a fold. Where several folds come together there is a sharp point. Run your finger along a fold and it takes you from one sharp point to another.</p>
+<p>We'll give these things simple names. Each flat panel is a <strong class="w-f">face</strong>. Each fold is an <strong class="w-e">edge</strong>. Each sharp point is a <strong class="w-c">corner</strong>. (Grown-up books call corners <em>vertices</em>, but corner works fine.)</p>
+<p>Below is a cube built from the positions of its 8 corners. Pick what you want to count, then tap each one to mark it. Drag the shape to turn it and find the ones hiding round the back.</p>
+
+<figure class="sim" id="sim-count">
+  <div class="sim-head"><span>Sim 1 &middot; Tap to count</span><span>drag to turn</span></div>
+  <div class="stage"><canvas id="countCanvas" tabindex="0" role="img" aria-label="A solid shape you can turn and tap to mark its corners, edges or faces"></canvas></div>
+  <div class="ctrls">
+    <label class="ctrl" for="countShape">Shape
+      <select id="countShape">
+        <option value="cube">Cube (a dice)</option>
+        <option value="tetra">Tetrahedron (4 triangles)</option>
+        <option value="sqpyr">Square pyramid</option>
+        <option value="triprism">Triangular prism (a tent)</option>
+        <option value="octa">Octahedron (a gemstone)</option>
+        <option value="pentprism">Pentagonal prism</option>
+        <option value="dodeca">Dodecahedron (12 pentagons)</option>
+        <option value="icosa">Icosahedron (20 triangles)</option>
+        <option value="football">Football</option>
+      </select>
+    </label>
+    <div class="seg" role="radiogroup" aria-label="What to count">
+      <input type="radio" name="countMode" id="cmV" value="v" checked><label for="cmV"><span class="key c"></span>Corners</label>
+      <input type="radio" name="countMode" id="cmE" value="e"><label for="cmE"><span class="key e"></span>Edges</label>
+      <input type="radio" name="countMode" id="cmF" value="f"><label for="cmF"><span class="key f"></span>Faces</label>
+    </div>
+    <label class="ctrl" for="countSee"><input type="checkbox" id="countSee"> See-through</label>
+    <button type="button" id="countAll">Mark them all</button>
+    <button type="button" id="countClear">Clear</button>
+  </div>
+  <div class="readout" id="countOut" aria-live="polite">This cube has 8 corners, 12 edges and 6 faces.</div>
+  <figcaption class="caption">The shape spins slowly until you touch it. Marked corners turn red, marked edges blue and marked faces yellow. Each shape starts as a list of corner positions. The computer finds the faces and edges from those, and every number here is counted, never typed in.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>On the cube, every corner has exactly 3 edges coming out of it. Mark one corner, switch to edges, and mark its three.</li>
+  <li>Switch to the <strong>tetrahedron</strong>. It has 4 corners, 6 edges and 4 faces. That's the smallest solid you can make from flat faces.</li>
+  <li>Try counting the <strong>dodecahedron's</strong> edges by tapping. It's harder than it looks. Tick <strong>see-through</strong> to find the ones round the back.</li>
+  <li>Pick the <strong>football</strong>. Its faces are pentagons (5 sides) and hexagons (6 sides). A real leather ball is this shape, pumped up until it's round.</li>
+</ul>
+
+<aside class="home">
+  <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>Try it at home</div>
+  <h4>A cube from toothpicks and clay</h4>
+  <p>Roll 8 small balls of clay or plasticine. Push toothpicks into them to build a cube. You will use exactly 12 toothpicks. Now hold it up and count the square windows. There are 6.</p>
+  <p>Every clay ball is a corner, every toothpick is an edge, and every window is a face. Building it makes the counting impossible to get wrong, because you can see the leftover clay and toothpicks on the table. Next, build a square pyramid. You need 5 balls and 8 toothpicks. Check your numbers against Sim 1.</p>
+</aside>
+
+<!-- 2 -->
+<h2 id="s2"><span class="badge">2</span><span>Count enough shapes and a pattern appears</span></h2>
+<p>Counting one shape tells you about one shape. To find a pattern, scientists collect lots of examples and lay them side by side. So let's collect.</p>
+<p>Every shape you pick in Sim 1 lands in this table. You can also add shapes with the buttons.</p>
+
+<figure class="sim" id="sim-table">
+  <div class="sim-head"><span>Sim 2 &middot; The collection</span><span>tap a shape to add it</span></div>
+  <div class="chips" id="tblChips" aria-label="Add a shape to the table"></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th scope="col">Shape</th><th scope="col">Corners</th><th scope="col">Edges</th><th scope="col">Faces</th><th scope="col" class="sum" id="tblSumHead" hidden>Corners + faces</th><th scope="col" id="tblTotHead" hidden>Corners &minus; edges + faces</th></tr></thead>
+      <tbody id="tblBody"><tr><td>Cube</td><td class="tc">8</td><td class="te">12</td><td class="tf">6</td><td class="sum" hidden>14</td></tr></tbody>
+    </table>
+  </div>
+  <div class="tbl-btn"><button type="button" id="tblHint">Try adding corners and faces</button> <button type="button" id="tblReveal">Add the last column</button></div>
+  <div class="readout" id="tblOut" aria-live="polite">You have 1 shape so far. Collect at least three, then look along each row.</div>
+  <figcaption class="caption">Each row is counted live from the same models as Sim 1. If you get stuck, the hint button adds a yellow column that adds the corners and the faces together.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>The numbers jump around a lot. The tetrahedron has 4 corners and the football has 60.</li>
+  <li>Corners and faces don't seem to follow each other. The cube has more corners than faces. The octahedron has more faces than corners.</li>
+  <li>Look along each row. Is there a way to put corners, edges and faces together that gives the same answer for every shape? Try adding two of them, or taking one away from another.</li>
+  <li>Stuck? Press <strong>Try adding corners and faces</strong>. Then compare that yellow column with the edges column in the same row. Do it for every row.</li>
+</ul>
+<p>Did you spot it? In every row, corners plus faces is exactly 2 more than edges. The cube has 8 + 6 = 14, and 12 edges. The football has 60 + 32 = 92, and 90 edges. Press <strong>Add the last column</strong>. It starts with the corners, takes away the edges and adds the faces. The answer is 2, every single time.</p>
+<p>If this surprises you, you're in good company. Around 1630 the French thinker René Descartes wrote private notes about solid shapes that contain this pattern in a hidden form. He never published them, and the notes were later lost. Luckily, the German mathematician Gottfried Leibniz had copied some pages by hand in 1676. His copy lay forgotten among his papers until 1860.</p>
+<p>The first person to write the rule down plainly was the Swiss mathematician Leonhard Euler. In November 1750 he described it in a letter to his friend Christian Goldbach. He had checked it on every shape he could think of. He also admitted that he couldn't prove it. By section 6, you will have a proof.</p>
+
+<!-- 3 -->
+<h2 id="s3"><span class="badge">3</span><span>Stretch it or squash it and the counts stay the same</span></h2>
+<p>Imagine the cube is made of rubber, like a balloon. You can pull it tall, squash it flat-ish, or blow it up until it's nearly a ball. The faces bend, the edges curve, and the corners move about. But nothing tears, and nothing new gets stuck together.</p>
+
+<figure class="sim" id="sim-rubber">
+  <div class="sim-head"><span>Sim 3 &middot; The rubber shape</span><span>drag to turn</span></div>
+  <div class="stage"><canvas id="rubCanvas" tabindex="0" role="img" aria-label="A rubbery solid that can be stretched, made lumpy or puffed into a ball"></canvas></div>
+  <div class="ctrls">
+    <label class="ctrl" for="rubShape">Shape
+      <select id="rubShape">
+        <option value="cube">Cube</option>
+        <option value="tetra">Tetrahedron</option>
+        <option value="sqpyr">Square pyramid</option>
+        <option value="triprism">Triangular prism</option>
+        <option value="octa">Octahedron</option>
+        <option value="dodeca">Dodecahedron</option>
+        <option value="icosa">Icosahedron</option>
+        <option value="football">Football</option>
+      </select>
+    </label>
+    <label class="ctrl" for="rubStretch">Stretch <input type="range" id="rubStretch" min="0.4" max="2" step="0.01" value="1"></label>
+    <label class="ctrl" for="rubLumpy">Lumpy <input type="range" id="rubLumpy" min="0" max="1" step="0.01" value="0"></label>
+    <label class="ctrl" for="rubPuff">Puff up <input type="range" id="rubPuff" min="0" max="1" step="0.01" value="0"></label>
+  </div>
+  <div class="readout" id="rubOut" aria-live="polite">This cube still has 8 corners, 12 edges and 6 faces.</div>
+  <figcaption class="caption">The model moves each corner and keeps every connection exactly as it was. The faces here are allowed to bend, the way rubber does. A real cube's faces can't.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>Pull <strong>stretch</strong> all the way up. The cube becomes a tall tower block. The counts don't move.</li>
+  <li>Turn <strong>puff up</strong> to the top. The cube turns into a lumpy ball, a bit like a pumped-up football. Still 8, 12 and 6.</li>
+  <li><strong>Lumpy</strong> pushes each corner in or out by a random amount. Every edge stays joined to the same two corners.</li>
+</ul>
+
+<div class="hold">
+  <p class="tag">Hold on to this idea</p>
+  <p>Our three counts only care about <em>what's joined to what</em>. Sizes, lengths and angles don't matter at all. You can pull and squash as much as you like, as long as you don't tear anything or glue anything new together. We'll need this idea twice more.</p>
+</div>
+
+<p>Euler had used this kind of thinking before. In 1736 he cracked a famous puzzle about the city of Königsberg, which had seven bridges over its river. Could you take a walk that crosses every bridge exactly once? Euler saw that the lengths of the streets and the curves of the river didn't matter. All that mattered was which pieces of land were joined by which bridges. (The answer turned out to be no.) It's a cousin of our puzzle.</p>
+
+<aside class="home">
+  <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>Try it at home</div>
+  <h4>A squashy cube from straws and plasticine</h4>
+  <p>Take some plasticine or modelling clay. Roll 8 small balls for the corners. Cut drinking straws into 12 equal pieces for the edges, and push them into the balls to build a cube. (Roti dough is too soft. The straws fall out as soon as you lean on it.)</p>
+  <p>Now be rough with it. Lean it over, press it down, stretch it tall. The soft balls let each corner bend, so every straw stays stuck to the same two balls. Count again. Still 8, 12 and 6. You have built the rubber cube from Sim 3 in your kitchen.</p>
+</aside>
+
+<!-- 4 -->
+<h2 id="s4"><span class="badge">4</span><span>Squash any shape flat and nothing changes</span></h2>
+<p>Here's a much bolder squash. Take the rubber cube and pop out one whole face, so there's a square hole in the top. Grab the rim of the hole and stretch it wide, wider than the rest of the cube. Then press the whole thing flat onto the table.</p>
+<p>You end up with a flat drawing. There's a big square on the outside, a small square in the middle, and four bent squares joining them. Slide to watch it happen.</p>
+
+<figure class="sim" id="sim-flat">
+  <div class="sim-head"><span>Sim 4 &middot; The rubber sheet</span><span>slide from solid to flat</span></div>
+  <div class="stage"><canvas id="flatCanvas" role="img" aria-label="A solid shape opening up through one face and spreading into a flat map"></canvas></div>
+  <div class="ctrls">
+    <label class="ctrl" for="flatShape">Shape
+      <select id="flatShape">
+        <option value="cube">Cube</option>
+        <option value="tetra">Tetrahedron</option>
+        <option value="sqpyr">Square pyramid</option>
+        <option value="triprism">Triangular prism</option>
+        <option value="octa">Octahedron</option>
+        <option value="pentprism">Pentagonal prism</option>
+        <option value="dodeca">Dodecahedron</option>
+        <option value="icosa">Icosahedron</option>
+        <option value="football">Football</option>
+      </select>
+    </label>
+    <label class="ctrl" for="flatT">Solid <input type="range" id="flatT" min="0" max="1" step="0.005" value="0"> Flat</label>
+    <button type="button" id="flatPlay">Play</button>
+  </div>
+  <div class="readout" id="flatOut" aria-live="polite">This cube has 8 corners, 12 edges and 6 faces.</div>
+  <figcaption class="caption">The yellow face is the one we pop open. As you slide, your eye moves in close to that hole, and the far side of the shape spreads out in front of you. Each colored patch is one face. The shaded area round the flat drawing is the outside.</figcaption>
+</figure>
+
+<p>Where did the popped face go? Look at the shaded space round the drawing. Every bit of that outside used to be the popped face, stretched out enormously. So we count the outside as one face. Then nothing has been added and nothing has been taken away. Same corners, same edges, same faces.</p>
+<p>Remember the idea you were holding on to? Stretching and squashing never change what's joined to what. That's why this flat drawing tells the truth about the solid. We'll call it a <strong>flat map</strong> of the shape.</p>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>Stop halfway. The shape looks like a bowl seen from above. Every face is still there.</li>
+  <li>Try the <strong>football</strong>. 31 patches squeeze into the drawing, and the 32nd becomes the outside.</li>
+  <li>Try the <strong>square pyramid</strong>. Its square base becomes the outside, and the four triangles meet at a point in the middle.</li>
+  <li>Nothing ever crosses. Each edge still joins the same two corners it always did.</li>
+</ul>
+
+<aside class="home">
+  <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>Try it at home</div>
+  <h4>Cut and fold a paper net</h4>
+  <p>On squared paper, draw a cross made of 6 squares. Make a column of 4 squares, then add one square on each side of the second square from the top. This is a net, a flat pattern that folds into a cube.</p>
+  <p>Before you cut it out, count the flat drawing. Every point where lines meet is a corner, and every short line between two corners is an edge. You should find 14 corners and 19 edges. There are 6 squares, plus the paper all round it as the outside, which makes 7 faces. 14 &minus; 19 + 7 = 2.</p>
+  <p>Now cut it out and fold it up. Seven pairs of edges meet and become one each, so 19 edges become 12. The 14 corners squeeze together into 8. The outside disappears, leaving 6 faces. 8 &minus; 12 + 6 = 2. A net is another way to flatten a shape. Sim 4 stretches, and the net cuts.</p>
+</aside>
+
+<!-- 5 -->
+<h2 id="s5"><span class="badge">5</span><span>Snip a fence and two fields become one</span></h2>
+<p>Think of the flat map as farmland seen from a helicopter. The edges are fences. The faces are fields. The outside is one more big field that goes on and on. The corners are the posts where fences meet.</p>
+<p>Now snip one fence. The two fields on either side become one bigger field. You lost one edge and one face.</p>
+<p>What does that do to our total? The total starts with the corners, takes away the edges and adds the faces. Losing a face makes the total 1 smaller. But edges are the part we take away, so losing an edge makes the total 1 bigger. The two changes cancel out. See it with the cube's numbers. Before the snip: 8 &minus; 12 + 6 = 2. After the snip: 8 &minus; 11 + 5 = 2. Taking away 11 instead of 12 gives you one more, and adding 5 instead of 6 gives you one less. Try it.</p>
+
+<figure class="sim" id="sim-snip">
+  <div class="sim-head"><span>Sim 5 &middot; Snip the fences</span><span>tap a line</span></div>
+  <div class="stage"><canvas id="snipCanvas" class="tap" role="img" aria-label="A flat map of a solid. Tap a line to snip it and watch the counts"></canvas></div>
+  <div class="tally" id="snipTally" aria-live="polite"></div>
+  <div class="ctrls">
+    <label class="ctrl" for="snipShape">Shape
+      <select id="snipShape">
+        <option value="cube">Cube</option>
+        <option value="tetra">Tetrahedron</option>
+        <option value="sqpyr">Square pyramid</option>
+        <option value="triprism">Triangular prism</option>
+        <option value="octa">Octahedron</option>
+        <option value="pentprism">Pentagonal prism</option>
+        <option value="dodeca">Dodecahedron</option>
+        <option value="icosa">Icosahedron</option>
+        <option value="football">Football</option>
+      </select>
+    </label>
+    <button type="button" id="snipOne">Snip one for me</button>
+    <button type="button" id="snipAll">Snip all the way</button>
+    <button type="button" id="snipReset">Reset</button>
+  </div>
+  <div class="readout" id="snipOut" aria-live="polite">A flat cube. Tap any line to snip it.</div>
+  <figcaption class="caption">This is the flat map from Sim 4. Colored patches are fields (faces) and lines are fences (edges). The shaded outside is a field too. After every snip the computer walks round each field, keeping it on its left, and counts the fields again from scratch.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>Snip a fence between two colored fields. They turn into one field. Edges go down by 1 and faces go down by 1.</li>
+  <li>Snip a fence on the outer rim. The field inside it joins the outside.</li>
+  <li>Keep going until there are no closed fields left. Look at what remains. It's a tree of sticks with no loops at all.</li>
+  <li>Try to snip a stick in the middle of the tree. The map won't let you. That would cut the map into two separate pieces.</li>
+</ul>
+
+<!-- 6 -->
+<h2 id="s6"><span class="badge">6</span><span>Pull off a loose stick and its corner comes too</span></h2>
+<p>Once every loop is broken, there are no fences left with a different field on each side. Everything is one big outside field with a tree of sticks lying in it. Look at the tips of the tree. Each tip is a stick with a corner on the end that nothing else touches. The map in section 5 shows these loose ends in red. Scroll back up and tap one of those loose sticks.</p>
+<p>The stick goes, and its lonely corner goes with it. You lose 1 edge and 1 corner. Losing a corner makes the total 1 smaller, and losing an edge makes it 1 bigger. They cancel again.</p>
+<p>Keep pulling sticks. A tree always has at least two loose ends (try drawing one with no tips at all, and you'll find you've drawn a loop), so you never get stuck. In the end you are left with one single dot sitting in the outside. That's 1 corner, 0 edges and 1 face. 1 &minus; 0 + 1 = 2.</p>
+<p>Now run the film backwards.</p>
+<ol class="proof">
+  <li>The single dot gives 2.</li>
+  <li>Every snip and every pull kept the total the same. So the flat map gave 2 as well.</li>
+  <li>Squashing the solid flat didn't change any counts. So the solid gave 2.</li>
+</ol>
+<p>None of this depended on which shape we started with. Any solid that can be squashed flat this way must give 2. That's the proof Euler couldn't find. In 1813 the French mathematician Augustin-Louis Cauchy published a proof built on this same plan. He flattened the shape, then took it apart one careful step at a time, checking that the total never changed.</p>
+<p>Why weren't you allowed to snip a stick in the middle of a tree? That would split the map into two separate pieces. Each piece would end up as its own lonely dot, and two dots in one outside give 2 &minus; 0 + 1 = 3. The rule is about one connected shape, so we keep it in one piece.</p>
+
+<!-- 7 -->
+<h2 id="s7"><span class="badge">7</span><span>Adding a corner or an edge doesn't change it either</span></h2>
+<p>We took a shape apart without changing the total. Building things up works the same way. Here are three ways to add to a flat map, and each one keeps the total the same.</p>
+<ul>
+  <li>Put a new corner in the middle of an edge. One edge becomes two. Corners go up 1 and edges go up 1.</li>
+  <li>Join two corners with a new fence across a field. One field becomes two. Edges go up 1 and faces go up 1.</li>
+  <li>Grow a new stick into a field, with a corner on the end. Edges go up 1 and corners go up 1.</li>
+</ul>
+
+<figure class="sim" id="sim-grow">
+  <div class="sim-head"><span>Sim 6 &middot; Build it up</span><span>tap a line, two dots, or a gap</span></div>
+  <div class="stage"><canvas id="growCanvas" class="tap" role="img" aria-label="A flat map where you can add corners and edges and watch the counts"></canvas></div>
+  <div class="tally" id="growTally" aria-live="polite"></div>
+  <div class="ctrls">
+    <label class="ctrl" for="growShape">Start from
+      <select id="growShape">
+        <option value="cube">Cube</option>
+        <option value="tetra">Tetrahedron</option>
+        <option value="sqpyr">Square pyramid</option>
+        <option value="triprism">Triangular prism</option>
+        <option value="pentprism">Pentagonal prism</option>
+        <option value="octa">Octahedron</option>
+      </select>
+    </label>
+    <button type="button" id="growOne">Add one for me</button>
+    <button type="button" id="growReset">Reset</button>
+  </div>
+  <div class="readout" id="growOut" aria-live="polite">A flat cube. Tap the middle of a line, tap two dots, or tap an empty spot.</div>
+  <figcaption class="caption">Tap the middle of a line to add a corner there. Tap one dot and then another to join them with a fence. Tap an empty spot to grow a stick to the nearest dot it can reach without crossing anything.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>Add a corner to an edge. The total stays the same, even though the drawing now has a corner that isn't pointy at all.</li>
+  <li>Join opposite corners of the middle square. It splits into two triangles. One more edge, one more face.</li>
+  <li>Try to join two corners with a line that would cross a fence. The map won't allow it, because edges on a solid never cross.</li>
+  <li>Press <strong>Add one for me</strong> twenty times. The map gets crowded, and the total is still 2.</li>
+</ul>
+<p>This is why every shape in the table agreed. Any of them can be built from a single dot using these moves, and a single dot gives 2. It also means you can glue extra bits onto a shape, or chop corners off it, and the total still comes out right.</p>
+
+<div class="hold">
+  <p class="tag">A good place to stop</p>
+  <p>You now have the whole proof. Sections 8 to 11 use it to explain footballs, domes, viruses and donuts. They're worth a second sitting, with fresh eyes.</p>
+</div>
+
+<!-- 8 -->
+<h2 id="s8"><span class="badge">8</span><span>A football has to have exactly 12 pentagons</span></h2>
+<p>Back to the ball on the grass. A classic football is made of two kinds of patches, pentagons and hexagons. And everywhere on the ball, exactly 3 patches meet at each corner. Go back to Sim 1, pick the football, and look closely at any corner to check.</p>
+
+<figure class="sim" id="sim-ball">
+  <div class="sim-head"><span>Sim 7 &middot; The football</span><span>drag to turn</span></div>
+  <div class="stage"><canvas id="ballCanvas" tabindex="0" role="img" aria-label="A football model with dark pentagons and light hexagons"></canvas></div>
+  <div class="readout" id="ballOut" aria-live="polite">This football has 12 pentagons and 20 hexagons.</div>
+  <figcaption class="caption">To build this model, the computer takes an icosahedron and slices off each of its 12 corners, one third of the way along every edge. Each slice leaves a pentagon, and each triangle becomes a hexagon.</figcaption>
+</figure>
+
+<p>Here's the idea. Every corner and every edge on the ball belongs to the patches round it. If each patch adds up only its own fair share of corners and edges, then all the shares together make up the whole ball, and the whole ball has to come to 2. So let's work out how much one hexagon adds to the total.</p>
+<p>A hexagon has 6 corners. But each ball corner is shared by 3 patches, so the hexagon's fair share is 6 &divide; 3 = 2 corners. It has 6 sides, and each edge is shared by 2 patches, so its share is 6 &divide; 2 = 3 edges. And it is 1 face. So one hexagon adds 2 &minus; 3 + 1 = 0. A hexagon adds nothing to the total!</p>
+<p>Pentagons are trickier, because 5 doesn't share out evenly into threes. So take six pentagons together. Between them they have 30 corners. Shared by 3, that's 10 ball corners. They have 30 sides. Shared by 2, that's 15 edges. And they are 6 faces. So every six pentagons add 10 &minus; 15 + 6 = 1 to the total.</p>
+<p>The total must come out to 2. Hexagons add nothing. Each group of six pentagons adds 1. So you need two groups of six pentagons, and that's 12. The hexagons played no part in it. A ball could have 20 hexagons, or 200, or none at all. It would still need exactly 12 pentagons.</p>
+<p>Check it with the calculator. It does the same sums for any number of patches.</p>
+
+<figure class="sim" id="sim-calc">
+  <div class="sim-head"><span>Sim 8 &middot; Design a ball</span><span>3 patches at every corner</span></div>
+  <div class="ctrls">
+    <label class="ctrl" for="calcP">Pentagons <input type="range" id="calcP" min="0" max="24" step="1" value="12"> <output id="calcPv" for="calcP">12</output></label>
+    <label class="ctrl" for="calcH">Hexagons <input type="range" id="calcH" min="0" max="40" step="1" value="20"> <output id="calcHv" for="calcH">20</output></label>
+  </div>
+  <div class="calc" id="calcOut" aria-live="polite"></div>
+  <figcaption class="caption">The calculator counts every patch corner, shares them out by 3, and shares the patch sides out by 2. Then it works out the total. Only whole numbers of corners and edges can exist on a real ball.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>Set <strong>12 pentagons and 0 hexagons</strong>. That's the dodecahedron from Sim 1.</li>
+  <li>Set <strong>12 and 20</strong>. That's the classic football: 60 corners, 90 edges, 32 faces.</li>
+  <li>Try <strong>11</strong> or <strong>13</strong> pentagons. The corners don't share out evenly, so that ball can't exist.</li>
+  <li>Try <strong>6</strong> pentagons, or <strong>18</strong>. The sums work out to whole numbers, but the total is 1 or 3. Neither is 2.</li>
+  <li>Try <strong>12 and 1</strong>. The count says yes, but nobody has ever built that ball, and it turns out nobody can. Passing the count is something every ball must do, but passing it doesn't promise that a ball exists. Why 1 hexagon is impossible is a different puzzle, and it has no one-line answer.</li>
+</ul>
+<p>The black-and-white design with 12 pentagons and 20 hexagons became famous at the 1970 football World Cup in Mexico. It showed up well on black-and-white television.</p>
+
+<!-- 9 -->
+<h2 id="s9"><span class="badge">9</span><span>The same 12 hides in domes, viruses and a molecule</span></h2>
+<p>The American designer Buckminster Fuller made <strong>geodesic domes</strong> famous in the 1950s. A geodesic dome is a ball built from lots of triangles. It's light and very strong. One of the best known is the giant sphere he designed for the 1967 world fair in Montreal.</p>
+<p>Look at the corners of a dome. At most of them, 6 triangles meet. But at a few corners only 5 triangles meet. How many? Turn up the size and count the red ones.</p>
+
+<figure class="sim" id="sim-dome">
+  <div class="sim-head"><span>Sim 9 &middot; A geodesic dome</span><span>drag to turn</span></div>
+  <div class="stage"><canvas id="domeCanvas" tabindex="0" role="img" aria-label="A geodesic sphere made of triangles, with the special five-triangle corners shown in red"></canvas></div>
+  <div class="ctrls">
+    <label class="ctrl" for="domeF">Size <input type="range" id="domeF" min="1" max="5" step="1" value="2"> <output id="domeFv" for="domeF">2</output></label>
+  </div>
+  <div class="readout" id="domeOut" aria-live="polite">This dome has 42 corners.</div>
+  <figcaption class="caption">The model splits each of an icosahedron's 20 triangles into smaller triangles and pushes every new corner out onto a ball. Red dots mark the corners where exactly 5 triangles meet. The computer counts them by checking how many edges leave each corner.</figcaption>
+</figure>
+
+<p class="notice-h">A few things to notice:</p>
+<ul class="notice">
+  <li>At size 1 the dome is just an icosahedron. All 12 corners are red.</li>
+  <li>Turn it up. Hundreds of six-triangle corners appear, but the red count stays at exactly 12.</li>
+  <li>The red corners sit exactly where the football's pentagons would be, one red corner in the middle of each pentagon.</li>
+</ul>
+<p>The same fair-share sums explain it. A corner where 6 triangles meet owns 1 corner, half of its 6 edges (that's 3), and a third of its 6 triangles (that's 2). It adds 1 &minus; 3 + 2 = 0. Six of the five-triangle corners add 6 &minus; 15 + 10 = 1. To reach 2 you need 12 of them, just like the pentagons.</p>
+<p>Nature found this out long before Fuller. Many viruses wrap themselves in a protein shell shaped like a dome. The adenovirus, which causes some colds, has a shell built from 252 clusters of protein. 240 of them sit with six neighbours round them. Exactly 12 sit with five.</p>
+<p>And in 1985 the chemists Harold Kroto, Robert Curl and Richard Smalley found a molecule made of 60 carbon atoms, shaped exactly like a football. There is a carbon atom at each of the 60 corners and a chemical bond along each of the 90 edges. They named it buckminsterfullerene, after Fuller's domes, and people call it the buckyball. In 1996 the three of them won the Nobel Prize in Chemistry for it. Go back to Sim 1, pick the football and mark every corner. You will have counted the atoms in a buckyball.</p>
+
+<!-- 10 -->
+<h2 id="s10"><span class="badge">10</span><span>Stranger shapes</span></h2>
+<p>So far every shape could be squashed flat like a balloon. What happens with shapes that can't?</p>
+
+<figure class="sim" id="sim-strange">
+  <div class="sim-head"><span>Sim 10 &middot; Strange shapes</span><span>drag to turn</span></div>
+  <div class="stage"><canvas id="strCanvas" tabindex="0" role="img" aria-label="Unusual solid shapes, including a picture frame, a two-hole window, a dented cube, two cubes touching at a corner and a spiky star"></canvas></div>
+  <div class="ctrls">
+    <label class="ctrl" for="strShape">Shape
+      <select id="strShape">
+        <option value="frame">Picture frame</option>
+        <option value="twohole">Window with two holes</option>
+        <option value="dent">Dented cube</option>
+        <option value="kiss">Two cubes touching at a corner</option>
+        <option value="star">Spiky star</option>
+      </select>
+    </label>
+    <label class="ctrl" for="strStar" id="strStarWrap" hidden><input type="checkbox" id="strStar"> Count it as 12 big stars</label>
+  </div>
+  <div class="readout" id="strOut" aria-live="polite">This picture frame has 16 corners, 32 edges and 16 faces.</div>
+  <figcaption class="caption">Every shape here is built from a list of corners and faces. The edges and the counts are worked out by the computer, just like the others on this page.</figcaption>
+</figure>
+
+<h3>A picture frame gives 0</h3>
+<p>Pick the <strong>picture frame</strong>. It has 16 corners, 32 edges and 16 faces, and 16 &minus; 32 + 16 = 0. The rule broke!</p>
+<p>Think back to the idea you were holding on to. Could you pop one face of the frame and squash it flat like Sim 4? You'd still have a hole in the middle that no amount of stretching can close. A picture frame is a donut in disguise, and stretching can't turn a donut into a ball without tearing it. So a donut is allowed its own number, and that number is 0. Now pick the <strong>window with two holes</strong>. It gives &minus;2. Every extra tunnel takes another 2 away.</p>
+<p>One small detail. The flat top of the frame is a ring, and a face has to be a patch with no hole in it, like a pond. So the model cuts the ring into four pieces. The Swiss mathematician Simon Antoine Jean L'Huilier pointed out shapes with tunnels like this around 1813.</p>
+
+<h3>A dent changes nothing</h3>
+<p>Pick the <strong>dented cube</strong>. Its top has been pushed in to make a hollow with four triangles. It gives 9 &minus; 16 + 9 = 2. A dent is just another kind of squash. Nothing tore and nothing got glued.</p>
+
+<h3>Maps follow the rule too</h3>
+<p>Draw a round island and split it into 3 countries, like slices of a pizza. Count the countries, plus the sea as one more. That's 4 faces. Count the stretches of border, including the coastline between each pair of border points. There are 3 inland borders and 3 pieces of coast, so 6 edges. Count the points where borders meet. There's 1 in the middle and 3 on the coast, so 4 corners. 4 &minus; 6 + 4 = 2. The flat map in Sim 5 is a map just like this, and the sea is its outside.</p>
+
+<h3>Monsters</h3>
+<p>Pick <strong>two cubes touching at a corner</strong>. They share a single corner, so you get 15 corners, 24 edges and 12 faces. 15 &minus; 24 + 12 = 3. Now pick the <strong>spiky star</strong>. Counted as 60 small triangles, it gives 2. Tick <strong>count it as 12 big stars</strong>. Each colour is now one flat five-pointed star face, and the star gives 12 &minus; 30 + 12 = &minus;6.</p>
+<p>For a hundred years after Euler, mathematicians kept finding shapes like these and arguing about them. Some people called them monsters and said they didn't count as proper solids. Others changed the rule to fit them. The philosopher Imre Lakatos told the whole story in a 1976 book called <em>Proofs and Refutations</em>. The fix was to say clearly which shapes the rule is about:</p>
+<ul>
+  <li>Every face is a single patch with no holes.</li>
+  <li>Every edge touches exactly two faces, and the surface never pinches to a single point.</li>
+  <li>Faces don't pass through each other.</li>
+  <li>There are no tunnels.</li>
+</ul>
+<p>The kissing cubes break the second rule, at their shared corner. The big-star way of counting breaks the third, because the stars pass through each other. A cube with a small cube sitting in the middle of its top face breaks the first. Its top face becomes a ring with a square hole. Build it from toothpicks and clay and count it yourself: you'll get 3, not 2.</p>
+
+<!-- 11 -->
+<h2 id="s11"><span class="badge">11</span><span>Make your own</span></h2>
+
+<aside class="home">
+  <div class="tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9M14.5 14.5 20 20M8.1 8.1 12 12"/></svg>Try it at home</div>
+  <h4>Build a shape nobody has named</h4>
+  <p>Using toothpicks and clay, or straws and dough, build a shape nobody has a name for. Stick a pyramid on top of a prism. Chop one corner off a cube by building a little triangle there. Make it lopsided, with faces of different sizes. The only rules are that it closes up with no gaps and has no tunnel through it.</p>
+  <p>Then count, slowly, marking each one as you go. A cube with one corner chopped off has 10 corners, 15 edges and 7 faces, so 10 &minus; 15 + 7 = 2. Yours should give 2 as well. You already know why. Sim 6 showed that gluing on extra bits keeps the total the same. Type your counts in below.</p>
+  <figure class="sim" style="margin-bottom:0">
+    <div class="sim-head"><span>Check your shape</span><span>type your counts</span></div>
+    <div class="mine">
+      <label for="myV">Corners <input type="number" id="myV" min="0" max="999" value="10"></label>
+      <label for="myE">Edges <input type="number" id="myE" min="0" max="999" value="15"></label>
+      <label for="myF">Faces <input type="number" id="myF" min="0" max="999" value="7"></label>
+    </div>
+    <div class="readout" id="myOut" aria-live="polite">10 &minus; 15 + 7 = 2.</div>
+  </figure>
+</aside>
+
+<h3>A name, at last</h3>
+<p>You've felt the number now, so it's time for its name. The number you get from corners take away edges add faces is called the <strong>Euler characteristic</strong> of a shape. Anything you can squash into a ball has Euler characteristic 2. A donut has 0, and a two-hole donut has &minus;2.</p>
+<p>The kind of maths that only cares what's joined to what, and lets you stretch and squash as much as you like, is called <strong>topology</strong>. To a topologist, a cube, a football and a dome are all the same shape. A donut and a coffee mug are the same shape too, because each has exactly one hole.</p>
+
+<p class="recap">So the total is always 2 because any ball-shaped solid can be squashed flat and taken apart, one snip at a time, down to a single dot. No snip ever changes the total, and a single dot gives 1 &minus; 0 + 1 = 2.</p>
+</main>
+
+<footer>
+  <p>This page borrows its build-it-up-one-step-at-a-time approach from <a href="https://aatishb.com/myriad/lets-build-a-brain/" target="_blank" rel="noopener">Let's Build a Brain</a> by Aatish Bhatia and Arkarup Banerjee.</p>
+  <p>Every solid starts as a list of exact corner positions. Faces are found by computer (for the bulging shapes, any plane through three corners with every other corner on one side), edges are read off the faces, and every count is computed live. The football is made by slicing an icosahedron one third of the way along each edge. The flattening sim is a perspective view from just outside the popped face (mathematicians call this a Schlegel diagram). The snip and build sims recount faces by walking round each region of the flat drawing.</p>
+  <p>What the sims skip: Sim 3 lets faces bend, which real flat-faced solids can't do. The rule on this page is for shapes whose surface is one piece, with every face a patch without holes, every edge shared by exactly two faces, nothing passing through itself, and no tunnels. The football sums assume exactly 3 patches meet at every corner. Real footballs are puffed-up and stitched, and many modern balls use other patterns. Descartes' notes contain the rule in a different form, and he never wrote it the way Euler did. The dates follow standard histories of the formula.</p>
+</footer>
+</div>
+<script>
+/*GEO-START*/
+var GEO = (function () {
+  'use strict';
+  var PHI = (1 + Math.sqrt(5)) / 2;
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+  function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+  function mul(a, s) { return [a[0] * s, a[1] * s, a[2] * s]; }
+  function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+  function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+  function len(a) { return Math.sqrt(dot(a, a)); }
+  function unit(a) { var l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
+  function centroid(vs, idx) {
+    var c = [0, 0, 0];
+    for (var i = 0; i < idx.length; i++) c = add(c, vs[idx[i]]);
+    return mul(c, 1 / idx.length);
+  }
+  // Newell's method: normal of a (possibly slightly bent) polygon, by the right-hand rule.
+  function newell(vs, f) {
+    var n = [0, 0, 0];
+    for (var k = 0; k < f.length; k++) {
+      var a = vs[f[k]], b = vs[f[(k + 1) % f.length]];
+      n[0] += (a[1] - b[1]) * (a[2] + b[2]);
+      n[1] += (a[2] - b[2]) * (a[0] + b[0]);
+      n[2] += (a[0] - b[0]) * (a[1] + b[1]);
+    }
+    return n;
+  }
+  function normalize(vs) {
+    var c = centroid(vs, vs.map(function (_, i) { return i; }));
+    var out = vs.map(function (v) { return sub(v, c); });
+    var r = 0;
+    out.forEach(function (v) { r = Math.max(r, len(v)); });
+    return out.map(function (v) { return mul(v, 1 / r); });
+  }
+
+  // Faces of a convex solid, found from its corner positions alone:
+  // a face is any plane through three corners with every other corner on one side.
+  function hullFaces(vs) {
+    var n = vs.length, eps = 1e-6, seen = {}, faces = [];
+    for (var i = 0; i < n; i++) for (var j = i + 1; j < n; j++) for (var k = j + 1; k < n; k++) {
+      var nr = cross(sub(vs[j], vs[i]), sub(vs[k], vs[i])), l = len(nr);
+      if (l < 1e-9) continue;
+      nr = mul(nr, 1 / l);
+      var d = dot(nr, vs[i]), pos = 0, neg = 0;
+      for (var m = 0; m < n && !(pos && neg); m++) {
+        var s = dot(nr, vs[m]) - d;
+        if (s > eps) pos++; else if (s < -eps) neg++;
+      }
+      if (pos && neg) continue;
+      if (pos) { nr = mul(nr, -1); d = -d; }
+      var key = nr.concat([d]).map(function (x) { return Math.round(x * 1e4); }).join(',');
+      if (seen[key]) continue;
+      seen[key] = 1;
+      var on = [];
+      for (m = 0; m < n; m++) if (Math.abs(dot(nr, vs[m]) - d) < eps) on.push(m);
+      var c = centroid(vs, on), u = unit(sub(vs[on[0]], c)), w = cross(nr, u);
+      on.sort(function (a, b) {
+        var pa = sub(vs[a], c), pb = sub(vs[b], c);
+        return Math.atan2(dot(pa, w), dot(pa, u)) - Math.atan2(dot(pb, w), dot(pb, u));
+      });
+      faces.push(on);
+    }
+    return faces;
+  }
+
+  function ekey(a, b) { return a < b ? a + ',' + b : b + ',' + a; }
+  // Edges are never typed in by hand: they are read off the faces.
+  function edgesOf(faces) {
+    var index = new Map(), edges = [], edgeFaces = [];
+    faces.forEach(function (f, fi) {
+      for (var k = 0; k < f.length; k++) {
+        var a = f[k], b = f[(k + 1) % f.length], key = ekey(a, b);
+        if (!index.has(key)) { index.set(key, edges.length); edges.push(a < b ? [a, b] : [b, a]); edgeFaces.push([]); }
+        edgeFaces[index.get(key)].push(fi);
+      }
+    });
+    return { edges: edges, edgeFaces: edgeFaces, index: index };
+  }
+  function hasDirected(f, a, b) {
+    for (var k = 0; k < f.length; k++) if (f[k] === a && f[(k + 1) % f.length] === b) return true;
+    return false;
+  }
+  // Make every face run anticlockwise when seen from outside.
+  function orientFaces(vs, faces) {
+    faces = faces.map(function (f) { return f.slice(); });
+    var eo = edgesOf(faces), comp = faces.map(function () { return -1; }), nc = 0;
+    for (var s = 0; s < faces.length; s++) {
+      if (comp[s] >= 0) continue;
+      var queue = [s]; comp[s] = nc;
+      while (queue.length) {
+        var fi = queue.shift(), f = faces[fi];
+        for (var k = 0; k < f.length; k++) {
+          var a = f[k], b = f[(k + 1) % f.length];
+          eo.edgeFaces[eo.index.get(ekey(a, b))].forEach(function (g) {
+            if (g === fi || comp[g] >= 0) return;
+            if (hasDirected(faces[g], a, b)) faces[g].reverse();
+            comp[g] = nc; queue.push(g);
+          });
+        }
+      }
+      nc++;
+    }
+    var vol = new Array(nc).fill(0);
+    faces.forEach(function (f, fi) {
+      for (var k = 1; k < f.length - 1; k++) vol[comp[fi]] += dot(vs[f[0]], cross(vs[f[k]], vs[f[k + 1]]));
+    });
+    faces.forEach(function (f, fi) { if (vol[comp[fi]] < 0) f.reverse(); });
+    return faces;
+  }
+
+  function makeShape(key, label, verts, faces, extra) {
+    verts = normalize(verts);
+    faces = orientFaces(verts, faces);
+    var eo = edgesOf(faces), used = new Set();
+    faces.forEach(function (f) { f.forEach(function (i) { used.add(i); }); });
+    var s = {
+      key: key, label: label, verts: verts, faces: faces,
+      edges: eo.edges, edgeFaces: eo.edgeFaces, eIndex: eo.index,
+      V: used.size, E: eo.edges.length, F: faces.length
+    };
+    s.total = s.V - s.E + s.F;
+    s.normals = faces.map(function (f) { return unit(newell(verts, f)); });
+    s.degree = verts.map(function () { return 0; });
+    eo.edges.forEach(function (e) { s.degree[e[0]]++; s.degree[e[1]]++; });
+    if (extra) Object.keys(extra).forEach(function (k) { s[k] = extra[k]; });
+    return s;
+  }
+  function hullShape(key, label, verts) {
+    verts = normalize(verts);
+    return makeShape(key, label, verts, hullFaces(verts));
+  }
+
+  function cubeVerts(lo, hi) {
+    lo = lo === undefined ? -1 : lo; hi = hi === undefined ? 1 : hi;
+    var v = [];
+    [hi, lo].forEach(function (x) { [hi, lo].forEach(function (y) { [hi, lo].forEach(function (z) { v.push([x, y, z]); }); }); });
+    return v;
+  }
+  function icosaVerts() {
+    var v = [];
+    [1, -1].forEach(function (a) { [1, -1].forEach(function (b) {
+      v.push([0, a, b * PHI]); v.push([a, b * PHI, 0]); v.push([b * PHI, 0, a]);
+    }); });
+    return v;
+  }
+  function dodecaVerts() {
+    var v = cubeVerts(), ip = 1 / PHI;
+    [1, -1].forEach(function (a) { [1, -1].forEach(function (b) {
+      v.push([0, a * ip, b * PHI]); v.push([a * ip, b * PHI, 0]); v.push([b * PHI, 0, a * ip]);
+    }); });
+    return v;
+  }
+  function ring(n, r, y, phase) {
+    var v = [];
+    for (var i = 0; i < n; i++) { var t = phase + 2 * Math.PI * i / n; v.push([r * Math.cos(t), y, r * Math.sin(t)]); }
+    return v;
+  }
+  // Football: cut every corner off an icosahedron, one third of the way along each edge.
+  function truncIcosaVerts() {
+    var iv = normalize(icosaVerts()), e = edgesOf(hullFaces(iv)).edges, v = [];
+    e.forEach(function (p) {
+      var A = iv[p[0]], B = iv[p[1]];
+      v.push(add(A, mul(sub(B, A), 1 / 3)));
+      v.push(add(A, mul(sub(B, A), 2 / 3)));
+    });
+    return v;
+  }
+
+  function geodesic(fq) {
+    var ico = get('icosa'), vs = [], keyMap = new Map(), faces = [];
+    function idx(p) {
+      p = unit(p);
+      var k = p.map(function (x) { return Math.round(x * 1e6); }).join(',');
+      if (!keyMap.has(k)) { keyMap.set(k, vs.length); vs.push(p); }
+      return keyMap.get(k);
+    }
+    ico.faces.forEach(function (f) {
+      var A = ico.verts[f[0]], B = ico.verts[f[1]], C = ico.verts[f[2]], g = [], i, j;
+      for (i = 0; i <= fq; i++) { g[i] = []; for (j = 0; j <= fq - i; j++) g[i][j] = idx(add(A, add(mul(sub(B, A), i / fq), mul(sub(C, A), j / fq)))); }
+      for (i = 0; i < fq; i++) for (j = 0; j < fq - i; j++) {
+        faces.push([g[i][j], g[i + 1][j], g[i][j + 1]]);
+        if (i + j < fq - 1) faces.push([g[i + 1][j], g[i + 1][j + 1], g[i][j + 1]]);
+      }
+    });
+    return makeShape('dome' + fq, 'dome', vs, faces);
+  }
+
+  // A square picture frame: 4 corners of the frame times 4 corners of its cross-section.
+  function frameShape() {
+    var C = [[1, 1], [-1, 1], [-1, -1], [1, -1]], S = [[1, 0.26], [1, -0.26], [0.56, -0.26], [0.56, 0.26]], v = [], f = [];
+    C.forEach(function (c) { S.forEach(function (s) { v.push([c[0] * s[0], s[1], c[1] * s[0]]); }); });
+    for (var i = 0; i < 4; i++) for (var j = 0; j < 4; j++) {
+      var i2 = (i + 1) % 4, j2 = (j + 1) % 4;
+      f.push([i * 4 + j, i2 * 4 + j, i2 * 4 + j2, i * 4 + j2]);
+    }
+    return makeShape('frame', 'picture frame', v, f);
+  }
+  // A window with two holes. The top and bottom are cut into 7 hole-free pieces each.
+  function twoHoleShape() {
+    var P = {
+      otl: [-3, 1.5], mt: [0, 1.95], otr: [3, 1.5], obr: [3, -1.5], mb: [0, -1.95], obl: [-3, -1.5],
+      atl: [-2.2, 0.8], atr: [-0.45, 0.8], abr: [-0.45, -0.8], abl: [-2.2, -0.8],
+      btl: [0.45, 0.8], btr: [2.2, 0.8], bbr: [2.2, -0.8], bbl: [0.45, -0.8]
+    };
+    var v = [], T = {}, B = {}, h = 0.42, f = [];
+    Object.keys(P).forEach(function (n) {
+      T[n] = v.length; v.push([P[n][0], h, P[n][1]]);
+      B[n] = v.length; v.push([P[n][0], -h, P[n][1]]);
+    });
+    [['otl', 'mt', 'atr', 'atl'], ['otl', 'atl', 'abl', 'obl'], ['obl', 'abl', 'abr', 'mb'],
+     ['mt', 'btl', 'bbl', 'mb', 'abr', 'atr'], ['mt', 'otr', 'btr', 'btl'], ['otr', 'obr', 'bbr', 'btr'],
+     ['mb', 'bbl', 'bbr', 'obr']].forEach(function (t) {
+      f.push(t.map(function (n) { return T[n]; }));
+      f.push(t.map(function (n) { return B[n]; }).reverse());
+    });
+    [['otl', 'mt', 'otr', 'obr', 'mb', 'obl'], ['atl', 'atr', 'abr', 'abl'], ['btl', 'btr', 'bbr', 'bbl']].forEach(function (loop) {
+      for (var k = 0; k < loop.length; k++) {
+        var a = loop[k], b = loop[(k + 1) % loop.length];
+        f.push([T[a], T[b], B[b], B[a]]);
+      }
+    });
+    return makeShape('twohole', 'two-hole window', v, f);
+  }
+  // A cube whose top has been pushed in to make a dent.
+  function dentShape() {
+    var v = cubeVerts(), faces = hullFaces(v).filter(function (f) {
+      return !f.every(function (i) { return v[i][1] > 0.5; });
+    });
+    var top = hullFaces(v).filter(function (f) { return f.every(function (i) { return v[i][1] > 0.5; }); })[0];
+    var apex = v.length; v.push([0, 0.1, 0]);
+    for (var k = 0; k < top.length; k++) faces.push([top[k], top[(k + 1) % top.length], apex]);
+    return makeShape('dent', 'dented cube', v, faces);
+  }
+  // Two cubes touching at a single corner.
+  function kissShape() {
+    var v = [], map = new Map(), faces = [];
+    function id(p) { var k = p.join(','); if (!map.has(k)) { map.set(k, v.length); v.push(p); } return map.get(k); }
+    [cubeVerts(0, 1), cubeVerts(-1, 0)].forEach(function (cv) {
+      var ids = cv.map(id);
+      hullFaces(cv).forEach(function (f) { faces.push(f.map(function (i) { return ids[i]; })); });
+    });
+    return makeShape('kiss', 'two kissing cubes', v, faces);
+  }
+  // Small stellated dodecahedron: a dodecahedron with a five-sided spike on every face.
+  // Each spike side lies in the plane of a neighbouring face, which makes the spike height
+  // exactly twice the distance from a face's centre to the middle of one of its edges.
+  function starShape() {
+    var d = get('dodeca'), v = d.verts.slice(), faces = [], tips = [];
+    d.faces.forEach(function (f, fi) {
+      var c = centroid(d.verts, f), mid = mul(add(d.verts[f[0]], d.verts[f[1]]), 0.5);
+      var ap = len(sub(mid, c)), tip = v.length;
+      v.push(add(c, mul(d.normals[fi], 2 * ap))); tips.push(tip);
+      for (var k = 0; k < f.length; k++) faces.push([f[k], f[(k + 1) % f.length], tip]);
+    });
+    var s = makeShape('star', 'spiky star', v, faces);
+    // The "monster" way of counting: group the triangles by the flat plane they lie in.
+    var groups = new Map();
+    s.faces.forEach(function (f, fi) {
+      var k = s.normals[fi].map(function (x) { return Math.round(x * 1e4); }).join(',');
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(fi);
+    });
+    var tipSet = new Set(tips), longEdges = new Set(), group = new Array(s.faces.length);
+    var gi = 0;
+    groups.forEach(function (list) {
+      list.forEach(function (fi) { group[fi] = gi; });
+      gi++;
+      var pts = new Set();
+      list.forEach(function (fi) { s.faces[fi].forEach(function (i) { if (tipSet.has(i)) pts.add(i); }); });
+      pts = Array.from(pts);
+      var c = centroid(s.verts, pts), n = s.normals[list[0]], u = unit(sub(s.verts[pts[0]], c)), w = cross(n, u);
+      pts.sort(function (a, b) {
+        var pa = sub(s.verts[a], c), pb = sub(s.verts[b], c);
+        return Math.atan2(dot(pa, w), dot(pa, u)) - Math.atan2(dot(pb, w), dot(pb, u));
+      });
+      for (var k = 0; k < pts.length; k++) longEdges.add(ekey(pts[k], pts[(k + 2) % pts.length]));
+    });
+    s.monster = { V: tipSet.size, E: longEdges.size, F: groups.size };
+    s.group = group;
+    return s;
+  }
+
+  var builders = {
+    tetra: function () { return hullShape('tetra', 'tetrahedron', [[1, 1, 1], [1, -1, -1], [-1, 1, -1], [-1, -1, 1]]); },
+    cube: function () { return hullShape('cube', 'cube', cubeVerts()); },
+    octa: function () { return hullShape('octa', 'octahedron', [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]); },
+    icosa: function () { return hullShape('icosa', 'icosahedron', icosaVerts()); },
+    dodeca: function () { return hullShape('dodeca', 'dodecahedron', dodecaVerts()); },
+    triprism: function () { return hullShape('triprism', 'triangular prism', ring(3, 1, 0.75, Math.PI / 2).concat(ring(3, 1, -0.75, Math.PI / 2))); },
+    pentprism: function () { return hullShape('pentprism', 'pentagonal prism', ring(5, 1, 0.55, Math.PI / 2).concat(ring(5, 1, -0.55, Math.PI / 2))); },
+    sqpyr: function () { return hullShape('sqpyr', 'square pyramid', ring(4, 1.25, -0.55, Math.PI / 4).concat([[0, 0.95, 0]])); },
+    football: function () { return hullShape('football', 'football', truncIcosaVerts()); },
+    frame: frameShape, twohole: twoHoleShape, dent: dentShape, kiss: kissShape, star: starShape
+  };
+  var cache = {};
+  function get(key) {
+    if (!cache[key]) cache[key] = /^dome\d+$/.test(key) ? geodesic(+key.slice(4)) : builders[key]();
+    return cache[key];
+  }
+
+  function bestFace(s) {
+    var best = 0, ba = -1;
+    s.faces.forEach(function (f, fi) { var a = len(newell(s.verts, f)); if (a > ba + 1e-9) { ba = a; best = fi; } });
+    return best;
+  }
+  // Flattening: the eye moves from far away right up to the popped-open face.
+  // From just outside that face, the rest of the solid spreads into a flat map.
+  function flattenSetup(s, fi0) {
+    var vs = s.verts, c0 = centroid(vs, s.faces[fi0]), n = s.normals[fi0], allowed = Infinity;
+    s.faces.forEach(function (g, gi) {
+      if (gi === fi0) return;
+      var ng = s.normals[gi], den = dot(ng, n);
+      if (den > 1e-9) {
+        var t = (dot(ng, vs[g[0]]) - dot(ng, c0)) / den;
+        if (t > 1e-9) allowed = Math.min(allowed, t);
+      }
+    });
+    var ref = Math.abs(n[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0], w = unit(cross(n, ref)), u = unit(cross(w, n));
+    return { fi0: fi0, c0: c0, n: n, u: u, w: w, hF: Math.min(0.9 * allowed, 1.1) };
+  }
+  function flattenView(s, t, S) {
+    S = S || flattenSetup(s, bestFace(s));
+    var e = t < 0 ? 0 : t > 1 ? 1 : t;
+    e = e * e * (3 - 2 * e);
+    var h = Math.exp(Math.log(5) * (1 - e) + Math.log(S.hF) * e), tilt = 0.75 * (1 - e);
+    var dir = add(mul(S.n, Math.cos(tilt)), mul(S.u, Math.sin(tilt)));
+    var C = add(S.c0, mul(dir, h)), fw = mul(dir, -1), r = S.w, up = cross(r, fw);
+    var pts = [], depth = [];
+    s.verts.forEach(function (v) {
+      var rel = sub(v, C), z = Math.max(1e-4, dot(rel, fw));
+      pts.push([dot(rel, r) / z, dot(rel, up) / z]); depth.push(z);
+    });
+    return { pts: pts, depth: depth, e: e };
+  }
+
+  // Faces of a flat drawing, found by walking round each region keeping it on your left.
+  function planarFaces(pts, edges) {
+    var out = new Map(), pos = new Map();
+    edges.forEach(function (e, ei) {
+      [[e[0], e[1], 0], [e[1], e[0], 1]].forEach(function (q) {
+        if (!out.has(q[0])) out.set(q[0], []);
+        out.get(q[0]).push({ h: ei * 2 + q[2], to: q[1], ang: Math.atan2(pts[q[1]][1] - pts[q[0]][1], pts[q[1]][0] - pts[q[0]][0]) });
+      });
+    });
+    out.forEach(function (l, a) {
+      l.sort(function (p, q) { return p.ang - q.ang; });
+      l.forEach(function (x, i) { pos.set(x.h, i); });
+    });
+    var faceOf = new Array(edges.length * 2).fill(-1), faces = [];
+    for (var h0 = 0; h0 < edges.length * 2; h0++) {
+      if (faceOf[h0] >= 0) continue;
+      var cyc = [], h = h0, guard = 0, area = 0;
+      while (faceOf[h] < 0 && guard++ < 1e6) {
+        faceOf[h] = faces.length;
+        var ei = h >> 1, sd = h & 1, from = edges[ei][sd], to = edges[ei][1 - sd];
+        cyc.push(from);
+        area += pts[from][0] * pts[to][1] - pts[to][0] * pts[from][1];
+        var l = out.get(to), nx = l[(pos.get(h ^ 1) - 1 + l.length) % l.length];
+        h = nx.h;
+      }
+      faces.push({ loop: cyc, area: area / 2, hs: [] });
+    }
+    return { faces: faces, faceOf: faceOf };
+  }
+
+  return {
+    get: get, bestFace: bestFace, flattenSetup: flattenSetup, flattenView: flattenView,
+    planarFaces: planarFaces, newell: newell, unit: unit, dot: dot, cross: cross, len: len,
+    keys: ['tetra', 'cube', 'sqpyr', 'triprism', 'octa', 'pentprism', 'dodeca', 'icosa', 'football']
+  };
+})();
+/*GEO-END*/
+(function () {
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+  var RM = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+  var MINUS = '−';
+  function fmt(n) { return n < 0 ? MINUS + (-n) : String(n); }
+  function sumLine(V, E, F) { return V + ' ' + MINUS + ' ' + E + ' + ' + F + ' = ' + fmt(V - E + F); }
+  function plural(n, one, many) { return n === 1 ? one : many; }
+
+  // ---------- theme tokens ----------
+  var tokCache = {};
+  function tok(n) {
+    var v = tokCache[n];
+    if (v === undefined) { v = getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888888'; tokCache[n] = v; }
+    return v;
+  }
+  function rgb(n) {
+    var c = tok(n), m;
+    if (c[0] === '#') {
+      if (c.length === 4) c = '#' + c[1] + c[1] + c[2] + c[2] + c[3] + c[3];
+      return [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)];
+    }
+    m = c.match(/[\d.]+/g);
+    return m ? [+m[0], +m[1], +m[2]] : [136, 136, 136];
+  }
+  function css(c, a) {
+    return 'rgba(' + Math.round(Math.min(255, Math.max(0, c[0]))) + ',' + Math.round(Math.min(255, Math.max(0, c[1]))) + ',' +
+      Math.round(Math.min(255, Math.max(0, c[2]))) + ',' + (a === undefined ? 1 : a) + ')';
+  }
+  function shade(c, k) { return [c[0] * k, c[1] * k, c[2] * k]; }
+  var drawables = [];
+  function redrawAll() { tokCache = {}; drawables.forEach(function (d) { d.draw(); }); }
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    if (mq.addEventListener) mq.addEventListener('change', redrawAll); else if (mq.addListener) mq.addListener(redrawAll);
+  }
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
+
+  function fitCanvas(cv, aspect, minH, maxH) {
+    var w = cv.parentElement.clientWidth || 600;
+    var h = Math.round(Math.max(minH, Math.min(maxH, w * aspect)));
+    var d = window.devicePixelRatio || 1;
+    cv.style.height = h + 'px';
+    cv.width = Math.round(w * d); cv.height = Math.round(h * d);
+    cv.getContext('2d').setTransform(d, 0, 0, d, 0, 0);
+    return { w: w, h: h };
+  }
+  function watchSize(el, fn) {
+    if ('ResizeObserver' in window) {
+      var lastW = -1;
+      new ResizeObserver(function () { var w = el.clientWidth; if (w !== lastW) { lastW = w; fn(); } }).observe(el);
+    } else window.addEventListener('resize', fn);
+    fn();
+  }
+  function pill(ctx, text, x, y, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = '600 12px "IBM Plex Mono", ui-monospace, monospace';
+    var w = ctx.measureText(text).width + 16;
+    ctx.fillStyle = tok('--panel'); ctx.strokeStyle = tok('--fg'); ctx.lineWidth = 1;
+    ctx.fillRect(x, y, w, 22); ctx.strokeRect(x + 0.5, y + 0.5, w - 1, 21);
+    ctx.fillStyle = tok('--fg'); ctx.textBaseline = 'middle';
+    ctx.fillText(text, x + 8, y + 11.5);
+    ctx.restore();
+  }
+
+  // ---------- 3x3 rotation matrices ----------
+  function rotX(a) { var c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, c, -s, 0, s, c]; }
+  function rotY(a) { var c = Math.cos(a), s = Math.sin(a); return [c, 0, s, 0, 1, 0, -s, 0, c]; }
+  function mm(A, B) {
+    var C = new Array(9);
+    for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) C[i * 3 + j] = A[i * 3] * B[j] + A[i * 3 + 1] * B[3 + j] + A[i * 3 + 2] * B[6 + j];
+    return C;
+  }
+  function mv(M, v) { return [M[0] * v[0] + M[1] * v[1] + M[2] * v[2], M[3] * v[0] + M[4] * v[1] + M[5] * v[2], M[6] * v[0] + M[7] * v[1] + M[8] * v[2]]; }
+  function ortho(M) {
+    var a = GEO.unit([M[0], M[1], M[2]]), b = [M[3], M[4], M[5]], d = GEO.dot(a, b);
+    b = GEO.unit([b[0] - a[0] * d, b[1] - a[1] * d, b[2] - a[2] * d]);
+    var c = GEO.cross(a, b);
+    return a.concat(b, c);
+  }
+  function segDist(px, py, ax, ay, bx, by) {
+    var dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy, t = l2 ? ((px - ax) * dx + (py - ay) * dy) / l2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    return { d: Math.hypot(px - ax - t * dx, py - ay - t * dy), t: t };
+  }
+  function inPoly(x, y, pts) {
+    var ins = false;
+    for (var i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+      var xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+      if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ins = !ins;
+    }
+    return ins;
+  }
+  function seeded(i, salt) { var x = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453; return (x - Math.floor(x)) * 2 - 1; }
+
+  // =====================================================================
+  // Viewer: a solid you can spin, drawn back-to-front (painter's algorithm)
+  // =====================================================================
+  function Viewer(cv, opt) {
+    this.cv = cv; this.ctx = cv.getContext('2d');
+    this.opt = Object.assign({ aspect: 0.78, minH: 260, maxH: 420, spin: true, count: false }, opt || {});
+    this.R = mm(rotX(0.45), rotY(-0.6));
+    this.mode = 'v'; this.see = false; this.marks = { v: new Set(), e: new Set(), f: new Set() };
+    this.touched = false; this.visible = true; this.deform = null;
+    var self = this, down = null;
+    drawables.push(this);
+    cv.addEventListener('pointerdown', function (e) {
+      down = { lx: e.clientX, ly: e.clientY, moved: 0, type: e.pointerType };
+      self.touched = true;
+      try { cv.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - down.lx, dy = e.clientY - down.ly;
+      down.lx = e.clientX; down.ly = e.clientY; down.moved += Math.abs(dx) + Math.abs(dy);
+      if (down.moved > 6) { self.R = ortho(mm(mm(rotY(dx * 0.011), rotX(dy * 0.011)), self.R)); self.draw(); }
+    });
+    cv.addEventListener('pointerup', function (e) {
+      if (!down) return;
+      var d = down; down = null;
+      if (d.moved <= 6 && self.opt.count) {
+        var r = cv.getBoundingClientRect();
+        self.click(e.clientX - r.left, e.clientY - r.top, d.type === 'touch');
+      }
+    });
+    cv.addEventListener('pointercancel', function () { down = null; });
+    cv.addEventListener('keydown', function (e) {
+      var k = { ArrowLeft: [0, -1], ArrowRight: [0, 1], ArrowUp: [-1, 0], ArrowDown: [1, 0] }[e.key];
+      if (!k) return;
+      e.preventDefault(); self.touched = true;
+      self.R = ortho(mm(mm(rotY(k[1] * 0.15), rotX(k[0] * 0.15)), self.R));
+      self.draw();
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { self.visible = es[0].isIntersecting; if (self.visible) self.kick(); }).observe(cv);
+    }
+    watchSize(cv.parentElement, function () {
+      var s = fitCanvas(cv, self.opt.aspect, self.opt.minH, self.opt.maxH);
+      self.W = s.w; self.H = s.h; self.draw();
+    });
+  }
+  Viewer.prototype.kick = function () {
+    if (this.loop || !this.opt.spin || RM.matches || this.touched) return;
+    var self = this, last = performance.now();
+    this.loop = true;
+    function step(now) {
+      if (self.touched || !self.visible || RM.matches) { self.loop = false; return; }
+      var dt = Math.min(50, now - last); last = now;
+      self.R = mm(rotY(dt * 0.00045), self.R);
+      self.draw();
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  };
+  Viewer.prototype.setShape = function (s) {
+    this.shape = s; this.marks = { v: new Set(), e: new Set(), f: new Set() };
+    this.computeDisp(); this.draw(); this.kick();
+    if (this.opt.onChange) this.opt.onChange(this);
+  };
+  Viewer.prototype.computeDisp = function () {
+    var s = this.shape, df = this.deform;
+    this.disp = df ? s.verts.map(function (v, i) { return df(v, i, s); }) : s.verts;
+    var r = 0.01;
+    this.disp.forEach(function (v) { r = Math.max(r, GEO.len(v)); });
+    this.radius = r;
+  };
+  Viewer.prototype.draw = function () {
+    var s = this.shape;
+    if (!s || !this.W) return;
+    var ctx = this.ctx, W = this.W, H = this.H, R = this.R, D = 3.6;
+    var k = Math.min(W, H) * 0.39 * (this.opt.zoom || 1) / this.radius, cx = W / 2, cy = H / 2;
+    ctx.clearRect(0, 0, W, H);
+    var RP = this.disp.map(function (v) { return mv(R, v); });
+    var P = RP.map(function (p) { var m = D / (D - p[2] / 1); return [cx + p[0] * k * m, cy - p[1] * k * m, p[2]]; });
+    var fd = s.faces.map(function (f, fi) {
+      var z = 0, a = 0;
+      for (var j = 0; j < f.length; j++) {
+        var p = P[f[j]], q = P[f[(j + 1) % f.length]];
+        z += p[2]; a += q[0] * p[1] - p[0] * q[1];
+      }
+      return { fi: fi, z: z / f.length, front: a > 0 };
+    });
+    fd.sort(function (a, b) { return a.z - b.z; });
+    this.proj = { P: P, fd: fd };
+
+    var light = GEO.unit([-0.45, 0.62, 0.66]);
+    var mk = this.marks, opt = this.opt, see = this.see, mode = opt.count ? this.mode : null;
+    var cLine = tok('--line'), cEdge = tok('--edge'), cCorner = tok('--corner'), cDim = tok('--dim'), cPanel = tok('--panel');
+    var frontFace = new Array(s.faces.length);
+    fd.forEach(function (d) { frontFace[d.fi] = d.front; });
+
+    function faceFill(fi) {
+      var f = s.faces[fi], pts = f.map(function (i) { return RP[i]; });
+      var n = GEO.unit(GEO.newell(pts, pts.map(function (_, i) { return i; })));
+      var lam = Math.max(0, GEO.dot(n, light));
+      var base = mk.f.has(fi) ? rgb('--face') : rgb(opt.faceColor ? opt.faceColor(fi, s) : '--solid');
+      return shade(base, 0.7 + 0.36 * lam);
+    }
+    function path(f) {
+      ctx.beginPath();
+      f.forEach(function (i, j) { if (j) ctx.lineTo(P[i][0], P[i][1]); else ctx.moveTo(P[i][0], P[i][1]); });
+      ctx.closePath();
+    }
+    function edgeStroke(ei, back) {
+      var e = s.edges[ei], marked = mk.e.has(ei);
+      ctx.beginPath(); ctx.moveTo(P[e[0]][0], P[e[0]][1]); ctx.lineTo(P[e[1]][0], P[e[1]][1]);
+      ctx.strokeStyle = marked ? cEdge : back ? cDim : cLine;
+      ctx.lineWidth = marked ? 4.5 : mode === 'e' ? 2 : (opt.thin ? 0.9 : 1.3);
+      ctx.setLineDash(back && !marked ? [4, 4] : []);
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+    function vertexDot(i, back) {
+      var r, col, ring = false;
+      if (mk.v.has(i)) { r = 6.5; col = cCorner; ring = true; }
+      else if (opt.vertexStyle) { var st = opt.vertexStyle(i, s); r = st.r; col = tok(st.c); ring = st.ring; }
+      else if (mode === 'v') { r = 4.2; col = cLine; }
+      else { r = opt.count ? 2.4 : 1.6; col = cLine; }
+      if (r <= 0) return;
+      ctx.globalAlpha = back ? 0.45 : 1;
+      ctx.beginPath(); ctx.arc(P[i][0], P[i][1], r, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+      if (ring) { ctx.lineWidth = 2; ctx.strokeStyle = cPanel; ctx.stroke(); }
+      ctx.globalAlpha = 1;
+    }
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    if (see) {
+      fd.forEach(function (d) {
+        path(s.faces[d.fi]);
+        ctx.fillStyle = css(faceFill(d.fi), mk.f.has(d.fi) ? 0.5 : 0.16); ctx.fill();
+      });
+      var back = s.edges.map(function (_, ei) { return s.edgeFaces[ei].every(function (fi) { return !frontFace[fi]; }); });
+      s.edges.forEach(function (_, ei) { if (back[ei]) edgeStroke(ei, true); });
+      s.edges.forEach(function (_, ei) { if (!back[ei]) edgeStroke(ei, false); });
+      var vFront = new Array(s.verts.length).fill(false);
+      s.faces.forEach(function (f, fi) { if (frontFace[fi]) f.forEach(function (i) { vFront[i] = true; }); });
+      s.verts.forEach(function (_, i) { if (!vFront[i]) vertexDot(i, true); });
+      s.verts.forEach(function (_, i) { if (vFront[i]) vertexDot(i, false); });
+    } else {
+      fd.forEach(function (d) {
+        if (!d.front) return;
+        var f = s.faces[d.fi];
+        path(f); ctx.fillStyle = css(faceFill(d.fi)); ctx.fill();
+        for (var j = 0; j < f.length; j++) edgeStroke(s.eIndex.get(f[j] < f[(j + 1) % f.length] ? f[j] + ',' + f[(j + 1) % f.length] : f[(j + 1) % f.length] + ',' + f[j]), false);
+        f.forEach(function (i) { vertexDot(i, false); });
+      });
+    }
+  };
+  Viewer.prototype.click = function (x, y, touch) {
+    if (!this.proj) return;
+    var s = this.shape, P = this.proj.P, see = this.see, mk = this.marks;
+    var faces = this.proj.fd.filter(function (d) { return see || d.front; });
+    var frontSet = new Set(faces.map(function (d) { return d.fi; }));
+    var best = -1, bd = touch ? 26 : 17, i;
+    if (this.mode === 'f') {
+      for (i = faces.length - 1; i >= 0; i--) {
+        var poly = s.faces[faces[i].fi].map(function (v) { return P[v]; });
+        if (inPoly(x, y, poly)) { best = faces[i].fi; break; }
+      }
+      if (best >= 0) { if (mk.f.has(best)) mk.f.delete(best); else mk.f.add(best); }
+    } else if (this.mode === 'v') {
+      var cand = new Set();
+      faces.forEach(function (d) { s.faces[d.fi].forEach(function (v) { cand.add(v); }); });
+      cand.forEach(function (v) {
+        var d = Math.hypot(P[v][0] - x, P[v][1] - y);
+        if (d < bd) { bd = d; best = v; }
+      });
+      if (best >= 0) { if (mk.v.has(best)) mk.v.delete(best); else mk.v.add(best); }
+    } else {
+      s.edges.forEach(function (e, ei) {
+        if (!s.edgeFaces[ei].some(function (fi) { return frontSet.has(fi); })) return;
+        var r = segDist(x, y, P[e[0]][0], P[e[0]][1], P[e[1]][0], P[e[1]][1]);
+        if (r.d < bd) { bd = r.d; best = ei; }
+      });
+      if (best >= 0) { if (mk.e.has(best)) mk.e.delete(best); else mk.e.add(best); }
+    }
+    this.draw();
+    if (this.opt.onChange) this.opt.onChange(this);
+  };
+  Viewer.prototype.markAll = function () {
+    var s = this.shape, mk = this.marks;
+    s.verts.forEach(function (_, i) { mk.v.add(i); });
+    s.edges.forEach(function (_, i) { mk.e.add(i); });
+    s.faces.forEach(function (_, i) { mk.f.add(i); });
+    this.draw(); if (this.opt.onChange) this.opt.onChange(this);
+  };
+  Viewer.prototype.clearMarks = function () {
+    this.marks = { v: new Set(), e: new Set(), f: new Set() };
+    this.draw(); if (this.opt.onChange) this.opt.onChange(this);
+  };
+
+  function footballColor(fi, s) {
+    if (s.key === 'football') return s.faces[fi].length === 5 ? '--pent' : '--hex';
+    return '--solid';
+  }
+
+  // =====================================================================
+  // Flattener: pop one face open and look through the hole
+  // =====================================================================
+  var MAPC = ['--map1', '--map2', '--map3', '--map4', '--map5', '--map6'];
+  function Flattener(cv, opt) {
+    this.cv = cv; this.ctx = cv.getContext('2d'); this.t = 0; this.opt = opt || {};
+    var self = this;
+    drawables.push(this);
+    watchSize(cv.parentElement, function () {
+      var s = fitCanvas(cv, 0.8, 280, 440); self.W = s.w; self.H = s.h; self.draw();
+    });
+  }
+  Flattener.prototype.setShape = function (s) {
+    this.shape = s; this.S = GEO.flattenSetup(s, GEO.bestFace(s)); this.draw();
+  };
+  Flattener.prototype.draw = function () {
+    var s = this.shape;
+    if (!s || !this.W) return;
+    var ctx = this.ctx, W = this.W, H = this.H, S = this.S, fv = GEO.flattenView(s, this.t, S), e = fv.e;
+    var mnx = Infinity, mny = Infinity, mxx = -Infinity, mxy = -Infinity;
+    fv.pts.forEach(function (p) { mnx = Math.min(mnx, p[0]); mxx = Math.max(mxx, p[0]); mny = Math.min(mny, p[1]); mxy = Math.max(mxy, p[1]); });
+    var pad = Math.max(34, W * 0.09), sc = Math.min((W - 2 * pad) / (mxx - mnx || 1), (H - 2 * pad - 14) / (mxy - mny || 1));
+    var cx = W / 2, cy = H / 2 + 8, mx = (mnx + mxx) / 2, my = (mny + mxy) / 2;
+    var P = fv.pts.map(function (p) { return [cx + (p[0] - mx) * sc, cy - (p[1] - my) * sc]; });
+    ctx.clearRect(0, 0, W, H);
+    var outA = Math.max(0, Math.min(1, (e - 0.45) / 0.45));
+    if (outA > 0) { ctx.globalAlpha = outA; ctx.fillStyle = tok('--outside'); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+    var order = s.faces.map(function (f, fi) {
+      var z = 0; f.forEach(function (i) { z += fv.depth[i]; });
+      return { fi: fi, z: z / f.length };
+    }).filter(function (d) { return d.fi !== S.fi0; });
+    order.sort(function (a, b) { return b.z - a.z; });
+    var cLine = tok('--line');
+    ctx.lineJoin = 'round';
+    function poly(f) { ctx.beginPath(); f.forEach(function (i, j) { if (j) ctx.lineTo(P[i][0], P[i][1]); else ctx.moveTo(P[i][0], P[i][1]); }); ctx.closePath(); }
+    function dots(f, r) { ctx.fillStyle = cLine; f.forEach(function (i) { ctx.beginPath(); ctx.arc(P[i][0], P[i][1], r, 0, 7); ctx.fill(); }); }
+    order.forEach(function (d) {
+      var f = s.faces[d.fi];
+      poly(f); ctx.fillStyle = tok(MAPC[d.fi % 6]); ctx.fill();
+      ctx.strokeStyle = cLine; ctx.lineWidth = 1.6; ctx.stroke();
+      dots(f, 3.2);
+    });
+    var lid = s.faces[S.fi0], lidA = 1 - e;
+    poly(lid);
+    if (lidA > 0.01) { ctx.globalAlpha = lidA * 0.92; ctx.fillStyle = tok('--face'); ctx.fill(); ctx.globalAlpha = 1; }
+    ctx.strokeStyle = cLine; ctx.lineWidth = e > 0.95 ? 2.6 : 1.6; ctx.stroke();
+    dots(lid, 3.6);
+    if (outA > 0.2) pill(ctx, 'outside = the popped face', 10, 10, outA);
+    else pill(ctx, 'yellow = the face we pop open', 10, 10, 1 - outA * 4);
+  };
+
+  // =====================================================================
+  // FlatMap: snip fences, pluck sticks, or add new ones, on a flat map
+  // =====================================================================
+  function FlatMap(cv, kind, opt) {
+    this.cv = cv; this.ctx = cv.getContext('2d'); this.kind = kind; this.opt = opt || {};
+    this.hover = -1; this.sel = -1;
+    var self = this, down = null;
+    drawables.push(this);
+    function local(e) { var r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    cv.addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY, type: e.pointerType }; });
+    cv.addEventListener('pointerup', function (e) {
+      if (!down) return;
+      var d = down; down = null;
+      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10) return;
+      var p = local(e);
+      self.stopAuto();
+      self.tap(p[0], p[1], d.type === 'touch' || d.type === 'pen');
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse' || self.kind !== 'snip') return;
+      var p = local(e), h = self.nearEdge(p[0], p[1], 12);
+      if (h.i !== self.hover) { self.hover = h.i; self.draw(); }
+    });
+    cv.addEventListener('pointerleave', function () { if (self.hover !== -1) { self.hover = -1; self.draw(); } });
+    watchSize(cv.parentElement, function () {
+      var s = fitCanvas(cv, 0.8, 300, 460); self.W = s.w; self.H = s.h; self.layout(); self.draw();
+    });
+  }
+  FlatMap.prototype.load = function (shape) {
+    this.stopAuto();
+    var fv = GEO.flattenView(shape, 1, GEO.flattenSetup(shape, GEO.bestFace(shape)));
+    this.shape = shape;
+    this.V = fv.pts.map(function (p) { return { x: p[0], y: p[1], alive: true }; });
+    this.E = shape.edges.map(function (e) { return { a: e[0], b: e[1], alive: true }; });
+    var mnx = Infinity, mny = Infinity, mxx = -Infinity, mxy = -Infinity;
+    fv.pts.forEach(function (p) { mnx = Math.min(mnx, p[0]); mxx = Math.max(mxx, p[0]); mny = Math.min(mny, p[1]); mxy = Math.max(mxy, p[1]); });
+    this.bb = [mnx, mny, mxx, mxy];
+    this.sel = -1; this.hover = -1;
+    this.layout(); this.recount(); this.draw();
+    this.report({ kind: 'start' });
+  };
+  FlatMap.prototype.layout = function () {
+    if (!this.bb || !this.W) return;
+    var b = this.bb, W = this.W, H = this.H, pad = Math.max(30, W * 0.08);
+    this.sc = Math.min((W - 2 * pad) / (b[2] - b[0] || 1), (H - 2 * pad - 16) / (b[3] - b[1] || 1));
+    this.cx = W / 2; this.cy = H / 2 + 10; this.mx = (b[0] + b[2]) / 2; this.my = (b[1] + b[3]) / 2;
+  };
+  FlatMap.prototype.sp = function (i) { var v = this.V[i]; return [this.cx + (v.x - this.mx) * this.sc, this.cy - (v.y - this.my) * this.sc]; };
+  FlatMap.prototype.toWorld = function (x, y) { return [(x - this.cx) / this.sc + this.mx, -(y - this.cy) / this.sc + this.my]; };
+  FlatMap.prototype.recount = function () {
+    var alive = [], map = [], self = this;
+    this.E.forEach(function (e, i) { if (e.alive) { map.push(i); alive.push([e.a, e.b]); } });
+    var pts = this.V.map(function (v) { return [v.x, v.y]; });
+    var pf = GEO.planarFaces(pts, alive);
+    this.sides = {};
+    map.forEach(function (orig, k) { self.sides[orig] = [pf.faceOf[k * 2], pf.faceOf[k * 2 + 1]]; });
+    this.faces = pf.faces.map(function (f, fi) {
+      var minE = Infinity;
+      map.forEach(function (orig, k) { if (pf.faceOf[k * 2] === fi || pf.faceOf[k * 2 + 1] === fi) minE = Math.min(minE, orig); });
+      return { loop: f.loop, area: f.area, color: minE };
+    });
+    var outer = -1, oa = Infinity;
+    this.faces.forEach(function (f, i) { if (f.area < oa) { oa = f.area; outer = i; } });
+    this.outer = outer;
+    this.deg = this.V.map(function () { return 0; });
+    alive.forEach(function (e) { self.deg[e[0]]++; self.deg[e[1]]++; });
+    this.nV = this.V.filter(function (v) { return v.alive; }).length;
+    this.nE = alive.length;
+    this.nF = alive.length ? pf.faces.length : 1;
+  };
+  FlatMap.prototype.counts = function () { return { V: this.nV, E: this.nE, F: this.nF }; };
+  FlatMap.prototype.nearEdge = function (x, y, rad) {
+    var best = { i: -1, d: rad, t: 0 }, self = this;
+    this.E.forEach(function (e, i) {
+      if (!e.alive) return;
+      var a = self.sp(e.a), b = self.sp(e.b), r = segDist(x, y, a[0], a[1], b[0], b[1]);
+      if (r.d < best.d) best = { i: i, d: r.d, t: r.t };
+    });
+    return best;
+  };
+  FlatMap.prototype.nearVertex = function (x, y, rad) {
+    var best = -1, bd = rad, self = this;
+    this.V.forEach(function (v, i) {
+      if (!v.alive) return;
+      var p = self.sp(i), d = Math.hypot(p[0] - x, p[1] - y);
+      if (d < bd) { bd = d; best = i; }
+    });
+    return best;
+  };
+  FlatMap.prototype.draw = function () {
+    if (!this.V || !this.W) return;
+    var ctx = this.ctx, W = this.W, H = this.H, self = this;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = tok('--outside'); ctx.fillRect(0, 0, W, H);
+    this.faces.forEach(function (f, fi) {
+      if (fi === self.outer || f.area <= 0) return;
+      ctx.beginPath();
+      f.loop.forEach(function (i, j) { var p = self.sp(i); if (j) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+      ctx.closePath();
+      ctx.fillStyle = tok(MAPC[f.color % 6]); ctx.fill();
+    });
+    var cLine = tok('--line');
+    ctx.lineCap = 'round';
+    this.E.forEach(function (e, i) {
+      if (!e.alive) return;
+      var a = self.sp(e.a), b = self.sp(e.b);
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
+      ctx.strokeStyle = i === self.hover ? tok('--edge') : cLine;
+      ctx.lineWidth = i === self.hover ? 5 : 2.2;
+      ctx.stroke();
+    });
+    this.V.forEach(function (v, i) {
+      if (!v.alive) return;
+      var p = self.sp(i), loose = self.kind === 'snip' && self.deg[i] === 1, alone = self.deg[i] === 0;
+      ctx.beginPath(); ctx.arc(p[0], p[1], alone ? 9 : loose ? 5.5 : 4.2, 0, 7);
+      ctx.fillStyle = loose || alone ? tok('--corner') : cLine; ctx.fill();
+      if (i === self.sel) { ctx.beginPath(); ctx.arc(p[0], p[1], 11, 0, 7); ctx.strokeStyle = tok('--corner'); ctx.lineWidth = 3; ctx.stroke(); }
+    });
+    pill(ctx, this.nE ? 'shaded outside = 1 face' : 'everything here is the outside', 10, 10, 1);
+  };
+  FlatMap.prototype.apply = function (fn) {
+    var before = this.counts(), outerBefore = this.outer, info = fn.call(this) || {};
+    if (info.kind && !info.refused) {
+      this.recount();
+      var after = this.counts();
+      info.dV = after.V - before.V; info.dE = after.E - before.E; info.dF = after.F - before.F;
+      info.outerBefore = outerBefore;
+    }
+    this.draw();
+    this.report(info);
+    return info;
+  };
+  FlatMap.prototype.report = function (info) { if (this.opt.onChange) this.opt.onChange(this, info); };
+  FlatMap.prototype.snip = function (i) {
+    return this.apply(function () {
+      var e = this.E[i], sd = this.sides[i];
+      if (sd[0] !== sd[1]) {
+        var joinsOutside = sd[0] === this.outer || sd[1] === this.outer;
+        e.alive = false;
+        return { kind: 'merge', outside: joinsOutside };
+      }
+      var da = this.deg[e.a], db = this.deg[e.b];
+      if (da === 1 || db === 1) {
+        var lone = db === 1 ? e.b : e.a;
+        e.alive = false; this.V[lone].alive = false;
+        return { kind: 'pluck' };
+      }
+      return { kind: 'bridge', refused: true };
+    });
+  };
+  FlatMap.prototype.snipCandidates = function () {
+    var merge = [], pluck = [], self = this;
+    this.E.forEach(function (e, i) {
+      if (!e.alive) return;
+      var sd = self.sides[i];
+      if (sd[0] !== sd[1]) merge.push(i);
+      else if (self.deg[e.a] === 1 || self.deg[e.b] === 1) pluck.push(i);
+    });
+    return { merge: merge, pluck: pluck };
+  };
+  FlatMap.prototype.snipOne = function () {
+    var c = this.snipCandidates(), list = c.merge.length ? c.merge : c.pluck;
+    if (!list.length) { this.report({ kind: 'done' }); return false; }
+    this.snip(list[Math.floor(Math.random() * list.length)]);
+    return true;
+  };
+  FlatMap.prototype.stopAuto = function () { if (this.timer) { clearInterval(this.timer); this.timer = null; } };
+  FlatMap.prototype.snipAll = function () {
+    this.stopAuto();
+    var self = this;
+    if (RM.matches) { var guard = 0; while (self.nE > 0 && guard++ < 2000) self.snipOne(); return; }
+    this.timer = setInterval(function () { if (!self.snipOne() || self.nE === 0) self.stopAuto(); }, 260);
+  };
+  FlatMap.prototype.tap = function (x, y, touch) {
+    var rv = touch ? 22 : 13, re = touch ? 18 : 11;
+    if (this.kind === 'snip') {
+      var h = this.nearEdge(x, y, re);
+      if (h.i >= 0) { this.hover = -1; this.snip(h.i); return; }
+      if (this.nearVertex(x, y, rv) >= 0) this.report({ kind: 'vertexTap' });
+      return;
+    }
+    // grow
+    var v = this.nearVertex(x, y, rv);
+    if (v >= 0) {
+      if (this.sel < 0) { this.sel = v; this.draw(); this.report({ kind: 'select' }); return; }
+      if (this.sel === v) { this.sel = -1; this.draw(); this.report({ kind: 'unselect' }); return; }
+      var a = this.sel; this.sel = -1;
+      this.join(a, v);
+      return;
+    }
+    var eh = this.nearEdge(x, y, re);
+    if (eh.i >= 0) {
+      if (eh.t < 0.15 || eh.t > 0.85) { this.report({ kind: 'nearEnd' }); return; }
+      this.split(eh.i, eh.t);
+      return;
+    }
+    this.sel = -1;
+    this.stick(x, y);
+  };
+  FlatMap.prototype.segOK = function (a, b, pa, pb) {
+    // pa, pb: screen points for the new segment; a, b: vertex ids (or -1 for a new point)
+    var self = this, ok = true;
+    function orient(p, q, r) { return (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]); }
+    this.E.forEach(function (e) {
+      if (!ok || !e.alive) return;
+      if (e.a === a || e.a === b || e.b === a || e.b === b) {
+        // shares a corner: refuse only if it runs along the same line
+        var other = (e.a === a || e.a === b) ? e.b : e.a, shared = (e.a === a || e.a === b) ? e.a : e.b;
+        var s0 = self.sp(shared), s1 = self.sp(other), np = shared === a ? pb : pa;
+        var cr = orient(s0, s1, np), dt = (s1[0] - s0[0]) * (np[0] - s0[0]) + (s1[1] - s0[1]) * (np[1] - s0[1]);
+        if (Math.abs(cr) < 1e-6 * (1 + Math.abs(dt)) && dt > 0) ok = false;
+        return;
+      }
+      var p = self.sp(e.a), q = self.sp(e.b);
+      var d1 = orient(pa, pb, p), d2 = orient(pa, pb, q), d3 = orient(p, q, pa), d4 = orient(p, q, pb);
+      if (((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0))) ok = false;
+    });
+    if (!ok) return false;
+    this.V.forEach(function (v, i) {
+      if (!ok || !v.alive || i === a || i === b) return;
+      var p = self.sp(i);
+      if (segDist(p[0], p[1], pa[0], pa[1], pb[0], pb[1]).d < 5) ok = false;
+    });
+    return ok;
+  };
+  FlatMap.prototype.joined = function (a, b) {
+    return this.E.some(function (e) { return e.alive && ((e.a === a && e.b === b) || (e.a === b && e.b === a)); });
+  };
+  FlatMap.prototype.join = function (a, b) {
+    var self = this;
+    if (this.joined(a, b)) { this.draw(); this.report({ kind: 'already' }); return false; }
+    if (!this.segOK(a, b, this.sp(a), this.sp(b))) { this.draw(); this.report({ kind: 'cross' }); return false; }
+    this.apply(function () { self.E.push({ a: a, b: b, alive: true }); return { kind: 'join' }; });
+    return true;
+  };
+  FlatMap.prototype.split = function (i, t) {
+    var self = this;
+    this.apply(function () {
+      var e = self.E[i], A = self.V[e.a], B = self.V[e.b], n = self.V.length;
+      self.V.push({ x: A.x + (B.x - A.x) * t, y: A.y + (B.y - A.y) * t, alive: true });
+      e.alive = false;
+      self.E.push({ a: e.a, b: n, alive: true }, { a: n, b: e.b, alive: true });
+      return { kind: 'split' };
+    });
+  };
+  FlatMap.prototype.stick = function (x, y) {
+    var self = this;
+    if (x < 8 || y < 36 || x > this.W - 8 || y > this.H - 8) { this.report({ kind: 'edgeOfBox' }); return false; }
+    if (this.nearVertex(x, y, 14) >= 0) { this.report({ kind: 'tooClose' }); return false; }
+    var cand = [];
+    this.V.forEach(function (v, i) { if (v.alive) { var p = self.sp(i); cand.push({ i: i, d: Math.hypot(p[0] - x, p[1] - y) }); } });
+    cand.sort(function (a, b) { return a.d - b.d; });
+    for (var k = 0; k < cand.length; k++) {
+      if (this.segOK(cand[k].i, -1, this.sp(cand[k].i), [x, y])) {
+        var target = cand[k].i, w = this.toWorld(x, y);
+        this.apply(function () {
+          self.V.push({ x: w[0], y: w[1], alive: true });
+          self.E.push({ a: target, b: self.V.length - 1, alive: true });
+          return { kind: 'stick' };
+        });
+        return true;
+      }
+    }
+    this.report({ kind: 'cross' });
+    return false;
+  };
+  FlatMap.prototype.growOne = function () {
+    var self = this, tries = 0;
+    while (tries++ < 60) {
+      if (Math.random() < 0.5) {
+        var bounded = this.faces.filter(function (f, fi) { return fi !== self.outer && f.loop.length >= 4; });
+        if (bounded.length) {
+          var f = bounded[Math.floor(Math.random() * bounded.length)], L = f.loop, n = L.length;
+          var i = Math.floor(Math.random() * n), j = (i + 2 + Math.floor(Math.random() * (n - 3))) % n;
+          var a = L[i], b = L[j];
+          if (a !== b && !this.joined(a, b) && this.segOK(a, b, this.sp(a), this.sp(b))) { this.join(a, b); return; }
+        }
+      } else {
+        var alive = [];
+        this.E.forEach(function (e, k) {
+          if (!e.alive) return;
+          var p = self.sp(e.a), q = self.sp(e.b);
+          if (Math.hypot(p[0] - q[0], p[1] - q[1]) > 36) alive.push(k);
+        });
+        if (alive.length) { this.split(alive[Math.floor(Math.random() * alive.length)], 0.5); return; }
+      }
+    }
+  };
+
+  // =====================================================================
+  // Page wiring
+  // =====================================================================
+  var NAME = {
+    tetra: 'tetrahedron', cube: 'cube', sqpyr: 'square pyramid', triprism: 'triangular prism', octa: 'octahedron',
+    pentprism: 'pentagonal prism', dodeca: 'dodecahedron', icosa: 'icosahedron', football: 'football'
+  };
+  var TITLE = {
+    tetra: 'Tetrahedron', cube: 'Cube', sqpyr: 'Square pyramid', triprism: 'Triangular prism (tent)', octa: 'Octahedron',
+    pentprism: 'Pentagonal prism', dodeca: 'Dodecahedron', icosa: 'Icosahedron', football: 'Football'
+  };
+  function S(k) { return GEO.get(k); }
+  function on(sel, ev, fn) { var el = $(sel); if (el) el.addEventListener(ev, fn); return el; }
+
+  // Section badges: section 1 is a triangle, section 2 a square, and so on.
+  Array.prototype.forEach.call(document.querySelectorAll('.badge'), function (b) {
+    var n = (+b.textContent || 1) + 2, pts = [];
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI / 2 + i * 2 * Math.PI / n + (n % 2 ? 0 : Math.PI / n);
+      pts.push((50 + 50 * Math.cos(a)).toFixed(1) + '% ' + (50 + 50 * Math.sin(a)).toFixed(1) + '%');
+    }
+    b.style.clipPath = 'polygon(' + pts.join(',') + ')';
+    b.classList.add('poly');
+    if (n === 3) b.classList.add('tri');
+  });
+
+  // ---- hero ----
+  if ($('#heroCanvas')) {
+    var hero = new Viewer($('#heroCanvas'), { aspect: 0.6, minH: 220, maxH: 320, faceColor: footballColor, zoom: 1.05 });
+    hero.setShape(S('football'));
+  }
+
+  // ---- table (section 2) ----
+  var tableKeys = [], revealed = false, hinted = false;
+  function renderTable() {
+    var body = $('#tblBody');
+    if (!body) return;
+    body.innerHTML = tableKeys.map(function (k) {
+      var s = S(k);
+      return '<tr><td>' + TITLE[k] + '</td><td class="tc">' + s.V + '</td><td class="te">' + s.E + '</td><td class="tf">' + s.F +
+        '</td><td class="sum"' + (hinted ? '' : ' hidden') + '>' + (s.V + s.F) + '</td><td class="tot"' + (revealed ? '' : ' hidden') + '>' + fmt(s.total) + '</td></tr>';
+    }).join('');
+    $('#tblTotHead').hidden = !revealed;
+    $('#tblSumHead').hidden = !hinted;
+    Array.prototype.forEach.call(document.querySelectorAll('#tblChips button'), function (b) {
+      b.setAttribute('aria-pressed', tableKeys.indexOf(b.dataset.k) >= 0 ? 'true' : 'false');
+    });
+    var n = tableKeys.length, out = $('#tblOut');
+    var allTwo = tableKeys.every(function (k) { return S(k).total === 2; });
+    var allPlus2 = tableKeys.every(function (k) { var s = S(k); return s.V + s.F === s.E + 2; });
+    if (revealed) {
+      out.innerHTML = 'You have <b>' + n + '</b> ' + plural(n, 'shape', 'shapes') + ' in the table. Corners take away edges add faces comes out to <b>' +
+        (allTwo ? '2</b> in every single row.' : 'different numbers</b> in different rows.');
+    } else if (n < 3) {
+      out.innerHTML = 'You have <b>' + n + '</b> ' + plural(n, 'shape', 'shapes') + ' so far. Collect at least three, then look along each row.';
+    } else {
+      out.innerHTML = hinted
+        ? 'You have <b>' + n + '</b> shapes. Compare the <b>corners + faces</b> column with the <b>edges</b> column in each row. ' +
+          (allPlus2 && n >= 5 ? 'Do you see it yet?' : 'What do you notice?')
+        : 'You have <b>' + n + '</b> shapes. Look along each row. Can you find a way to put the three numbers together that always gives the same answer?';
+    }
+  }
+  function tableAdd(k) { if (tableKeys.indexOf(k) < 0) { tableKeys.push(k); renderTable(); } }
+  if ($('#tblChips')) {
+    $('#tblChips').innerHTML = GEO.keys.map(function (k) {
+      return '<button type="button" id="chip-' + k + '" data-k="' + k + '" aria-pressed="false">' + TITLE[k] + '</button>';
+    }).join('');
+    $('#tblChips').addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (b) tableAdd(b.dataset.k);
+    });
+    on('#tblReveal', 'click', function () { revealed = true; hinted = true; this.disabled = true; $('#tblHint').disabled = true; renderTable(); });
+    on('#tblHint', 'click', function () { hinted = true; this.disabled = true; renderTable(); });
+    tableAdd('cube');
+  }
+
+  // ---- count viewer (section 1) ----
+  var MODE_WORD = { v: ['corner', 'corners'], e: ['edge', 'edges'], f: ['face', 'faces'] };
+  function updCount(v) {
+    var s = v.shape, m = v.marks, out = $('#countOut');
+    if (!out) return;
+    var tot = { v: s.V, e: s.E, f: s.F }, done = m.v.size === s.V && m.e.size === s.E && m.f.size === s.F;
+    var head = 'This ' + NAME[s.key] + ' has <b>' + s.V + '</b> corners, <b>' + s.E + '</b> edges and <b>' + s.F + '</b> faces. ';
+    var md = v.mode, n = m[md].size, w = MODE_WORD[md];
+    var tail;
+    if (done) tail = 'Everything is marked. You can find this shape in the table in section 2.';
+    else if (n === tot[md]) tail = 'You found every ' + w[0] + '! Switch to counting something else.';
+    else if (n === 0) tail = 'Tap a ' + w[0] + ' to mark it.';
+    else tail = 'You have marked <b>' + n + ' of ' + tot[md] + '</b> ' + w[1] + '. ' + (n > tot[md] / 2 ? 'Turn it round to find the rest.' : 'Keep going.');
+    out.innerHTML = head + tail;
+  }
+  var countV = null;
+  if ($('#countCanvas')) {
+    countV = new Viewer($('#countCanvas'), { count: true, faceColor: footballColor, onChange: updCount });
+    countV.setShape(S('cube'));
+    on('#countShape', 'change', function () { countV.setShape(S(this.value)); tableAdd(this.value); });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="countMode"]'), function (r) {
+      r.addEventListener('change', function () { if (this.checked) { countV.mode = this.value; countV.draw(); updCount(countV); } });
+    });
+    on('#countSee', 'change', function () { countV.see = this.checked; countV.draw(); });
+    on('#countAll', 'click', function () { countV.markAll(); });
+    on('#countClear', 'click', function () { countV.clearMarks(); });
+  }
+
+  // ---- rubber viewer (section 3) ----
+  if ($('#rubCanvas')) {
+    var rub = new Viewer($('#rubCanvas'), { faceColor: footballColor, onChange: updRub, maxH: 400 });
+    var rp = { stretch: 1, lumpy: 0, puff: 0 };
+    rub.deform = function (v, i, s) {
+      var r = GEO.len(v) || 1, sph = [v[0] / r, v[1] / r, v[2] / r];
+      var p = [v[0] + (sph[0] - v[0]) * rp.puff, v[1] + (sph[1] - v[1]) * rp.puff, v[2] + (sph[2] - v[2]) * rp.puff];
+      var k = 1 + rp.lumpy * 0.5 * seeded(i, s.V);
+      return [p[0] * k, p[1] * k * rp.stretch, p[2] * k];
+    };
+    function updRub() {
+      var s = rub.shape, adj = '';
+      if (rp.puff > 0.6) adj = 'puffed-up ';
+      else if (rp.lumpy > 0.25) adj = 'lumpy ';
+      else if (rp.stretch > 1.15) adj = 'stretched ';
+      else if (rp.stretch < 0.85) adj = 'squashed ';
+      $('#rubOut').innerHTML = 'This ' + adj + NAME[s.key] + ' still has <b>' + s.V + '</b> corners, <b>' + s.E + '</b> edges and <b>' + s.F +
+        '</b> faces. <span class="eq">' + sumLine(s.V, s.E, s.F) + '</span>';
+    }
+    function rubSet() {
+      rp.stretch = +$('#rubStretch').value; rp.lumpy = +$('#rubLumpy').value; rp.puff = +$('#rubPuff').value;
+      rub.computeDisp(); rub.draw(); updRub();
+    }
+    rub.setShape(S('cube'));
+    on('#rubShape', 'change', function () { rub.setShape(S(this.value)); rubSet(); });
+    ['#rubStretch', '#rubLumpy', '#rubPuff'].forEach(function (id) { on(id, 'input', rubSet); });
+    rubSet();
+  }
+
+  // ---- flatten (section 4) ----
+  if ($('#flatCanvas')) {
+    var flat = new Flattener($('#flatCanvas'));
+    var updFlat = function () {
+      var s = flat.shape, t = flat.t, out = $('#flatOut'), nm = NAME[s.key];
+      var nums = '<b>' + s.V + '</b> corners, <b>' + s.E + '</b> edges and <b>' + s.F + '</b> faces';
+      if (t < 0.02) out.innerHTML = 'This ' + nm + ' has ' + nums + '. The yellow face is the one we will pop open. <span class="eq">' + sumLine(s.V, s.E, s.F) + '</span>';
+      else if (t < 0.98) out.innerHTML = 'The ' + nm + ' is on its way to flat. It still has ' + nums + '. <span class="eq">' + sumLine(s.V, s.E, s.F) + '</span>';
+      else out.innerHTML = 'Flat ' + nm + ': ' + nums + ', counting <b>' + (s.F - 1) + '</b> inside plus the outside. <span class="eq">' + sumLine(s.V, s.E, s.F) + '</span>';
+    };
+    var setT = function (t) { flat.t = t; $('#flatT').value = t; flat.draw(); updFlat(); };
+    flat.setShape(S('cube')); updFlat();
+    on('#flatShape', 'change', function () { flat.setShape(S(this.value)); updFlat(); });
+    on('#flatT', 'input', function () { setT(+this.value); });
+    var playing = null;
+    on('#flatPlay', 'click', function () {
+      if (playing) cancelAnimationFrame(playing);
+      var from = flat.t > 0.5 ? 1 : 0, to = 1 - from;
+      if (RM.matches) { setT(to); return; }
+      var t0 = performance.now();
+      (function step(now) {
+        var k = Math.min(1, (now - t0) / 2600);
+        setT(from + (to - from) * k);
+        playing = k < 1 ? requestAnimationFrame(step) : null;
+      })(t0);
+    });
+  }
+
+  // ---- snip (sections 5, 6) and grow (section 7) ----
+  function tallyHTML(c) {
+    return '<span class="cell"><span class="n-c">' + c.V + '</span><small>corners</small></span><span class="op">' + MINUS + '</span>' +
+      '<span class="cell"><span class="n-e">' + c.E + '</span><small>edges</small></span><span class="op">+</span>' +
+      '<span class="cell"><span class="n-f">' + c.F + '</span><small>faces</small></span><span class="op">=</span>' +
+      '<span class="cell"><span class="n-t">' + fmt(c.V - c.E + c.F) + '</span><small>total</small></span>';
+  }
+  function deltaText(i) {
+    var parts = [];
+    [['dV', 'corners'], ['dE', 'edges'], ['dF', 'faces']].forEach(function (p) {
+      if (i[p[0]]) parts.push(p[1] + ' ' + (i[p[0]] > 0 ? 'up' : 'down') + ' ' + Math.abs(i[p[0]]));
+    });
+    return parts.length ? 'Change: ' + parts.join(', ') + '.' : '';
+  }
+  if ($('#snipCanvas')) {
+    var snip = new FlatMap($('#snipCanvas'), 'snip', {
+      onChange: function (m, info) {
+        var c = m.counts();
+        $('#snipTally').innerHTML = tallyHTML(c);
+        var msg = '', k = info.kind;
+        if (k === 'start') msg = 'A flat ' + NAME[m.shape.key] + '. Tap any line to snip it.';
+        else if (k === 'merge') msg = (info.outside ? 'Snipped a fence on the rim. That field joined the outside. ' : 'Snipped a fence. Two fields became one. ') + deltaText(info) + ' The total stayed the same.';
+        else if (k === 'pluck') msg = 'Pulled off a loose stick, and its lonely corner came with it. ' + deltaText(info) + ' The total stayed the same.';
+        else if (k === 'bridge') msg = 'That stick holds two parts of the map together. Snipping it would leave two separate pieces, so it stays. Try a loose stick (with a red end) or a fence with a different field on each side.';
+        else if (k === 'vertexTap') msg = 'Tap a line, not a dot.';
+        else if (k === 'done') msg = '';
+        if (c.E === 0) msg = 'Down to a single dot. <b>1</b> corner, <b>0</b> edges and <b>1</b> face, which is the whole outside. 1 ' + MINUS + ' 0 + 1 = 2.';
+        else if (k !== 'bridge' && k !== 'vertexTap' && m.snipCandidates().merge.length === 0) msg += ' No closed fields are left. What remains is a tree of sticks. The red dots are loose ends.';
+        if (msg) $('#snipOut').innerHTML = msg;
+      }
+    });
+    snip.load(S('cube'));
+    on('#snipShape', 'change', function () { snip.load(S(this.value)); });
+    on('#snipReset', 'click', function () { snip.load(S($('#snipShape').value)); });
+    on('#snipOne', 'click', function () { snip.stopAuto(); snip.snipOne(); });
+    on('#snipAll', 'click', function () { snip.snipAll(); });
+  }
+  if ($('#growCanvas')) {
+    var grow = new FlatMap($('#growCanvas'), 'grow', {
+      onChange: function (m, info) {
+        var c = m.counts();
+        $('#growTally').innerHTML = tallyHTML(c);
+        var k = info.kind, msg = {
+          start: 'A flat ' + NAME[m.shape.key] + '. Tap the middle of a line, tap two dots, or tap an empty spot.',
+          split: 'Added a corner in the middle of an edge, so one edge became two. ' + deltaText(info) + ' Still ' + fmt(c.V - c.E + c.F) + '.',
+          join: 'Joined two corners with a new fence. One field became two. ' + deltaText(info) + ' Still ' + fmt(c.V - c.E + c.F) + '.',
+          stick: 'Grew a new stick with a corner on its end. ' + deltaText(info) + ' Still ' + fmt(c.V - c.E + c.F) + '.',
+          select: 'Corner picked. Now tap another corner to join them, or tap this one again to let go.',
+          unselect: 'Let go of that corner.',
+          already: 'Those two corners are already joined.',
+          cross: 'That line would cross a fence or run through a dot. On a real solid, edges never cross, so the map will not allow it.',
+          nearEnd: 'Tap nearer the middle of the line to add a corner there.',
+          tooClose: 'Too close to a dot. Tap a more open spot.',
+          edgeOfBox: 'Tap a spot a little further inside the box.'
+        }[k];
+        if (msg) $('#growOut').innerHTML = msg;
+      }
+    });
+    grow.load(S('cube'));
+    on('#growShape', 'change', function () { grow.load(S(this.value)); });
+    on('#growReset', 'click', function () { grow.load(S($('#growShape').value)); });
+    on('#growOne', 'click', function () { grow.growOne(); });
+  }
+
+  // ---- football (section 8) ----
+  if ($('#ballCanvas')) {
+    var ball = new Viewer($('#ballCanvas'), { faceColor: footballColor, maxH: 360, aspect: 0.7 });
+    ball.setShape(S('football'));
+    var fb = S('football'), np = fb.faces.filter(function (f) { return f.length === 5; }).length, nh = fb.faces.filter(function (f) { return f.length === 6; }).length;
+    var three = fb.degree.every(function (d, i) { return d === 3; });
+    $('#ballOut').innerHTML = 'This football has <b>' + np + '</b> pentagons and <b>' + nh + '</b> hexagons: <b>' + fb.V + '</b> corners, <b>' + fb.E +
+      '</b> edges and <b>' + fb.F + '</b> faces. ' + (three ? 'Every corner has exactly 3 patches round it. ' : '') + '<span class="eq">' + sumLine(fb.V, fb.E, fb.F) + '</span>';
+  }
+  function updCalc() {
+    var P = +$('#calcP').value, Hx = +$('#calcH').value, out = $('#calcOut');
+    $('#calcPv').textContent = P; $('#calcHv').textContent = Hx;
+    if (P + Hx === 0) { out.innerHTML = '<p>Add some patches to start.</p>'; return; }
+    var slots = P * 5 + Hx * 6, F = P + Hx, rows = [];
+    rows.push('<li><span>Patch corners</span> ' + P + ' × 5 + ' + Hx + ' × 6 = <b>' + slots + '</b></li>');
+    var V = slots / 3, E = slots / 2, okV = slots % 3 === 0, okE = slots % 2 === 0;
+    rows.push('<li><span>Ball corners</span> ' + (okV ? slots + ' ÷ 3 = <b>' + V + '</b>' : slots + ' ÷ 3 is <b class="bad">not a whole number</b>') + '</li>');
+    rows.push('<li><span>Edges</span> ' + (okE ? slots + ' ÷ 2 = <b>' + E + '</b>' : slots + ' ÷ 2 is <b class="bad">not a whole number</b>') + '</li>');
+    rows.push('<li><span>Faces</span> ' + P + ' + ' + Hx + ' = <b>' + F + '</b></li>');
+    var verdict;
+    if (!okV || !okE) {
+      verdict = 'The corners or edges do not share out evenly, so these patches can never be sewn into a ball where 3 meet at every corner.';
+    } else {
+      var tot = V - E + F;
+      rows.push('<li><span>Total</span> ' + sumLine(V, E, F) + '</li>');
+      if (tot === 2) verdict = '<b class="good">It comes out to 2.</b> The count allows a ball.' + (Hx === 1 ? ' (Even so, nobody can build one with exactly 1 hexagon. The count is a test a ball must pass, and passing it is not a promise.)' : '');
+      else if (P === 0) verdict = 'It comes out to <b class="bad">0</b>, not 2. Hexagons alone lie flat, like a honeycomb, and never curl up into a ball.';
+      else verdict = 'It comes out to <b class="bad">' + fmt(tot) + '</b>, not 2. These patches cannot close up into a ball.';
+    }
+    out.innerHTML = '<ul class="calc-rows">' + rows.join('') + '</ul><p>' + verdict + '</p>';
+  }
+  if ($('#calcP')) { on('#calcP', 'input', updCalc); on('#calcH', 'input', updCalc); updCalc(); }
+
+  // ---- dome (section 9) ----
+  if ($('#domeCanvas')) {
+    var dome = new Viewer($('#domeCanvas'), {
+      maxH: 380, aspect: 0.72, thin: true,
+      vertexStyle: function (i, s) { return s.degree[i] === 5 ? { r: 5.5, c: '--corner', ring: true } : { r: 1.6, c: '--line' }; }
+    });
+    var updDome = function () {
+      var f = +$('#domeF').value, s = S('dome' + f), five = 0, six = 0;
+      s.degree.forEach(function (d) { if (d === 5) five++; else if (d === 6) six++; });
+      $('#domeFv').textContent = f;
+      dome.setShape(s);
+      $('#domeOut').innerHTML = 'This dome has <b>' + s.V + '</b> corners, <b>' + s.E + '</b> edges and <b>' + s.F + '</b> triangles. <b>' + five +
+        '</b> corners have five triangles round them (red) and <b>' + six + '</b> have six. <span class="eq">' + sumLine(s.V, s.E, s.F) + '</span>';
+    };
+    on('#domeF', 'input', updDome); updDome();
+  }
+
+  // ---- stranger shapes (section 10) ----
+  if ($('#strCanvas')) {
+    var str = new Viewer($('#strCanvas'), {
+      maxH: 400,
+      faceColor: function (fi, s) { return s.key === 'star' && $('#strStar').checked ? MAPC[s.group[fi] % 6] : '--solid'; }
+    });
+    var STR_NAME = { frame: 'picture frame', twohole: 'window with two holes', dent: 'dented cube', kiss: 'pair of kissing cubes', star: 'spiky star' };
+    var updStr = function () {
+      var k = $('#strShape').value, s = S(k), starWay = $('#strStar').checked;
+      $('#strStarWrap').hidden = k !== 'star';
+      var c = (k === 'star' && starWay) ? s.monster : s, out;
+      if (k === 'star' && starWay) {
+        out = 'Counted as big flat stars: <b>' + c.V + '</b> points, <b>' + c.E + '</b> long edges and <b>' + c.F + '</b> star-shaped faces (each colour is one star). <span class="eq">' + sumLine(c.V, c.E, c.F) + '</span>';
+      } else {
+        out = 'This ' + STR_NAME[k] + ' has <b>' + c.V + '</b> corners, <b>' + c.E + '</b> edges and <b>' + c.F + '</b> faces. <span class="eq">' + sumLine(c.V, c.E, c.F) + '</span>';
+      }
+      $('#strOut').innerHTML = out;
+    };
+    str.opt.onChange = updStr;
+    str.setShape(S('frame'));
+    on('#strShape', 'change', function () { str.setShape(S(this.value)); });
+    on('#strStar', 'change', function () { str.draw(); updStr(); });
+  }
+
+  // ---- make your own (section 11) ----
+  function updMine() {
+    var V = +$('#myV').value, E = +$('#myE').value, F = +$('#myF').value, t = V - E + F, out = $('#myOut');
+    if (!(V >= 0 && E >= 0 && F >= 0)) { out.innerHTML = 'Type three counts.'; return; }
+    var msg = sumLine(V, E, F) + '. ';
+    if (t === 2) msg += '<b class="good">Your shape follows the rule.</b>';
+    else if (t === 0) msg += 'You got 0. Does your shape have a tunnel through it, like the picture frame?';
+    else msg += 'You got ' + fmt(t) + '. Count again slowly, marking each one as you go. If you still get ' + fmt(t) + ', you may have built a monster. Check section 10.';
+    out.innerHTML = msg;
+  }
+  if ($('#myV')) { ['#myV', '#myE', '#myF'].forEach(function (id) { on(id, 'input', updMine); }); updMine(); }
+})();
+</script>
+
+</html>
