@@ -22,3 +22,4 @@ Each rule below came from reading a finished explainer page as a 10-year-old and
 | Keep the voice; one idiom touch at most | Two prompts both closed with the same borrowed flourish; it read as pastiche |
 | Audience line must survive a feasibility check | "10-year-olds" was kept by copy-paste for a topic whose load-bearing step is taught at 13 to 14 |
 | Late sections (recap, stranger things, make-your-own) are where sentences get long | Teaching sections scored grade 3 to 5; the last two scored 8 to 9 on sentence length alone. Ask for short sentences everywhere, including the footer |
+| State every definition the page must use; name attached files, never repository paths | A professional-topic prompt pointed at two files by repo path and left a ratio undefined; run cold, the builder had no data, and when given the data it used the standard definition instead of the house one |

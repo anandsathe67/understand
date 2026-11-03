@@ -83,6 +83,8 @@ Go down this list. Fix the prompt, don't just note it.
 - [ ] No line dictates structure the builder would find anyway; no line forbids a better structure ("refine freely" is present).
 - [ ] The voice is the user's. One touch of their idiom at most; no pastiche.
 - [ ] "Verify every date" has a fallback the builder can honour without web access.
+- [ ] Every formula, definition or house rule the page must use is stated in the prompt itself. A builder that only has the attached data will fall back to the standard definition and say so honestly; if your organisation's definition differs (a ratio that also subtracts insider receivables, say), the prompt has to carry it.
+- [ ] If the prompt depends on source files, it says "I have attached" and names them; it never points at a repository path a cold reader cannot open.
 
 ### 5. Deliver
 
