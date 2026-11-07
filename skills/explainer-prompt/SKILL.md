@@ -100,4 +100,4 @@ Two finished prompts with their v1 versions and the reviews that changed them:
 - `topics/eulers-polyhedron-formula/prompt.md` (10-year-old alone; 930 words)
 - `topics/eulers-identity/prompt.md` (12 to 14 alone, or 10 with a parent; 1,100 words)
 
-Read one before drafting; the arc bullets show the level of detail that works. For the book format there is no public example yet; the rules and the measurements from the first book are in [book-format.md](book-format.md).
+Read one before drafting; the arc bullets show the level of detail that works. For the book format, `topics/*/prompt-book.md` are the two prompts that ran cold into `topics/*/book/`; the rules and the measurements are in [book-format.md](book-format.md).
