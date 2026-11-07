@@ -8,22 +8,24 @@ I'm looking for an interactive explainer web page on {topic, with the key formul
 
 {If the topic is hard:} I know this is much harder than most topics for a {age}. Please build an honest path that uses only {the tools the audience has: counting, multiplying, a number line, turning, repeating a step many times}. No {banned tools: calculus, Taylor series, bracket algebra in the main text}, no "just trust me" steps. If you need {a hard step}, put it in a "For older readers" box and let the main text state the outcome and check it in a sim. If a step genuinely can't be made honest at age {age}, say so on the page and mark it "For older readers" rather than fudging it.
 
+{If the format is a book (see book-format.md):} **Format: a short book, not a long scroll.** One HTML file that shows one chapter at a time, with a contents page, Back and Next buttons (Next names the next chapter), a chapter counter, left and right arrow keys, and an "all chapters on one page" view for skimming and printing. Every chapter: is titled as a plain claim and adds exactly ONE idea; opens with a line that answers the question the previous chapter ended on and closes with the question the next chapter answers; gives an everyday analogy before any term; has one live simulation, two at most, and never none; has up to three "things to notice" bullets and one short "Take this with you" box; runs 200 to 300 words of body text, a count that includes the notice bullets and the take-away box and leaves out only sim captions and readouts; keeps sentences short (average under 14 words, none over 20); folds optional material (home or desk exercises, side notes) behind a collapsible heading at its end. Chapters that build on the same simulation share it: the reader's work carries forward, a chapter may show only the part of the sim in play, and a chapter reached out of order fills in the earlier moves so its text still matches its numbers. Never send the reader back to an earlier chapter. Keep a small thread in the top bar that tracks {the one number the book is about}. Twelve chapters at most, plus contents. The page may be shown in a sandboxed frame, so keep all state in memory: no localStorage, cookies, URL hash or history writes.
+
 **Models to imitate:** {exemplar names and URLs}. They build an idea one change at a time, show what happens before naming it, stay playful, and let the reader poke live simulations. Specifically:
 
 1. Open with a vivid everyday scene ({a concrete scene for this topic}), then list 4–5 puzzling questions the page promises to answer: {three example questions in a child's words}.
-2. About 10 numbered sections. Title each as a plain claim ("{example claim title}"), and have each one add exactly ONE idea.
+2. About 10 numbered sections {book: "chapters"}. Title each as a plain claim ("{example claim title}"), and have each one add exactly ONE idea.
 3. Give an everyday analogy before any term. Bold a technical word only after the thing itself has been shown. {If a prerequisite is assumed, name it: "Explain what a power is (2³ means 2 × 2 × 2) in the first section."} Every letter that stands for a number must arrive *after* the concrete number it stands for, in a side remark, never as the thing the reader has to follow.
 4. Every main diagram is a live simulation computed from the real {maths/physics/geometry}, not a painted picture. Use sliders, drag handles, buttons and toggles, with a live readout sentence and a caption under each. Add "A few things to notice" bullets that tell the reader which settings to try.
-5. Use callbacks: later sections send the reader back to an earlier sim. Plant an idea early ("Hold on to this idea") once, and pay it off later.
+5. Use callbacks: later sections send the reader back to an earlier sim {book: "later chapters reuse the earlier sim in place, with its state carried forward"}. Plant an idea early ("Hold on to this idea") once, and pay it off later.
 6. Include one moment where the answer emerges from repetition rather than being asserted: {name it for this topic}.
 7. Protect the discovery. Where the reader is meant to find a pattern, show the raw data only; put the helpful column or the answer behind a "stuck? give me a hint" button and a "check my answer" button.
 8. Add 3–4 "TRY IT AT HOME" boxes using cheap household things. Each should explain why it works and tie back to a sim. Use materials that actually work.
 9. Weave small history nuggets into the sections. No separate history section.
-10. Include a "Stranger things" section of short esoteric extras.
+10. Include a "Stranger things" section of short esoteric extras. {book: replace with "No stranger-things chapter: each extra goes into the chapter it belongs to as a collapsed side note. Add a summary chapter before the capstone: the whole mechanism on one page with its numbers computed live, then the main ideas and the home activities linked to their chapters."}
 11. End with a "Make your own" capstone and a one-sentence recap of the whole mechanism. The footer should credit the models and say honestly what the sims model and what they simplify.
 12. Show exact numbers live, rounded for a child ("1.00002×" is nearly 1; "1.0000197×" is a strange number). Never let a notice bullet claim something the readout under it contradicts at the sim's default setting; if a claim only holds as a count grows, say so.
 13. At every "the total stays the same" or "it lands on" moment, show the worked numbers ({example: "8 − 12 + 6 = 2; snip one: 8 − 11 + 5 = 2"}).
-14. Make it a single page with warm editorial typography that works well on a phone. {Optional: "Give it its own look, not cream paper and a serif. Support dark mode."}
+14. Make it a single page with warm editorial typography that works well on a phone. {Optional: "Give it its own look, not cream paper and a serif. Support dark mode."} {book: add "The sticky top bar must stay short on a phone."}
 
 **Suggested arc (refine freely):**
 - {Idea 1, in one line. Sim: what the reader drags and what they see.}
@@ -38,4 +40,4 @@ I'm looking for an interactive explainer web page on {topic, with the key formul
 
 This is {two or three} sittings. Mark a "good place to stop" after {idea} and again after {idea}.
 
-**Please avoid:** stating the result and then admiring it; {the clichés for this topic}; {banned tools}; any "just trust me" step; jargon before intuition.
+**Please avoid:** stating the result and then admiring it; {the clichés for this topic}; {banned tools}; any "just trust me" step; jargon before intuition{book: "; a chapter with no simulation; a chapter that sends the reader back to another chapter's sim"}.

@@ -15,5 +15,7 @@ for(const p of parts){
   const wps=words.length/sents.length, spw=sy/words.length;
   const fk=0.39*wps+11.8*spw-15.59;
   const longest=sents.map(s=>s.split(/\s+/).length).sort((a,b)=>b-a).slice(0,3);
-  console.log(`${fk.toFixed(1).padStart(5)}  w/s ${wps.toFixed(1).padStart(5)}  long% ${(100*long/words.length).toFixed(0).padStart(3)}  top ${longest.join('/')}  ${title.slice(0,60)}`);
+  // body = the words the reader must read: no sim captions or readouts, no collapsed extras, no footer
+  const bodyWords=text(p.replace(/<(div|p|span)[^>]*class="[^"]*\b(caption|readout|sim-title|slot-note)\b[^"]*"[^>]*>[\s\S]*?<\/\1>/g,' ').replace(/<details[\s\S]*?<\/details>/g,' ').replace(/<footer[\s\S]*?<\/footer>/g,' ')).split(/\s+/).filter(w=>/[a-zA-Z]/.test(w)).length;
+  console.log(`${fk.toFixed(1).padStart(5)}  w/s ${wps.toFixed(1).padStart(5)}  long% ${(100*long/words.length).toFixed(0).padStart(3)}  top ${longest.join('/')}  words ${String(words.length).padStart(4)} body ${String(bodyWords).padStart(4)}  ${title.slice(0,60)}`);
 }

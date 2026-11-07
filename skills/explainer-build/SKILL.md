@@ -55,6 +55,8 @@ node readability.mjs path/to/index.html
 
 Target grade 6 or under in every section for a 10-year-old page. Sections over 6 are almost always the late ones (recap, stranger things, make-your-own, footer) and the cause is sentence length, not vocabulary. Split sentences over 18 words. Don't chase a section below grade 4; it goes choppy and buys nothing. See [readability.mjs](readability.mjs) for the columns.
 
+For a book, also read the words column: each chapter's body text should sit between 200 and 300 words (sim captions and readouts excluded). Under 175 is a chapter with no idea of its own; over 320 is two ideas, or the scroll page coming back.
+
 ### 6. Browser check
 
 Serve the folder statically (a local file:// open renders as a snapshot in some tools; a static server does not) and load the page:
@@ -64,6 +66,17 @@ Serve the folder statically (a local file:// open renders as a snapshot in some 
 - drive the key sims by script: set each slider to the values the notice bullets name and read the readout; press the buttons the text names
 - the discovery mechanism works (hint column hidden until asked, check-my-answer before reveal)
 - dark mode, if the prompt asked for it
+
+For a book (the prompt has a format block; rules in `../explainer-prompt/book-format.md`), add:
+
+- paging: Next, Back, the chapter buttons and the arrow keys each change the chapter; arrow keys do nothing while focus is inside a sim or a form control; the chapter heading takes focus and the page is at the top
+- every chapter has a sim; the contents page links each puzzle to a chapter
+- carried state: make a move in a chapter, go to the next, read the shared sim's readout; the move is still there
+- out of order: reset the sim, jump straight to a later chapter that assumes earlier moves, read the readout; it matches that chapter's text
+- the thread in the top bar changes when the sim changes
+- "all on one page" shows every chapter and comes back cleanly
+- at 375 px the sticky top bar is under a quarter of the viewport height
+- sandbox: load the file through a blob URL in an `<iframe sandbox="allow-scripts">` (no `allow-same-origin`) and drive the same checks by script with `postMessage` back; zero errors, and no use of localStorage, cookies, hash or history
 
 ### 7. Fix pass
 
@@ -76,7 +89,11 @@ Apply fixes with an exact-string replacement script, one `(old, new)` pair per f
 
 ### 9. Report
 
-One table: words, reading grade, sims, console errors, horizontal scroll, numbers checked, dates checked, age-alone, age-with-parent. Then the fixes applied and the ones left for the user, each with the section and the reason.
+One table: words, reading grade, sims, console errors, horizontal scroll, numbers checked, dates checked, age-alone, age-with-parent. For a book add chapters, words per chapter (min and max), chapters without a sim, and the sandbox result. Then the fixes applied and the ones left for the user, each with the section and the reason.
+
+### Converting an existing scroll page to a book
+
+Cheaper than a cold build when the scroll page has already been reviewed: keep its CSS, data, calculations and sim markup verbatim, write new chapter markup around the sims, and add the paging script. Assemble with a build script rather than editing a copy, so the sims stay identical to the reviewed ones and the conversion can be re-run after a fix to the scroll page. Then run steps 2, 5 and 6 on the book. The first book was made this way; its prompt was run cold afterwards to see whether the format rules alone produce it.
 
 ## Why cold
 

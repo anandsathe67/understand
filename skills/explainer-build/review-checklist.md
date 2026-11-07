@@ -17,6 +17,11 @@ Two passes. The adversarial pass asks "is it true and does it work". The learner
 | Sims actually fire | Script-drive each control; confirm the readout changes | a dead sim is top severity |
 | Phone | 375 px, no horizontal scroll, controls reachable | fix |
 | Console | zero errors on load and after driving sims | fix |
+| Book: chapter without a sim | list chapters; each has a live control except contents | fix, or merge the chapter |
+| Book: handoff | the first line of each chapter answers the previous closing question | fix the wording |
+| Book: carried state | move in chapter n, open n+1, readout unchanged; reset, jump to n+2, readout matches its text | a lost move or a mismatch is top severity |
+| Book: storage | grep for localStorage, sessionStorage, document.cookie, location.hash =, pushState, replaceState | fix; the sandbox blocks them |
+| Book: phone top bar | height at 375 px under a quarter of the viewport | fix |
 
 ## Learner pass
 
@@ -60,3 +65,4 @@ From two pages, 24 fixes. Expect the same classes on any new page:
 - long sentences in the recap, stranger-things and footer sections
 - a count stated in the text that the sim can't show ("16 − 24 + 11 = 3" with no such shape in the sim)
 - a heading that promises more than the list delivers ("Four people drew the plane" above three names)
+- book: a sticky top bar that eats the phone viewport; "left" and "right" in the text when the sim stacks on a phone; a Back button that wraps onto two lines

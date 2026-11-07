@@ -17,6 +17,7 @@ The output is a prompt, not a page. To build and review the page, use `explainer
 | Audience | no | Default: "reasonably smart 10-year-old working alone". Adjust honestly after step 2. |
 | Exemplar URLs | no | Pages the user already thinks are good. Fetch them, extract principles, never copy text. |
 | The user's own earlier prompt | no | If they have one that worked, keep its voice and length as the baseline. |
+| Format | no | `scroll` (default) or `book`: one chapter on screen at a time. Decide with the table in [book-format.md](book-format.md); the usual triggers are more than about 2,500 words or 8 sims, sections that reuse an earlier sim, or readers who work in short sittings. |
 
 ## Steps
 
@@ -58,6 +59,7 @@ Use [prompt-template.md](prompt-template.md). Fill every slot with topic-specifi
 
 1. The opening paragraph: who the reader is, what the user has tried, what they want the child to *see*. One honest sentence about difficulty if the topic is hard.
 2. Constraints on the path: which tools the explanation may use, what is banned (calculus, "just trust me", jargon before intuition), where hard steps go.
+   - For a book, the format block from the template, filled in with the one number the thread tracks. Then go through the numbered requirements and apply every `{book: …}` substitution; the chapter rules in [book-format.md](book-format.md) are what the block encodes, and the reasons there are for you, not the prompt.
 3. Models to imitate, as principles in your words from step 1, not as "copy this page".
 4. The numbered requirements (about 12). Keep the ones in the template; they are all load-bearing and each one was missing from some earlier page.
 5. A suggested arc, marked "refine freely". Four to six bullets, each naming the one idea and its sim. The arc is where the thinking goes; a good arc is the difference between a page and a tour.
@@ -66,7 +68,7 @@ Use [prompt-template.md](prompt-template.md). Fill every slot with topic-specifi
 8. Sittings and stop markers.
 9. The avoid list.
 
-Length: 600 to 1,100 words. Over that, cut the sim list and history list first; the builder finds those on its own.
+Length: 600 to 1,100 words. Over that, cut the sim list and history list first; the builder finds those on its own. A prompt that carries a data source and house definitions (a professional topic with attached files) runs 1,200 to 1,600 words, and a book prompt adds about 250 for the format block; that is the one case where the length is earned.
 
 ### 4. Self-check before handing over
 
@@ -85,6 +87,7 @@ Go down this list. Fix the prompt, don't just note it.
 - [ ] "Verify every date" has a fallback the builder can honour without web access.
 - [ ] Every formula, definition or house rule the page must use is stated in the prompt itself. A builder that only has the attached data will fall back to the standard definition and say so honestly; if your organisation's definition differs (a ratio that also subtracts insider receivables, say), the prompt has to carry it.
 - [ ] If the prompt depends on source files, it says "I have attached" and names them; it never points at a repository path a cold reader cannot open.
+- [ ] If the format is a book: the handoff rule (first line answers, last line asks), the no-chapter-without-a-sim rule, the carried-state rule with its out-of-order fill-in, the no-storage rule and the thread number are all in the prompt. A builder given "chapters" without these produces a slide deck with Next buttons.
 
 ### 5. Deliver
 
@@ -97,4 +100,4 @@ Two finished prompts with their v1 versions and the reviews that changed them:
 - `topics/eulers-polyhedron-formula/prompt.md` (10-year-old alone; 930 words)
 - `topics/eulers-identity/prompt.md` (12 to 14 alone, or 10 with a parent; 1,100 words)
 
-Read one before drafting; the arc bullets show the level of detail that works.
+Read one before drafting; the arc bullets show the level of detail that works. For the book format there is no public example yet; the rules and the measurements from the first book are in [book-format.md](book-format.md).

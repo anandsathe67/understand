@@ -28,3 +28,5 @@ Then in Claude Code: `/explainer-prompt Euler's formula for solid shapes, for a 
 1. `/explainer-prompt <topic> [URL]` → `prompt.md`, `prompt-notes.md`. Read the audience verdict.
 2. `/explainer-build prompt.md` → `cold/index.html`, review report, fixes applied, link.
 3. If the learner pass found a prompt defect (audience line, missing rule), edit `prompt.md` and rerun step 2. The prompt is the asset; the page is its test.
+
+Both skills know two shapes: the scroll (default) and the book, one chapter on screen at a time with a shared sim whose state carries forward. The rules and when to pick the book are in [explainer-prompt/book-format.md](explainer-prompt/book-format.md).
