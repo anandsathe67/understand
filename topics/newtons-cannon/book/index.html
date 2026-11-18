@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the Moon Doesn't Fall Down</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e9f0fb;--card:#ffffff;--ink:#16223f;--mut:#56637f;--line:#cdd9ec;
+  --acc:#d94f06;--acc2:#1668c7;--good:#0f7a57;
+  --sky:#f4f8ff;--earth:#9ccdb4;--earthE:#3a8869;--rock:#8089a0;--trace:#a9b8d2;
+  --note:#fff3e2;--take:#e3f1ff;--hold:#fdefb8;--btn:#16223f;--btnink:#ffffff;
+  --ff:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --fh:"Bricolage Grotesque","Atkinson Hyperlegible",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a0f20;--card:#131a33;--ink:#e9edfa;--mut:#9ca8c8;--line:#2a3559;
+    --acc:#ff8b4d;--acc2:#78b8ff;--good:#62d3a8;
+    --sky:#080c1c;--earth:#2a6b58;--earthE:#66c7a2;--rock:#8c95ad;--trace:#4b5b88;
+    --note:#2b2116;--take:#12233c;--hold:#352b0b;--btn:#e9edfa;--btnink:#0a0f20;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a0f20;--card:#131a33;--ink:#e9edfa;--mut:#9ca8c8;--line:#2a3559;
+  --acc:#ff8b4d;--acc2:#78b8ff;--good:#62d3a8;
+  --sky:#080c1c;--earth:#2a6b58;--earthE:#66c7a2;--rock:#8c95ad;--trace:#4b5b88;
+  --note:#2b2116;--take:#12233c;--hold:#352b0b;--btn:#e9edfa;--btnink:#0a0f20;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ff);font-size:18px;line-height:1.55;overflow-x:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+.bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:8px;height:44px;padding:0 10px;
+  background:var(--card);border-bottom:2px solid var(--line)}
+.bar button{height:32px;min-width:34px;padding:0 9px;border:1.5px solid var(--line);border-radius:8px;background:transparent;font-size:14px;font-weight:700;white-space:nowrap}
+.bar button:hover{border-color:var(--acc2)}
+#count{font-size:13px;color:var(--mut);white-space:nowrap;font-variant-numeric:tabular-nums}
+.thread{margin-left:auto;font-size:13px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.thread b{color:var(--acc);font-variant-numeric:tabular-nums}
+main{max-width:720px;margin:0 auto;padding:18px 16px 60px}
+.page{display:none}
+.page.active,body.all .page{display:block}
+body.all .page{margin-bottom:56px;padding-bottom:28px;border-bottom:3px dashed var(--line)}
+body.all .pager{display:none}
+h1,h2,h3,h4{font-family:var(--fh);line-height:1.15;margin:0}
+h1{font-size:clamp(2rem,8vw,3.1rem);font-weight:800;letter-spacing:-.02em;margin:10px 0 14px}
+h1 em{font-style:normal;color:var(--acc)}
+h2{font-size:clamp(1.5rem,5.6vw,2.15rem);font-weight:800;letter-spacing:-.015em;margin:2px 0 16px}
+h3{font-size:1.1rem;margin:26px 0 8px}
+h4{font-size:1rem;margin:16px 0 4px}
+p{margin:0 0 14px}
+.kicker{font-family:var(--fh);font-weight:700;font-size:.85rem;letter-spacing:.09em;text-transform:uppercase;color:var(--acc2);margin:0 0 4px}
+.ask{font-weight:700;color:var(--acc2);font-size:1.08rem;margin-top:20px}
+.ans{font-weight:700}
+.link{background:none;border:0;padding:0;color:var(--acc2);text-decoration:underline;text-underline-offset:3px;text-align:left;font-weight:700}
+.sim{margin:22px 0;padding:12px;background:var(--card);border:2px solid var(--line);border-radius:16px}
+.sim canvas{display:block;width:100%;border-radius:10px;background:var(--sky);touch-action:pan-y}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin-bottom:10px}
+.ctl label{flex:1 1 200px;font-size:.9rem;font-weight:700;display:block;min-width:0}
+.ctl output{color:var(--acc);font-variant-numeric:tabular-nums}
+input[type=range]{display:block;width:100%;height:34px;margin:0;accent-color:var(--acc)}
+.btn{min-height:42px;padding:8px 16px;border-radius:999px;border:0;background:var(--btn);color:var(--btnink);font-weight:700;font-size:.95rem}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--mut)}
+.btn:active{transform:translateY(1px)}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.readout{margin:10px 0 0;padding:10px 12px;border-left:4px solid var(--acc);background:var(--bg);border-radius:0 10px 10px 0;font-size:.98rem;font-variant-numeric:tabular-nums}
+.readout:empty{display:none}
+.readout.coach{border-left-color:var(--acc2)}
+.readout.live p{margin:0 0 6px}.readout.live p:last-child{margin:0}
+figcaption{font-size:.84rem;color:var(--mut);margin-top:10px}
+.timers{display:flex;gap:10px;margin-bottom:8px;font-size:.9rem;font-variant-numeric:tabular-nums}
+.timers span{flex:1;padding:6px 10px;border-radius:10px;background:var(--bg)}
+.timers b{font-size:1.15rem}
+.tA b{color:var(--acc2)}.tB b{color:var(--acc)}
+.tw{overflow-x:auto;margin-top:10px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+td.empty{color:var(--mut);font-style:italic}
+.box{margin:20px 0;padding:14px 16px;border-radius:14px}
+.box h3{margin:0 0 6px;font-size:.92rem;letter-spacing:.06em;text-transform:uppercase}
+.box p:last-child,.box ul:last-child{margin-bottom:0}
+.notice{background:var(--note)}
+.notice ul{margin:0;padding-left:20px}
+.notice li{margin-bottom:4px}
+.take{background:var(--take);border:2px solid var(--acc2)}
+.hold{background:var(--hold);border:2px dashed var(--acc)}
+details.extra{margin:26px 0 0;border:1.5px solid var(--line);border-radius:14px;padding:0 14px;background:var(--card)}
+details.extra summary{cursor:pointer;font-weight:700;padding:12px 0;font-family:var(--fh)}
+details.extra[open]{padding-bottom:10px}
+details.extra p{font-size:.95rem}
+.pager{display:flex;gap:10px;align-items:stretch;margin-top:34px}
+.pager .pc{align-self:center;font-size:.8rem;color:var(--mut);white-space:nowrap}
+.pager .btn{border-radius:14px;text-align:left;line-height:1.25}
+.pager .next{flex:1;background:var(--acc);color:#fff}
+:root[data-theme="dark"] .pager .next{color:#0a0f20}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pager .next{color:#0a0f20}}
+.puz{list-style:none;padding:0;margin:0 0 8px}
+.puz li{margin:0 0 8px;padding:10px 12px;background:var(--card);border-radius:12px;border:1.5px solid var(--line)}
+#tocList{padding-left:26px;margin:8px 0}
+#tocList li{margin-bottom:7px}
+#tocList li.stop{list-style:none;margin:10px 0 10px -26px;padding:9px 12px;border-radius:12px;background:var(--hold);font-size:.92rem}
+.foot{margin-top:34px;padding-top:14px;border-top:2px solid var(--line);font-size:.85rem;color:var(--mut)}
+.foot a{color:var(--acc2)}
+.links{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 14px}
+@media (max-width:480px){
+  body{font-size:17px}
+  .bar .lbl,.thread .tl{display:none}
+  .bar{gap:6px;padding:0 8px}
+  .pager .pc{display:none}
+}
+@media print{
+  .bar,.pager,.btn,.ctl{display:none!important}
+  .page{display:block!important;break-inside:avoid-page}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <button id="btnHome" type="button" aria-label="Contents">&#9776;<span class="lbl"> Contents</span></button>
+  <span id="count"></span>
+  <span class="thread" title="Your farthest shot so far"><span class="tl">Your farthest shot: </span><b id="threadV"></b></span>
+  <button id="btnAll" type="button" aria-label="Show all chapters on one page">All</button>
+  <button id="btnTheme" type="button" aria-label="Switch light and dark">&#9680;</button>
+</header>
+
+<main id="main">
+
+<!-- ======================= CONTENTS ======================= -->
+<section class="page" id="toc">
+  <p class="kicker">A short book with a cannon in it</p>
+  <h1>Why doesn't the Moon <em>fall down?</em></h1>
+  <p>You throw a ball as hard as you can. It sails across the field. Then it lands. Everything you have ever thrown has landed.</p>
+  <p>Now look up. The Moon hangs there, night after night. Nobody is holding it. Nothing is under it. And it never lands.</p>
+  <p>This book finds out why. You will not be told the answer. You will fire a cannon until you find it.</p>
+
+  <h3>Puzzles this book answers</h3>
+  <ul class="puz">
+    <li><button class="link" data-go="10">Why doesn't the Moon fall down?</button></li>
+    <li><button class="link" data-go="6">How fast would you have to throw a ball so it never lands?</button></li>
+    <li><button class="link" data-go="3">If you throw harder, does the ball stay up longer?</button></li>
+    <li><button class="link" data-go="8">Why do astronauts float if gravity is still pulling on them?</button></li>
+    <li><button class="link" data-go="11">What would the Moon do if gravity switched off?</button></li>
+  </ul>
+
+  <h3>Chapters</h3>
+  <ol id="tocList"></ol>
+  <p style="font-size:.92rem;color:var(--mut)">Each chapter adds one idea and has something to poke. Use Next and Back, or the left and right arrow keys. The number in the top bar is your farthest shot so far. Watch what happens to it.</p>
+  <div class="btnrow">
+    <button class="btn" data-go="1">Start reading</button>
+    <button class="btn alt" id="btnAll2" type="button">All chapters on one page</button>
+  </div>
+</section>
+
+<!-- ======================= 1 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>A thrown ball falls just as fast as a dropped one</h2>
+  <p class="ans">Start with the ball that does land. It holds the first clue.</p>
+  <p>Picture two friends on a high diving board. One just steps off the end. The other takes a running jump. Who hits the water first? Most people pick the one who steps off. The runner has farther to travel, after all.</p>
+  <p>Let's test it with two balls on a cliff {{cliff}} metres high. Press the button. The blue ball is simply dropped. The orange ball is thrown sideways at the very same moment. Watch the two timers. Then change the throwing speed and go again. Try the gentlest throw, then the hardest.</p>
+
+  <figure class="sim" id="sim1">
+    <div class="ctl">
+      <label>Throwing speed: <output></output> metres a second<input type="range" min="2" max="40" step="1" value="15"></label>
+      <button class="btn go" type="button">Drop and throw</button>
+    </div>
+    <div class="timers"><span class="tA">Dropped <b>0.00</b> s</span><span class="tB">Thrown <b>0.00</b> s</span></div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>Both balls are moved in tiny steps, a thousand steps a second, with the real pull of gravity. The clock runs at real speed. No air.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>Both timers stop on the same number, every single time.</li>
+    <li>At every moment the two balls are level with each other.</li>
+    <li>A harder throw changes where the orange ball lands, but never when.</li>
+  </ul></div>
+  <p>So the friends on the diving board hit the water together. Moving sideways and falling are two separate jobs. Gravity only does the falling. It pulls the thrown ball down exactly as it pulls the dropped one.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Going sideways does not slow a fall. A thrown ball and a dropped ball fall side by side.</p></div>
+  <p class="ask">So both balls fall together. But how far do they fall in each second?</p>
+
+  <details class="extra"><summary>Extras: try it at home</summary>
+    <h4>Two coins, one click</h4>
+    <p>Lay a ruler on a table with one end poking over the edge. Rest a coin on that end. Put a second coin on the table edge, beside the ruler. Flick the ruler sideways so it swats that coin away. The coin on the ruler is left behind and drops straight down. Listen for one click, not two.</p>
+    <p>Why it works: both coins fall the same height together, like the two balls in this chapter's cliff sim.</p>
+  </details>
+</section>
+
+<!-- ======================= 2 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Everything falls about {{fall1r}} metres in its first second</h2>
+  <p class="ans">About {{fall1r}} metres in the first second, and you can measure it yourself.</p>
+  <p>Sports photographers have a trick. They flash a light many times on one picture. A single diver shows up again and again, frozen in mid-air. We can do that with a ball.</p>
+  <p>Throw the ball off the cliff. The sim freezes a copy of it at every tick of the clock. Dashed lines show how far each copy has fallen. Start with a slow throw. Now change the sideways speed and throw again. The old copies stay behind as ghosts. Do the new ones sit higher, lower, or on the same lines?</p>
+
+  <figure class="sim" id="sim2">
+    <div class="ctl">
+      <label>Sideways speed: <output></output> metres a second<input type="range" min="0" max="40" step="1" value="8"></label>
+      <button class="btn go" type="button">Throw</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>A copy of the ball is frozen at each whole second. The dashed lines are measured from the cliff top down to each copy. Ghosts from your last few throws stay on the picture.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>After one second the ball is {{fall1}} metres down. Call it {{fall1r}}.</li>
+    <li>A faster throw slides the copies sideways, never up or down.</li>
+    <li>After two seconds it is {{fall2r}} metres down, not {{twice5}}. Falling speeds up.</li>
+  </ul></div>
+  <p>The first second is the one to remember. A dropped ball, a thrown ball, a bullet: each falls the same {{fall1r}} metres in it. That number will matter a lot later.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Near the ground, everything falls about {{fall1r}} metres in its first second. Sideways speed makes no difference.</p></div>
+  <p class="ask">If the fall is always the same, what does a harder throw actually buy you?</p>
+
+  <details class="extra"><summary>Extras: what the sim leaves out, and a hammer on the Moon</summary>
+    <p>This sim has no air. Air holds a feather up, though it barely slows a ball. Galileo argued, about four hundred years ago, that without air everything would fall together.</p>
+    <p>In 1971 an astronaut on the Moon tried it. He dropped a hammer and a feather. There is no air there. They landed together.</p>
+  </details>
+</section>
+
+<!-- ======================= 3 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Throw harder and it lands farther, but not later</h2>
+  <p class="ans">It buys distance, and nothing else.</p>
+  <p>Roll a toy car off a table. Fast or slow, the drop to the floor takes the same time. A faster car simply gets farther before that time runs out.</p>
+  <p>Back to the cliff. Throw several balls at different speeds. Each path stays on the picture, and each throw goes into the log. Before you throw, guess the landing spot. Your guesses will soon get good. Here is a way to guess well. The fall always takes {{cliffT}} seconds. So multiply the speed by {{cliffT}}. At {{exV}} metres a second that makes {{exD}} metres. Check one row of the log with your own multiplying.</p>
+
+  <figure class="sim" id="sim3">
+    <div class="ctl">
+      <label>Throwing speed: <output></output> metres a second<input type="range" min="2" max="40" step="1" value="10"></label>
+      <button class="btn go" type="button">Throw</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <div class="tw"><table><thead><tr><th>Speed</th><th>Landed</th><th>In the air</th></tr></thead><tbody></tbody></table></div>
+    <div class="btnrow"><button class="btn alt clear" type="button">Clear the log</button></div>
+    <figcaption>Flat ground, no air. Every throw is stepped forward a thousandth of a second at a time. The marks along the ground are {{tick}} metres apart.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>Every throw is in the air for the same {{cliffT}} seconds.</li>
+    <li>Double the speed and the ball lands twice as far away.</li>
+    <li>Here the ground is flat, so every throw has to land somewhere.</li>
+  </ul></div>
+  <p>Think of the fall time as a budget. Height sets the budget. Speed decides how much ground you cover before it is spent. On this cliff, no throw can ever stay up longer.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Height sets how long a ball flies. Sideways speed sets how far it gets in that time.</p></div>
+  <p class="ask">All of this assumed the ground is flat. Is it?</p>
+
+  <details class="extra"><summary>Extras: for older readers</summary>
+    <p>The sim does not use the multiplying shortcut. It moves the ball one tiny step at a time. The shortcut and the steps agree in every row. That is a check, not a proof.</p>
+  </details>
+</section>
+
+<!-- ======================= 4 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>The ground is not flat: it curves away from a straight ruler</h2>
+  <p class="ans">No. The ground is the outside of a giant ball.</p>
+  <p>Watch a ship sail away on a clear day. Its hull disappears first, and its mast last. The sea bulges up between you and the ship. The ground does the same thing, too gently to notice.</p>
+  <p>So let's measure the bend. Lay a perfectly straight ruler flat on the ground, and make it longer and longer. The ruler stays straight. The ground curves away beneath its far end. Move the slider and read the gap. The top picture is true to scale. The bottom one is stretched upward so the gap shows.</p>
+
+  <figure class="sim" id="sim4">
+    <div class="ctl">
+      <label>Ruler length: <output></output><input type="range" min="0" max="11" step="1" value="0"></label>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>The Earth here is a ball {{re}} km from centre to ground. The gap is measured from the ruler's far end straight down to the ground.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>With a ruler {{kmFor}} kilometres long, the gap is {{gap8}} metres.</li>
+    <li>Double the ruler and the gap grows four times, not two.</li>
+    <li>Under a short ruler the gap is tiny. That is why the ground looks flat.</li>
+  </ul></div>
+  <p>You have met {{gap8r}} metres before. It is how far a ball falls in one second. Keep the two numbers side by side.</p>
+  <div class="box hold"><h3>Hold on to this idea</h3><p>{{gap8r}} metres, and {{kmFor}} kilometres. Travel {{kmFor}} kilometres dead straight, and the ground ends up {{gap8r}} metres below you.</p></div>
+  <div class="box take"><h3>Take this with you</h3><p>The Earth curves away from every straight line. It drops about {{gap8r}} metres in {{kmFor}} kilometres.</p></div>
+  <p class="ask">A fast ball tries to go straight. What happens when the ground curves away beneath it?</p>
+
+  <details class="extra"><summary>Extras: for older readers</summary>
+    <p>The gap comes from a triangle with one square corner. Its sides are the ruler, the distance from the Earth's centre to the ground, and that distance plus the gap. The sim uses that triangle exactly.</p>
+    <p>What it leaves out: hills, valleys, and the Earth being very slightly squashed.</p>
+  </details>
+</section>
+
+<!-- ======================= 5 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>From a tall mountain, each faster shot lands farther round the curve</h2>
+  <p class="ans">It lands farther away than it would on flat ground. To see that, we need a serious cannon.</p>
+  <p>And serious speed. A passenger jet covers about {{plane}} kilometres every second. Our cannon deals in whole kilometres a second.</p>
+  <p>Isaac Newton drew this very cannon. His drawing was printed in 1728, the year after he died. He put it on a mountain far too tall to be real. Ours is {{mount}} kilometres high, above nearly all the air. So nothing slows the ball down.</p>
+  <p>Fire at {{s1}}, then {{s2}}, then {{s3}} kilometres a second. The page logs every shot. Then try faster ones. On flat ground, doubling the speed doubles the distance. Is that still true here? Use your log to decide. The two buttons are there if you get stuck.</p>
+
+  <figure class="sim cannon" id="sim5">
+    <div class="ctl">
+      <label>Cannon speed: <output></output> km a second<input type="range"></label>
+      <button class="btn go" type="button">Fire</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <div class="tw"><table><thead><tr><th>Speed</th><th>What happened</th></tr></thead><tbody></tbody></table></div>
+    <div class="btnrow"><button class="btn alt hint" type="button">Stuck? Give me a hint</button><button class="btn alt check" type="button">Check my answer</button></div>
+    <p class="readout coach" aria-live="polite"></p>
+    <figcaption>Gravity pulls toward the centre of the Earth and weakens with height, as the real thing does. The Earth, the mountain and every path are drawn to scale. The camera pulls back to fit each shot. Distances are measured along the ground from the foot of the mountain.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>Each shot lands farther round the curve than the one before.</li>
+    <li>The camera has to pull back to keep the landing in view.</li>
+    <li>Fast shots land farther than doubling says they should.</li>
+  </ul></div>
+  <p>The ball falls just as it did off the cliff. But now the ground curves away while it falls. So the ball has farther to drop, and more time to travel.</p>
+  <div class="box take"><h3>Take this with you</h3><p>On a round Earth the ground curves away under a fast ball. That buys it extra time, and extra distance.</p></div>
+  <p class="ask">Each faster shot lands farther round. Could one go so far round that it never lands?</p>
+
+  <details class="extra"><summary>Extras: what this cannon leaves out</summary>
+    <p>Air, which would slow a real ball and burn it up. The Earth's spin. And the mountain itself: the tallest real one is not a tenth as high.</p>
+  </details>
+</section>
+
+<!-- ======================= 6 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>At one speed the ball never lands</h2>
+  <p class="ans">Yes. And you are about to find that shot yourself.</p>
+  <p>Imagine walking down a staircase that sinks as fast as you step. You would keep stepping down, and never reach the floor.</p>
+  <p>Same cannon, same mountain. Your old shots are still in the log. The slider now goes higher, in finer steps. Hunt for the slowest shot that does not land. You will know when you have it. One speed lands. The very next one keeps going.</p>
+
+  <figure class="sim cannon" id="sim6">
+    <div class="ctl">
+      <label>Cannon speed: <output></output> km a second<input type="range"></label>
+      <button class="btn go" type="button">Fire</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <div class="tw"><table><thead><tr><th>Speed</th><th>What happened</th></tr></thead><tbody></tbody></table></div>
+    <div class="btnrow"><button class="btn alt hint" type="button">Stuck? Give me a hint</button><button class="btn alt check" type="button">Check my answer</button></div>
+    <p class="readout coach" aria-live="polite"></p>
+    <figcaption>The same cannon as before, with a wider slider. A shot counts as never landing once it has gone the whole way round and passed the mountain again. It then keeps going, lap after lap.</figcaption>
+  </figure>
+
+  <p class="readout" id="locked">The rest of this chapter opens when your log shows two next-door speeds: one that lands, and one that does not.</p>
+  <div id="payoff" hidden>
+    <p>You found it: about {{vFoundR}} kilometres a second. Now remember the idea you were holding. It was {{gap8r}} metres, and {{kmFor}} kilometres.</p>
+    <div class="readout live">
+      <p>In one second your ball goes {{vFound}} km sideways.</p>
+      <p>In that second it falls {{fallM}} m.</p>
+      <p>Over those {{vFound}} km the round Earth curves away {{curveM}} m.</p>
+      <p>So after one second the ball is still {{mount}} km up. It is no closer to the ground. The next second goes the same way, and the one after that.</p>
+      <p>One step slower, at {{vBelow}} km a second, the ball loses a little height each second. It landed {{belowDist}} away.</p>
+    </div>
+    <p style="margin-top:14px">The ball never stops falling. The ground just keeps curving out of its way. A fall like that, all the way round, has a name. It is called an <b>orbit</b>.</p>
+    <div class="box notice"><h3>A few things to notice</h3><ul>
+      <li>The ball comes back to the mountain at the height it left.</li>
+      <li>Nothing pushes it along. There is no engine and no fuel.</li>
+      <li>Just below this speed, the ball still lands, a long way round.</li>
+    </ul></div>
+    <p>Look at the log once more. Slow shots fell short. Faster ones landed farther round. This one just runs out of ground to land on.</p>
+    <div class="box take"><h3>Take this with you</h3><p>An orbit is a fall that never reaches the ground. Each second the ball falls about {{gap8r}} metres, and the ground curves about {{gap8r}} metres away.</p></div>
+    <p class="ask">What if you fire even faster than that?</p>
+  </div>
+
+  <details class="extra"><summary>Extras: for older readers, and the first real one</summary>
+    <p>Why do the two numbers match in every second, not just the first? Showing that takes algebra. Here you can only watch lap after lap. Checking is not the same as proving.</p>
+    <p>The first real cannonball that stayed up was Sputnik, in October 1957. A rocket did the work of the mountain and the cannon.</p>
+  </details>
+</section>
+
+<!-- ======================= 7 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Faster still, the circle stretches into an oval, and then the ball escapes</h2>
+  <p class="ans">The ball swings out higher before it comes back. The circle stretches.</p>
+  <p>Think of a playground swing. A gentle push gives a small arc. A big push carries you far out before you swing back. Now imagine a push so big that you never swing back at all.</p>
+  <p>Your cannon now reaches {{vmax}} kilometres a second. Your earlier shots are still in the log. Start a little above your orbit speed. Then creep upward, one shot at a time. Each loop is longer than the last. The camera will pull back to fit it. Keep going, and watch for the shot that does not return.</p>
+
+  <figure class="sim cannon" id="sim7">
+    <div class="ctl">
+      <label>Cannon speed: <output></output> km a second<input type="range"></label>
+      <button class="btn go" type="button">Fire</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <div class="tw"><table><thead><tr><th>Speed</th><th>What happened</th></tr></thead><tbody></tbody></table></div>
+    <figcaption>Still the same cannon and the same log. For the biggest loops the Earth shrinks to a dot, because the picture stays true to scale. A ball that leaves is followed far beyond the edge of the picture before the page gives up on it.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>Every loop is a stretched circle, an oval, and it closes at the mountain.</li>
+    <li>The ball races past the Earth and crawls at the far end.</li>
+    <li>Past about {{vEscR}} kilometres a second the ball never turns back.</li>
+  </ul></div>
+  <p>Why does it slow down far out? Climbing away from the Earth costs speed, like a ball thrown straight up. A fast enough ball never runs out. Gravity keeps tugging, but ever more weakly, and the ball gets away.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Faster than orbit speed, the path is an oval. Faster than about {{vEscR}} kilometres a second, the ball leaves for good.</p></div>
+  <p class="ask">People live up there in orbit, and they float. Why?</p>
+
+  <details class="extra"><summary>Extras: for older readers</summary>
+    <p>The ovals have a proper name: ellipses. Newton proved that gravity's rule makes exact ellipses. That proof needs maths you will meet much later. The sim only shows that each oval closes up. Checking is not proving.</p>
+    <p>A fun one to fire: at {{v11}} kilometres a second the ball swings out {{ap11}} km. That is most of the way to the Moon.</p>
+  </details>
+</section>
+
+<!-- ======================= 8 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Astronauts float because they are falling</h2>
+  <p class="ans">Not because gravity has gone. Up there it is nearly as strong as down here.</p>
+  <p>Jump on a trampoline. At the top of each bounce your tummy goes light. For that moment you and your clothes are all falling together. Nothing presses on anything.</p>
+  <p>The Space Station flies about {{iss}} kilometres up. It laps the Earth in about {{issLap}} minutes. Raise the cannon to that height and launch the station. The little window shows an astronaut inside it. Watch the gap between astronaut and wall. Then press Stop it dead, and see what gravity does next.</p>
+
+  <figure class="sim" id="sim8">
+    <div class="ctl">
+      <label>Cannon height: <output></output> km<input type="range" min="100" max="400" step="50" value="100"></label>
+      <button class="btn go" type="button">Launch</button>
+      <button class="btn alt stop" type="button">Stop it dead</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>The station and the astronaut are two separate things, each pulled by gravity on its own. The small window shows where the astronaut is inside the cabin. Stop it dead takes away all the sideways speed and nothing else.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>At {{iss}} kilometres up, gravity is still {{issG}} percent as strong. That is nearly nine-tenths.</li>
+    <li>The astronaut and the station fall together, so the gap between them holds.</li>
+    <li>Take away the sideways speed and the station drops like a stone.</li>
+  </ul></div>
+  <p>On the ground, the floor pushes up on your feet. That push is what you feel as weight. In orbit the floor is falling too. It cannot push. So the astronaut floats, with gravity pulling the whole time.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Floating in orbit does not mean gravity is missing. It means falling together with everything around you.</p></div>
+  <p class="ask">The station orbits a touch slower than your cannonball did. Why would higher mean slower?</p>
+
+  <details class="extra"><summary>Extras: try it at home</summary>
+    <h4>The leaky cup</h4>
+    <p>Poke two holes near the bottom of a paper cup. Fill it with water outdoors. Two jets squirt out. Now drop the cup. While it falls, the jets stop.</p>
+    <p>Why it works: the water and the cup fall together, so the water stops pressing on the holes. It is the astronaut in this chapter's little window.</p>
+  </details>
+</section>
+
+<!-- ======================= 9 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Higher up, gravity is weaker, so you can go slower</h2>
+  <p class="ans">Because gravity is weaker up there. The station falls a little less each second. So it needs less speed to keep missing the ground.</p>
+  <p>Sit close to a campfire and it roasts you. Shuffle back and the warmth fades. The Earth's pull fades with distance in much the same way.</p>
+  <p>Slide the cannon up and down. At each height the sim finds the speed that just orbits. It also times one lap. Press Add to my table at five or six different heights. Go really, really high. Then run your eye down each column. What goes up? What goes down?</p>
+
+  <figure class="sim" id="sim9">
+    <div class="ctl">
+      <label>Cannon height: <output></output> km<input type="range" min="0" max="100" step="1" value="0"></label>
+      <button class="btn go" type="button">Add to my table</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <div class="tw"><table><thead><tr><th>Height</th><th>Gravity</th><th>Speed</th><th>One lap</th></tr></thead><tbody></tbody></table></div>
+    <div class="btnrow"><button class="btn alt check" type="button">Check my pattern</button></div>
+    <p class="readout coach" aria-live="polite"></p>
+    <figcaption>Gravity is shown as a share of its strength on the ground. The ball is launched at the speed that keeps it in a circle, then stepped round. The picture stays to scale, so the Earth shrinks as you climb.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>The higher you go, the weaker gravity gets.</li>
+    <li>The higher you go, the slower the ball and the longer the lap.</li>
+    <li>At {{twoH}} kilometres up you are twice as far from the Earth's centre. Gravity is a quarter.</li>
+  </ul></div>
+  <p>That last one is the rule. Twice as far from the centre, gravity is four times weaker. Three times as far, nine times weaker. You can check it in the sim. Checking is not proving, but it is a good start.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Far from the Earth, gravity is gentle. A slow ball can orbit there, and each lap takes a long time.</p></div>
+  <p class="ask">Is anything really out there, far away, orbiting slowly?</p>
+
+  <details class="extra"><summary>Extras: for older readers</summary>
+    <p>Why four times weaker at twice the distance? Picture the pull spreading out like light from a lamp. Twice as far away, the same light covers four times the area. So each patch gets a quarter. That is a picture, not a proof.</p>
+  </details>
+</section>
+
+<!-- ======================= 10 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>The Moon is a cannonball</h2>
+  <p class="ans">Yes. You have seen it all your life. It is the Moon.</p>
+  <p>Think of an apple. From its core to its skin is one distance, all the way round. For the Earth, that centre-to-ground distance is called its radius. It is {{re}} kilometres.</p>
+  <p>The Moon is {{moonR}} of those radii away. Out there gravity is about {{moonWeak}} times weaker than on the ground. Use the zoom slider to pull back from your cannon to the Moon. Nothing else changes. It is the same Earth and the same rule for gravity.</p>
+
+  <figure class="sim" id="sim10">
+    <div class="ctl">
+      <label>Zoom: <output></output><input type="range" min="0" max="100" step="1" value="0"></label>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>Your own cannonball is the small loop hugging the Earth. The Moon is started at its real distance, at the speed that keeps a circle, and stepped forward like any other shot. Sizes and distances are to scale, so a ring marks the Moon when it is too small to see. The clock speeds up as you zoom out.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>The Moon moves at about {{moonVr}} kilometre a second and takes about {{moonDays}} days a lap.</li>
+    <li>Each second it falls just over {{moonFallR}} millimetre. Its huge circle curves away by the same amount.</li>
+    <li>True to scale, the Earth and Moon are specks in a lot of empty space.</li>
+  </ul></div>
+  <p>So the Moon does fall. It falls {{moonFall}} millimetres, every second, toward the Earth. But it also slides {{moonVr}} kilometre sideways in that second. Fall and curve match, just as they did for your cannonball. It gets no closer.</p>
+  <div class="box take"><h3>Take this with you</h3><p>The Moon is a cannonball, a long way up and going slowly. It falls all the time, and it always misses.</p></div>
+  <p class="ask">Gravity bends the Moon's path into a circle. What if gravity let go?</p>
+
+  <details class="extra"><summary>Extras: an apple, and what the sim leaves out</summary>
+    <p>The story goes that Newton watched an apple fall, in about 1666. He wondered whether the same pull reached the Moon.</p>
+    <p>This sim leaves out three things. The Moon pulls back on the Earth. The Sun tugs on both. And the Moon's real path is slightly oval. So the real lap is a few hours shorter.</p>
+  </details>
+</section>
+
+<!-- ======================= 11 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>Without gravity the Moon would leave in a straight line</h2>
+  <p class="ans">It would stop curving and sail away.</p>
+  <p>Slide a puck across smooth ice. It keeps going, dead straight, long after your push has ended. Moving things do not need a push to keep moving. They only need one to speed up, slow down or turn.</p>
+  <p>The Moon is the same. Nothing pushes it along. Gravity only pulls it sideways off its straight line, second after second. Flip the switch and turn gravity off. Leave it off for a few days. Watch the Moon's trail against the dashed line. Then switch gravity back on, and see what it does.</p>
+
+  <figure class="sim" id="sim11">
+    <div class="ctl">
+      <button class="btn go" type="button" aria-pressed="true">Gravity is ON: switch it off</button>
+      <button class="btn alt reset" type="button">Start again</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>The same Moon as before. With the switch off, the pull is set to nothing and the Moon is still stepped forward in the same way. The dashed line is a ruler laid along the Moon's path at the moment gravity went off.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>With gravity off, the Moon keeps its speed and goes perfectly straight.</li>
+    <li>It does not drop toward the Earth. It does not stop either.</li>
+    <li>Switch gravity back on soon and the path bends again, into a new loop.</li>
+  </ul></div>
+  <p>So there are two halves to an orbit. One is the sideways speed, which the Moon keeps for free. The other is gravity, which keeps bending that straight line into a circle. Take away the speed and the Moon falls. Take away gravity and the Moon leaves.</p>
+  <div class="box take"><h3>Take this with you</h3><p>Moving things go straight unless something pulls them. Gravity is the pull that turns the Moon's straight line into a circle.</p></div>
+  <p class="ask">Can you put the whole story together now?</p>
+
+  <details class="extra"><summary>Extras: try it at home, twice</summary>
+    <h4>Ball on a string</h4>
+    <p>Outdoors, swing a soft ball round on a string, then let go. It does not fly straight outward. It leaves along the line it was moving on, like the Moon in this chapter's switch sim.</p>
+    <h4>Card and coin</h4>
+    <p>Rest a card on a glass with a coin on top. Flick the card away fast. The coin stays put, then drops into the glass. Still things stay still unless something pulls them, too.</p>
+  </details>
+</section>
+
+<!-- ======================= 12 ======================= -->
+<section class="page chapter">
+  <p class="kicker"></p>
+  <h2>An orbit is a fall that never reaches the ground</h2>
+  <p class="ans">Yes. Here is the whole argument, with your own numbers in it.</p>
+  <div class="readout live">
+    <p>A thrown ball falls as fast as a dropped one: {{fall1}} m in its first second.</p>
+    <p>The ground curves away from a straight line: {{gap8}} m down in {{kmFor}} km.</p>
+    <p>Your cannon, {{mount}} km up: the ball landed at {{vBelow}} km a second and never landed at {{vFound}}.</p>
+    <p>At that speed, each second, it goes {{vFound}} km sideways, falls {{fallM}} m, and the Earth curves away {{curveM}} m.</p>
+    <p>The Moon, {{moonR}} radii out, does the same thing slowly: {{moonV}} km a second, {{moonDays}} days a lap. Each second it falls {{moonFall}} mm and its circle curves away {{moonCurve}} mm.</p>
+  </div>
+  <p style="margin-top:14px">Every step used only measuring, timing and multiplying. The sims left out air, the Earth's spin and the Moon's own pull. The mountain was impossible. The idea is real.</p>
+  <p>The ideas, and where they live:</p>
+  <div class="links">
+    <button class="link" data-go="1">Falling together</button>
+    <button class="link" data-go="2">The first second</button>
+    <button class="link" data-go="4">The curving ground</button>
+    <button class="link" data-go="6">Orbit</button>
+    <button class="link" data-go="8">Floating</button>
+    <button class="link" data-go="10">The Moon</button>
+    <button class="link" data-go="11">Straight lines</button>
+  </div>
+  <p>Things to try at home:</p>
+  <div class="links">
+    <button class="link" data-go="1">Two coins</button>
+    <button class="link" data-go="8">Leaky cup</button>
+    <button class="link" data-go="11">Ball on a string</button>
+    <button class="link" data-go="11">Card and coin</button>
+  </div>
+
+  <h3>Make your own: park a satellite</h3>
+  <p>A TV dish on a wall points at one spot in the sky. It never moves. So the thing it points at must hover over one place on the ground. That thing is a satellite: a cannonball someone put in orbit. To hover, it must go round as fast as the Earth turns. That is one lap a day. Low orbits are too quick. The Moon is far too slow. Somewhere between is a height that works. Find it.</p>
+
+  <figure class="sim" id="sim12">
+    <div class="ctl">
+      <label>Satellite height: <output></output> km<input type="range" min="100" max="50000" step="100" value="20000"></label>
+      <button class="btn alt dn" type="button" aria-label="Lower a little">&minus;</button>
+      <button class="btn alt up" type="button" aria-label="Higher a little">+</button>
+    </div>
+    <canvas></canvas>
+    <p class="readout" aria-live="polite"></p>
+    <figcaption>Here, for once, the Earth spins: one turn every {{day}} hours. The mark on the ground is a house, and the dashed line is where its dish points. The satellite is stepped round at the speed that keeps a circle at your height.</figcaption>
+  </figure>
+
+  <div class="box notice"><h3>A few things to notice</h3><ul>
+    <li>Too low, and the satellite races ahead of the house.</li>
+    <li>Too high, and it drifts behind.</li>
+    <li>At the right height it sits on the dashed line all day.</li>
+  </ul></div>
+  <div class="box take"><h3>Take this with you</h3><p>An orbit needs no engine. It needs sideways speed, and gravity to bend it.</p></div>
+  <p class="ans" style="font-size:1.15rem">The Moon never lands because, as fast as it falls, its sideways speed carries it round the Earth.</p>
+
+  <details class="extra"><summary>Extras: for older readers</summary>
+    <p>Real TV satellites match the Earth's true spin. One turn takes about {{sid}} minutes less than a day, so they sit a little lower than your answer.</p>
+  </details>
+
+  <footer class="foot">
+    <p>Built in the spirit of <a href="https://aatishb.com/myriad/lets-build-a-brain/" target="_blank" rel="noopener">Let's Build a Brain</a> by Aatish Bhatia and Arkarup Banerjee: one change at a time, see it before naming it.</p>
+    <p>Dates checked against an encyclopedia: Newton's cannon drawing printed in 1728 and his death in 1727; Sputnik, 4 October 1957; the hammer and feather on the Moon, Apollo 15, 1971; Galileo's book on falling and thrown things, 1638. Not checked: the apple story's date, so the book says "about 1666". The story itself comes from Newton's old age.</p>
+    <p>Every number on these pages is worked out as you read, from the Earth's size, the strength of its gravity and the Moon's distance. The sims leave out air, the Earth's spin (except in the last one), the Sun, and the Moon's pull on the Earth. No real mountain is {{mount}} km high.</p>
+  </footer>
+</section>
+
+</main>
+
+<script>
+(()=>{
+'use strict';
+/* ---------- real-world inputs (the only typed-in physics) ---------- */
+const GM=398600.4418;      // km^3/s^2, Earth's gravity strength
+const RE=6371;             // km, centre to ground
+const MOON=384400;         // km, centre of Earth to Moon
+const RMOON=1737;          // km, Moon's own radius (for drawing to scale)
+const MOUNT=100;           // km, Newton's impossible mountain
+const CLIFF=80;            // m, the cliff in chapters 1-3
+const ISS=400;             // km
+const DAY=86400, SIDEREAL=86164; // s
+const JET=900;             // km per hour, a passenger jet
+const FIRST=[1,2,3];
+const g0=GM/(RE*RE)*1000;  // m/s^2 at the ground
+const TAU=Math.PI*2;
+
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---------- number formatting for a child ---------- */
+const nf=(x,d=0)=>x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+function sig(x,n){if(!x)return 0;const p=Math.pow(10,n-1-Math.floor(Math.log10(Math.abs(x))));return Math.round(x*p)/p;}
+function fsig(x,n=2){if(!x)return '0';const v=sig(x,n);const d=Math.max(0,n-1-Math.floor(Math.log10(Math.abs(v))));return nf(v,d);}
+function fmtKm(km,n=2){return km<1?fsig(km*1000,n)+' m':fsig(km,n)+' km';}
+function plural(v,w){return v+' '+w+(v==='1'?'':'s');}
+function fmtDur(s){
+  if(s<100) return plural(fsig(s,2),'second');
+  if(s<5400) return plural(String(Math.round(s/60)),'minute');
+  if(s<48*3600) return plural(fsig(s/3600,2),'hour');
+  return plural(fsig(s/DAY,2),'day');
+}
+const r1=v=>Math.round(v*10)/10;
+
+/* ---------- physics: one step of real gravity ---------- */
+function rk4(s,dt,gm){
+  const f=(x,y,vx,vy)=>{const r2=x*x+y*y,k=-gm/(r2*Math.sqrt(r2));return [vx,vy,k*x,k*y];};
+  const a=f(s[0],s[1],s[2],s[3]);
+  const b=f(s[0]+a[0]*dt/2,s[1]+a[1]*dt/2,s[2]+a[2]*dt/2,s[3]+a[3]*dt/2);
+  const c=f(s[0]+b[0]*dt/2,s[1]+b[1]*dt/2,s[2]+b[2]*dt/2,s[3]+b[3]*dt/2);
+  const d=f(s[0]+c[0]*dt,s[1]+c[1]*dt,s[2]+c[2]*dt,s[3]+c[3]*dt);
+  return [s[0]+dt/6*(a[0]+2*b[0]+2*c[0]+d[0]),s[1]+dt/6*(a[1]+2*b[1]+2*c[1]+d[1]),
+          s[2]+dt/6*(a[2]+2*b[2]+2*c[2]+d[2]),s[3]+dt/6*(a[3]+2*b[3]+2*c[3]+d[3])];
+}
+function adv(s,T,gm,maxdt){const n=Math.max(1,Math.ceil(T/maxdt)),dt=T/n;for(let i=0;i<n;i++)s=rk4(s,dt,gm);return s;}
+const vCirc=r=>Math.sqrt(GM/r);
+const lapTime=r=>TAU*r/vCirc(r);
+
+/* a whole cannon shot, stepped until it lands, laps, or leaves */
+function flight(h,v){
+  const r0=RE+h; let s=[0,r0,v,0];
+  const xs=[0],ys=[r0],ts=[0]; let t=0,ang=0,rmin=r0,rmax=r0;
+  const E=v*v/2-GM/r0, RCUT=80*RE, VIEW=20*RE; let tView=null;
+  const out=(type,extra)=>Object.assign({type,v,xs,ys,ts,time:t,rmin,rmax,tShow:t},extra);
+  for(let i=0;i<600000;i++){
+    const r=Math.hypot(s[0],s[1]), dt=0.002*r*Math.sqrt(r/GM);
+    const p=rk4(s,dt,GM), rn=Math.hypot(p[0],p[1]);
+    const da=-Math.atan2(s[0]*p[1]-s[1]*p[0],s[0]*p[0]+s[1]*p[1]);
+    if(rn<RE){
+      const f=(r-RE)/(r-rn);
+      xs.push(s[0]+(p[0]-s[0])*f);ys.push(s[1]+(p[1]-s[1])*f);t+=dt*f;ts.push(t);ang+=da*f;
+      return out('land',{dist:RE*ang,time:t,tShow:t,rmin:RE});
+    }
+    if(ang+da>=TAU){
+      const f=(TAU-ang)/da;
+      xs.push(s[0]+(p[0]-s[0])*f);ys.push(s[1]+(p[1]-s[1])*f);t+=dt*f;ts.push(t);
+      return out('lap',{time:t,tShow:t});
+    }
+    ang+=da;t+=dt;s=p;xs.push(s[0]);ys.push(s[1]);ts.push(t);
+    if(rn<rmin)rmin=rn; if(rn>rmax)rmax=rn;
+    if(tView===null&&rn>VIEW) tView=t;
+    if(rn>RCUT&&E>=0) return out('gone',{time:t,tShow:tView,vEnd:Math.hypot(s[2],s[3]),rEnd:rn});
+  }
+  return out('gone',{tShow:tView||t,vEnd:Math.hypot(s[2],s[3]),rEnd:Math.hypot(s[0],s[1])});
+}
+function posAt(f,T){
+  const ts=f.ts;let lo=0,hi=ts.length-1;
+  if(T>=ts[hi])return [f.xs[hi],f.ys[hi],hi];
+  while(hi-lo>1){const m=(lo+hi)>>1;if(ts[m]<=T)lo=m;else hi=m;}
+  const u=(T-ts[lo])/(ts[hi]-ts[lo]);
+  return [f.xs[lo]+u*(f.xs[hi]-f.xs[lo]),f.ys[lo]+u*(f.ys[hi]-f.ys[lo]),lo];
+}
+const gapKm=L=>Math.sqrt(RE*RE+L*L)-RE;
+
+/* flat-ground ball for the cliff chapters, 1000 steps a second */
+const DT=0.001;
+function newBall(vx){return {x:0,y:CLIFF,vx,vy:0,n:0,t:0,done:false,acc:0,ghosts:[],path:[[0,CLIFF]]};}
+function stepBall(b,dt){
+  b.acc+=dt;let n=Math.floor(b.acc/DT);b.acc-=n*DT;
+  while(n-->0&&!b.done){
+    const px=b.x,py=b.y;
+    b.x+=b.vx*DT;b.y-=b.vy*DT+0.5*g0*DT*DT;b.vy+=g0*DT;b.n++;
+    if(b.y<=0){const f=py/(py-b.y);b.x=px+(b.x-px)*f;b.y=0;b.t=(b.n-1+f)*DT;b.done=true;b.path.push([b.x,0]);}
+    else{b.t=b.n*DT;if(b.n%1000===0)b.ghosts.push({x:b.x,y:b.y,s:b.n/1000});if(b.n%20===0)b.path.push([b.x,b.y]);}
+  }
+}
+function flatFly(v){const b=newBall(v);stepBall(b,30);return b;}
+
+/* ---------- the reader's state (memory only) ---------- */
+const S={shots:[],throws:[],far:0,flying:false,found:null,lo:null,hi:null,table9:[]};
+const subs=[];
+function changed(){subs.forEach(f=>f());}
+const shotCache=new Map();
+function getShot(v){v=r1(v);if(!shotCache.has(v))shotCache.set(v,flight(MOUNT,v));return shotCache.get(v);}
+function updateFound(){
+  const up=S.shots.filter(s=>s.type!=='land').map(s=>s.v), dn=S.shots.filter(s=>s.type==='land');
+  S.flying=up.length>0;
+  for(const s of dn) if(s.dist>S.far) S.far=s.dist;
+  S.lo=up.length?Math.min(...up):null;
+  S.hi=dn.length?Math.max(...dn.map(s=>s.v)):null;
+  S.found=(S.lo!==null&&S.hi!==null&&S.lo-S.hi<=0.1001)?S.lo:null;
+}
+function logShot(v,auto){
+  v=r1(v);let e=S.shots.find(s=>s.v===v);
+  if(!e){const f=getShot(v);e={v,type:f.type,dist:f.dist,time:f.time,rmin:f.rmin,rmax:f.rmax,auto:!!auto};S.shots.push(e);}
+  else if(!auto)e.auto=false;
+  S.last=v;updateFound();return e;
+}
+function noteFar(km){if(km>S.far){S.far=km;changed();}}
+/* arriving out of order: fill in the shots an earlier chapter would have made */
+function ensure(level){
+  let did=false;
+  if(level>=1&&S.shots.length===0){FIRST.forEach(v=>logShot(v,true));did=true;}
+  if(level>=2&&!S.found){
+    const edge=findEdge();
+    [...FIRST,5,7,r1(edge-0.1),edge].forEach(v=>{if(!S.shots.find(s=>s.v===r1(v))){logShot(v,true);did=true;}});
+  }
+  if(did)changed();
+}
+let EDGE=null;
+function findEdge(){ // slowest slider speed that never lands, found by trying shots
+  if(EDGE===null){let lo=5,hi=9;while(r1(hi-lo)>0.1){const m=r1((lo+hi)/2);if(getShot(m).type==='land')lo=m;else hi=m;}EDGE=r1(hi);}
+  return EDGE;
+}
+
+/* ---------- numbers used in the prose ---------- */
+function computeN(){
+  const N={};
+  const ff=flatFly(10), T1=+ff.t.toFixed(1);
+  N.cliff=CLIFF;N.cliffT=nf(ff.t,1);N.exV=10;N.exD=nf(10*T1);N.tick=20;
+  N.fall1=nf(g0/2,1);N.fall1r=Math.round(g0/2);N.fall2r=fsig(g0/2*4,2);N.twice5=2*N.fall1r;
+  const kf=Math.round(Math.sqrt(2*RE*(g0/2)/1000));N.kmFor=kf;
+  const gp=gapKm(kf)*1000;N.gap8=nf(gp,1);N.gap8r=Math.round(gp);
+  N.mount=MOUNT;N.plane=nf(JET/3600,2);N.s1=FIRST[0];N.s2=FIRST[1];N.s3=FIRST[2];
+  N.vmax=12;N.vEscR=Math.round(Math.sqrt(2*GM/(RE+MOUNT)));
+  const rm=RE+MOUNT,f=S.found;
+  N.vFound=f?nf(f,1):'?';N.vFoundR=f?Math.round(f):'?';
+  N.vBelow=f?nf(S.hi,1):'?';
+  const below=f?S.shots.find(s=>s.v===S.hi):null;
+  N.belowDist=below?fmtKm(below.dist):'?';
+  N.fallM=nf(GM/(rm*rm)*1000/2,1);N.curveM=f?nf(f*f/(2*rm)*1000,1):'?';
+  const ri=RE+ISS;N.iss=ISS;N.issG=Math.round(100*(RE/ri)*(RE/ri));N.issLap=Math.round(lapTime(ri)/60);
+  N.twoH=fsig(RE,2);N.re=nf(RE);
+  const vm=vCirc(MOON),mf=GM/(MOON*MOON)/2*1e6;
+  N.moonR=Math.round(MOON/RE);N.moonWeak=fsig((MOON/RE)*(MOON/RE),2);
+  N.moonVr=Math.round(vm);N.moonV=nf(vm,1);N.moonDays=Math.round(lapTime(MOON)/DAY);
+  N.moonFall=nf(mf,1);N.moonFallR=Math.floor(mf);N.moonCurve=nf(vm*vm/(2*MOON)*1e6,1);
+  N.v11=11;N.ap11=fsig(getShot(11).rmax-RE,2);
+  N.day=Math.round(DAY/3600);N.sid=Math.round((DAY-SIDEREAL)/60);
+  return N;
+}
+function fill(){const N=computeN();$$('[data-n]').forEach(e=>{const v=N[e.dataset.n];e.textContent=v===undefined?'?':v;});}
+
+/* ---------- canvas plumbing ---------- */
+const FF='"Atkinson Hyperlegible",system-ui,sans-serif';
+const font=(px,b)=>(b?'700 ':'')+px+'px '+FF;
+let COL=null;
+function colors(){
+  if(!COL){const cs=getComputedStyle(document.documentElement);COL={};
+    for(const k of ['sky','earth','earthE','rock','trace','acc','acc2','ink','mut','line','card','good'])COL[k]=cs.getPropertyValue('--'+k).trim();}
+  return COL;
+}
+function Stage(cv,ratio){
+  const st={cv,ctx:cv.getContext('2d'),w:0,h:0,d:0};
+  st.fit=()=>{
+    const w=cv.clientWidth;if(!w)return false;
+    const h=Math.round(w*(typeof ratio==='function'?ratio(w):ratio)),d=window.devicePixelRatio||1;
+    if(st.w!==w||st.h!==h||st.d!==d){st.w=w;st.h=h;st.d=d;cv.width=Math.round(w*d);cv.height=Math.round(h*d);cv.style.height=h+'px';}
+    st.ctx.setTransform(d,0,0,d,0,0);return true;
+  };
+  return st;
+}
+const orbR=w=>w<520?0.92:0.62;
+const sims=[];
+function onScreen(cv){if(!cv.offsetParent)return false;const r=cv.getBoundingClientRect();return r.bottom>0&&r.top<window.innerHeight;}
+function dot(ctx,x,y,r,col){ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fillStyle=col;ctx.fill();}
+function label(ctx,s,x,y,col,al='left',px=11,b=false){ctx.font=font(px,b);ctx.textAlign=al;ctx.fillStyle=col;ctx.fillText(s,x,y);}
+function drawEarth(ctx,v,c){
+  ctx.beginPath();ctx.arc(v.X(0),v.Y(0),Math.max(RE*v.s,0.6),0,TAU);ctx.fillStyle=c.earth;ctx.fill();
+  ctx.lineWidth=1.5;ctx.strokeStyle=c.earthE;ctx.stroke();
+}
+function drawMount(ctx,v,h,c){
+  const a=Math.max(40,h*0.4)/RE;
+  ctx.beginPath();ctx.moveTo(v.X(-RE*Math.sin(a)),v.Y(RE*Math.cos(a)));ctx.lineTo(v.X(0),v.Y(RE+h));ctx.lineTo(v.X(RE*Math.sin(a)),v.Y(RE*Math.cos(a)));
+  ctx.closePath();ctx.fillStyle=c.rock;ctx.fill();
+}
+function viewC(st,half,cx=0,cy=0){const s=Math.min(st.w,st.h)/2/half;return {s,X:x=>st.w/2+(x-cx)*s,Y:y=>st.h/2-(y-cy)*s};}
+
+/* ---------- chapters 1-3: the cliff ---------- */
+function flatBase(st,c){
+  const ctx=st.ctx,W=186,H=98,k=Math.min(st.w/W,st.h/H);
+  const ox=16*k,oy=st.h-Math.max(9*k,18),X=x=>ox+x*k,Y=y=>oy-y*k;
+  ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+  ctx.fillStyle=c.earth;ctx.fillRect(0,Y(0),st.w,st.h-Y(0));
+  ctx.fillStyle=c.rock;ctx.fillRect(0,Y(CLIFF)+5,X(0)-4,Y(0)-Y(CLIFF)-5);
+  ctx.fillStyle=c.ink;
+  for(let d=20;d<=160;d+=20){ctx.fillRect(X(d)-.5,Y(0),1,5);if(d%40===0)label(ctx,d+' m',X(d),Y(0)+15,c.ink,'center',10);}
+  return {k,X,Y};
+}
+function drawPath(ctx,v,path,col,w=2){ctx.beginPath();path.forEach((p,i)=>i?ctx.lineTo(v.X(p[0]),v.Y(p[1])):ctx.moveTo(v.X(p[0]),v.Y(p[1])));ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+
+function Sim1(root){
+  const cv=$('canvas',root),st=Stage(cv,98/186),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  const tA=$('.tA b',root),tB=$('.tB b',root);
+  let a=newBall(0),b=newBall(0),run=false,told=false;
+  const upd=()=>out.textContent=sl.value;sl.oninput=upd;upd();
+  ro.textContent='Press the button to let both balls go at the same moment.';
+  $('.go',root).onclick=()=>{a=newBall(0);b=newBall(+sl.value);run=true;told=false;ro.textContent='Falling…';};
+  sims.push({cv,frame(dt){
+    if(run){stepBall(a,dt);stepBall(b,dt);
+      if(a.done&&b.done&&!told){told=true;run=false;noteFar(b.x/1000);
+        ro.textContent=`Thrown at ${b.vx} metres a second, the orange ball landed ${fsig(b.x,2)} m away after ${nf(b.t,2)} seconds. The dropped ball landed after ${nf(a.t,2)} seconds.`;}}
+    tA.textContent=nf(a.t,2);tB.textContent=nf(b.t,2);
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,v=flatBase(st,c);
+    if(b.n&&!b.done){ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(v.X(a.x),v.Y(a.y));ctx.lineTo(v.X(b.x),v.Y(b.y));ctx.strokeStyle=c.mut;ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);}
+    drawPath(ctx,v,b.path,c.acc);drawPath(ctx,v,a.path,c.acc2);
+    dot(ctx,v.X(a.x),v.Y(a.y)-5,5,c.acc2);dot(ctx,v.X(b.x),v.Y(b.y)-5,5,c.acc);
+    if(b.done&&b.n)label(ctx,fsig(b.x,2)+' m',v.X(b.x),v.Y(0)-14,c.acc,'center',12,true);
+  }});
+}
+function Sim2(root){
+  const cv=$('canvas',root),st=Stage(cv,98/186),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  let b=null,old=[],told=true;
+  const upd=()=>out.textContent=sl.value;sl.oninput=upd;upd();
+  ro.textContent='Throw the ball to take the first set of frozen copies.';
+  $('.go',root).onclick=()=>{if(b&&b.ghosts.length){old.push(b);if(old.length>3)old.shift();}b=newBall(+sl.value);told=false;};
+  sims.push({cv,frame(dt){
+    if(b&&!b.done)stepBall(b,dt);
+    if(b&&b.ghosts.length){
+      const parts=b.ghosts.map(g=>`after ${plural(String(g.s),'second')}, ${fsig(CLIFF-g.y,2)} m down and ${fsig(g.x,2)} m along`);
+      ro.textContent=`Thrown sideways at ${b.vx} metres a second: `+parts.join('; ')+'.'+(b.done?` It landed after ${nf(b.t,1)} seconds.`:'');
+    }
+    if(b&&b.done&&!told){told=true;noteFar(b.x/1000);}
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,v=flatBase(st,c);
+    ctx.strokeStyle=c.ink;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(v.X(0)-4,v.Y(CLIFF));ctx.lineTo(v.X(0)-4,v.Y(0));ctx.stroke();
+    for(let d=0;d<=CLIFF;d+=10){ctx.beginPath();ctx.moveTo(v.X(0)-9,v.Y(CLIFF-d));ctx.lineTo(v.X(0)-4,v.Y(CLIFF-d));ctx.stroke();}
+    for(const o of old)for(const g of o.ghosts){ctx.globalAlpha=.35;dot(ctx,v.X(g.x),v.Y(g.y)-5,5,c.acc);ctx.globalAlpha=1;}
+    if(b){
+      ctx.setLineDash([5,4]);ctx.strokeStyle=c.mut;ctx.lineWidth=1;
+      for(const g of b.ghosts){ctx.beginPath();ctx.moveTo(v.X(0)-4,v.Y(g.y)-5);ctx.lineTo(st.w,v.Y(g.y)-5);ctx.stroke();}
+      ctx.setLineDash([]);
+      for(const g of b.ghosts){label(ctx,`${g.s} s: ${fsig(CLIFF-g.y,2)} m down`,st.w-6,v.Y(g.y)-9,c.ink,'right',11,true);dot(ctx,v.X(g.x),v.Y(g.y)-5,5,c.acc);ctx.lineWidth=1.5;ctx.strokeStyle=c.ink;ctx.stroke();}
+      drawPath(ctx,v,b.path,c.acc,1.5);
+      dot(ctx,v.X(b.x),v.Y(b.y)-5,5,c.acc);
+    } else dot(ctx,v.X(0),v.Y(CLIFF)-5,5,c.acc);
+  }});
+}
+function Sim3(root){
+  const cv=$('canvas',root),st=Stage(cv,98/186),sl=$('input',root),out=$('output',root),ro=$('.readout',root),tb=$('tbody',root);
+  let b=null;
+  const upd=()=>out.textContent=sl.value;sl.oninput=upd;upd();
+  function table(){
+    tb.innerHTML=S.throws.length?S.throws.map(t=>`<tr><td>${t.v} m a second</td><td>${fsig(t.x,2)} m away</td><td>${nf(t.t,1)} seconds</td></tr>`).join(''):'<tr><td class="empty" colspan="3">No throws yet.</td></tr>';
+  }
+  table();ro.textContent='Pick a speed, guess the landing spot, then throw.';
+  $('.go',root).onclick=()=>{b=newBall(+sl.value);};
+  $('.clear',root).onclick=()=>{S.throws.length=0;b=null;table();ro.textContent='Log cleared.';};
+  sims.push({cv,frame(dt){
+    if(b&&!b.done){stepBall(b,dt);
+      if(b.done){if(!S.throws.find(t=>t.v===b.vx))S.throws.push({v:b.vx,x:b.x,t:b.t,path:b.path});table();noteFar(b.x/1000);
+        ro.textContent=`At ${b.vx} metres a second the ball landed ${fsig(b.x,2)} m away after ${nf(b.t,1)} seconds in the air. Check: ${b.vx} times ${nf(b.t,1)} is ${nf(b.vx*+b.t.toFixed(1))}.`;}}
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,v=flatBase(st,c);
+    for(const t of S.throws){drawPath(ctx,v,t.path,c.trace,1.5);dot(ctx,v.X(t.x),v.Y(0)-3,3,c.mut);}
+    if(b){drawPath(ctx,v,b.path,c.acc);dot(ctx,v.X(b.x),v.Y(b.y)-5,5,c.acc);
+      if(b.done)label(ctx,fsig(b.x,2)+' m',v.X(b.x),v.Y(0)-14,c.acc,'center',12,true);}
+    else dot(ctx,v.X(0),v.Y(CLIFF)-5,5,c.acc);
+  }});
+}
+
+/* ---------- chapter 4: the ruler ---------- */
+function Sim4(root){
+  const cv=$('canvas',root),st=Stage(cv,w=>w<520?0.8:0.55),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  const kf=Math.round(Math.sqrt(2*RE*(g0/2)/1000)),LEN=[];for(let i=0;i<12;i++)LEN.push(kf/8*Math.pow(2,i));
+  const upd=()=>{
+    const L=LEN[+sl.value],g=gapKm(L);out.textContent=nf(L)+' km';
+    const N=stretch(L);
+    ro.textContent=`A flat ruler ${nf(L)} km long ends ${fmtKm(g)} above the ground. In the bottom picture the gap is drawn ${fsig(N,2)} times taller than life.`;
+  };
+  function stretch(L){const w=cv.clientWidth||340,h=w*(w<520?0.8:0.55);const s=w*0.8/L;return Math.max(1,(h*0.2)/(gapKm(L)*s));}
+  sl.oninput=upd;upd();
+  sims.push({cv,frame(){
+    if(!st.fit())return;upd();
+    const c=colors(),ctx=st.ctx,L=LEN[+sl.value],s=st.w*0.8/L,x0=st.w*0.07,X=x=>x0+x*s;
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    const band=(yb,N,title)=>{
+      // ground: height below the straight ruler line, drawn N times taller
+      ctx.beginPath();ctx.moveTo(0,st.h+2);
+      for(let px=0;px<=st.w;px+=3){const x=(px-x0)/s;ctx.lineTo(px,yb+gapKm(x)*s*N);}
+      ctx.lineTo(st.w,st.h+2);ctx.closePath();ctx.fillStyle=c.earth;ctx.fill();ctx.strokeStyle=c.earthE;ctx.lineWidth=1.5;ctx.stroke();
+      ctx.strokeStyle=c.acc;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(X(0),yb-2);ctx.lineTo(X(L),yb-2);ctx.stroke();
+      const gy=yb+gapKm(L)*s*N;
+      ctx.strokeStyle=c.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(X(L),yb);ctx.lineTo(X(L),gy);ctx.stroke();
+      label(ctx,title,8,yb-st.h*0.13,c.mut,'left',11);
+      return gy;
+    };
+    ctx.save();ctx.beginPath();ctx.rect(0,0,st.w,st.h*0.47);ctx.clip();band(st.h*0.2,1,'True to scale');ctx.restore();
+    ctx.fillStyle=c.line;ctx.fillRect(0,st.h*0.47,st.w,2);
+    ctx.save();ctx.beginPath();ctx.rect(0,st.h*0.47+2,st.w,st.h);ctx.clip();
+    const N=stretch(L),gy=band(st.h*0.68,N,'Stretched upward');
+    label(ctx,'gap '+fmtKm(gapKm(L)),X(L)-6,(st.h*0.68+gy)/2+4,c.ink,'right',12,true);ctx.restore();
+    label(ctx,'ruler, '+nf(L)+' km',X(L/2),st.h*0.2-10,c.acc,'center',12,true);
+  }});
+}
+
+/* ---------- chapters 5-7: one cannon, three windows ---------- */
+function describe(e){
+  if(e.type==='land')return `landed ${fmtKm(e.dist)} away after ${fmtDur(e.time)}`;
+  if(e.type==='lap')return `never landed: one lap took ${fmtDur(e.time)}`;
+  return 'left, and did not come back';
+}
+function Cannon(root,opt){
+  const cv=$('canvas',root),st=Stage(cv,orbR),sl=$('input[type=range]',root),out=$('output',root);
+  const ro=$('.readout',root),tb=$('tbody',root),coach=$('.coach',root);
+  sl.min=opt.min;sl.max=opt.max;sl.step=opt.step;sl.value=opt.start;
+  const upd=()=>out.textContent=nf(+sl.value,1);sl.oninput=upd;upd();
+  let cur=null,cam=null,tgt={cx:60,cy:RE+MOUNT/2,bw:420,bh:260},seen=-1;
+  function boxOf(f){
+    let x0=-70,x1=70,y0=RE-20,y1=RE+MOUNT+20;const lim=f.type==='gone'?20*RE:Infinity;
+    for(let i=0;i<f.xs.length;i++){const x=f.xs[i],y=f.ys[i];if(x*x+y*y>lim*lim)break;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;}
+    if(f.type!=='land'||f.dist>RE){x0=Math.min(x0,-RE);x1=Math.max(x1,RE);y0=Math.min(y0,-RE);y1=Math.max(y1,RE+MOUNT);}
+    return {cx:(x0+x1)/2,cy:(y0+y1)/2,bw:Math.max(x1-x0,300),bh:Math.max(y1-y0,200)};
+  }
+  function table(){
+    tb.innerHTML=S.shots.length?S.shots.map(e=>`<tr><td>${nf(e.v,1)} km a second${e.auto?' &bull;':''}</td><td>${describe(e)}</td></tr>`).join('')
+      +(S.shots.some(e=>e.auto)?'<tr><td class="empty" colspan="2">&bull; filled in for you, as an earlier chapter would have.</td></tr>':'')
+      :'<tr><td class="empty" colspan="2">No shots yet.</td></tr>';
+  }
+  function say(f,laps){
+    const v=nf(f.v,1);
+    if(f.type==='land'){
+      let s=`At ${v} km a second your ball flew ${fmtKm(f.dist)} round the Earth and landed after ${fmtDur(f.time)}.`;
+      if(f.dist>2000)s+=` That is ${fsig(100*f.dist/(TAU*RE),2)} percent of the way round.`;
+      return s;
+    }
+    if(f.type==='lap')return `At ${v} km a second your ball did not land. It went all the way round in ${fmtDur(f.time)} and passed the mountain again. Its lowest point was ${fmtKm(f.rmin-RE)} above the ground and its highest was ${fmtKm(f.rmax-RE)}. Still flying: lap ${laps+1}.`;
+    return `At ${v} km a second your ball did not come back. When it was ${fmtKm(f.rEnd-RE)} away it was still leaving, at ${fsig(f.vEnd,2)} km a second.`;
+  }
+  $('.go',root).onclick=()=>{
+    const v=r1(+sl.value),f=getShot(v);
+    const play=f.type==='land'?Math.min(7,Math.max(2.5,1.5+f.dist/2500)):f.type==='lap'?(f.rmax>5*RE?10:7):6;
+    cur={v,f,T:0,rate:f.tShow/play,logged:false,laps:0};tgt=boxOf(f);
+  };
+  if(coach&&opt.hint){let hi=0;$('.hint',root).onclick=()=>{const h=opt.hint();coach.textContent=h[hi%h.length];hi++;};
+    $('.check',root).onclick=()=>{coach.textContent=opt.check();};}
+  subs.push(table);table();
+  ro.textContent='Set a speed and press Fire.';
+  sims.push({cv,frame(dt){
+    if(seen!==S.shots.length&&!cur&&S.shots.length){seen=S.shots.length;tgt=boxOf(getShot(S.last||S.shots[S.shots.length-1].v));}
+    if(cur){
+      const f=cur.f;cur.T+=dt*cur.rate;
+      if(!cur.logged&&cur.T>=f.tShow){cur.logged=true;logShot(cur.v);seen=S.shots.length;changed();ro.textContent=say(f,cur.laps);}
+      if(f.type==='lap'&&cur.T>=f.time){cur.T-=f.time;cur.laps++;ro.textContent=say(f,cur.laps);}
+      if(f.type==='land'&&cur.T>f.time)cur.T=f.time;
+      if(f.type==='gone'&&cur.T>f.time)cur.T=f.time;
+      if(!cur.logged){const p=posAt(f,cur.T);ro.textContent=`Flying at ${nf(cur.v,1)} km a second: ${fmtDur(cur.T)} since firing, ${fmtKm(Math.max(0,Math.hypot(p[0],p[1])-RE))} above the ground.`;}
+    }
+    if(!st.fit())return;
+    if(!cam)cam=Object.assign({},tgt);
+    const a=1-Math.exp(-dt*4);cam.cx+=(tgt.cx-cam.cx)*a;cam.cy+=(tgt.cy-cam.cy)*a;
+    cam.bw*=Math.pow(tgt.bw/cam.bw,a);cam.bh*=Math.pow(tgt.bh/cam.bh,a);
+    const s=Math.min(st.w/(cam.bw*1.25),st.h/(cam.bh*1.3));
+    const v={s,X:x=>st.w/2+(x-cam.cx)*s,Y:y=>st.h/2-(y-cam.cy)*s};
+    const c=colors(),ctx=st.ctx;
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    drawEarth(ctx,v,c);
+    // distance marks along the ground, measured from the foot of the mountain
+    const steps=[100,200,500,1000,2000,5000,10000];let stp=steps.find(q=>q*s>=46)||0;
+    if(stp){ctx.strokeStyle=c.ink;ctx.lineWidth=1;
+      for(let d=stp;d<TAU*RE*0.97;d+=stp){const an=d/RE,sx=Math.sin(an),cy=Math.cos(an);
+        const px=v.X(RE*sx),py=v.Y(RE*cy);if(px<-20||px>st.w+20||py<-20||py>st.h+20)continue;
+        ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(v.X((RE-6/s)*sx),v.Y((RE-6/s)*cy));ctx.stroke();
+        label(ctx,nf(d)+' km',v.X((RE-17/s)*sx),v.Y((RE-17/s)*cy)+4,c.ink,'center',10);}}
+    drawMount(ctx,v,MOUNT,c);
+    const line=(f,upto,col,w)=>{const n=upto,k=Math.max(1,Math.ceil(n/500));ctx.beginPath();ctx.moveTo(v.X(f.xs[0]),v.Y(f.ys[0]));
+      for(let i=k;i<n;i+=k)ctx.lineTo(v.X(f.xs[i]),v.Y(f.ys[i]));ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();};
+    for(const e of S.shots){if(cur&&e.v===cur.v)continue;const f=getShot(e.v);line(f,f.xs.length,c.trace,1.5);
+      if(f.type==='land'){const n=f.xs.length-1;dot(ctx,v.X(f.xs[n]),v.Y(f.ys[n]),2.5,c.mut);}}
+    if(cur){const f=cur.f,p=posAt(f,cur.T);
+      if(cur.laps>0)line(f,f.xs.length,c.acc,2);
+      else{line(f,p[2]+1,c.acc,2);ctx.lineTo(v.X(p[0]),v.Y(p[1]));ctx.stroke();}
+      dot(ctx,v.X(p[0]),v.Y(p[1]),5,c.acc);
+      if(cur.logged&&f.type==='land'){const lx=v.X(p[0]),rt=lx>st.w*0.7;label(ctx,fmtKm(f.dist),lx+(rt?-8:8),v.Y(p[1])-9,c.acc,rt?'right':'left',12,true);}
+    }
+    if(MOUNT*s<9){const mx=v.X(0),my=v.Y(RE+MOUNT);if(mx>0&&mx<st.w&&my>14&&my<st.h){label(ctx,'cannon',mx,my-8,c.ink,'center',11,true);}}
+    else dot(ctx,v.X(0),v.Y(RE+MOUNT),3,c.ink);
+  }});
+}
+
+/* ---------- chapter 8: the Space Station ---------- */
+function Sim8(root){
+  const cv=$('canvas',root),st=Stage(cv,orbR),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  const GAP=0.002; // km: the astronaut starts 2 m ahead of the cabin's centre
+  let h=+sl.value,A=null,B=null,mode='idle',tFall=0,ang=0,trail=[],h0=0;
+  const upd=()=>{h=+sl.value;out.textContent=nf(h);mode='idle';A=null;trail=[];};
+  sl.oninput=upd;upd();
+  $('.go',root).onclick=()=>{const r=RE+h,v=vCirc(r),a=GAP/r;
+    A=[0,r,v,0];B=[r*Math.sin(a),r*Math.cos(a),v*Math.cos(a),-v*Math.sin(a)];mode='orbit';ang=0;trail=[];};
+  $('.stop',root).onclick=()=>{if(mode!=='orbit')return;A[2]=A[3]=0;B[2]=B[3]=0;mode='fall';tFall=0;h0=Math.hypot(A[0],A[1])-RE;};
+  sims.push({cv,frame(dt){
+    const r=RE+h,grav=100*(RE/r)*(RE/r),v=vCirc(r),lap=lapTime(r);
+    let gap=GAP*1000;
+    if(mode==='orbit'){const T=dt*lap/12,p=adv(A,T,GM,2);ang+=Math.abs(Math.atan2(A[0]*p[1]-A[1]*p[0],A[0]*p[0]+A[1]*p[1]));A=p;B=adv(B,T,GM,2);
+      trail.push([A[0],A[1]]);if(trail.length>900)trail.shift();}
+    if(mode==='fall'){let T=dt*60;while(T>1e-9&&mode==='fall'){const q=Math.min(0.1,T);A=rk4(A,q,GM);B=rk4(B,q,GM);T-=q;tFall+=q;if(Math.hypot(A[0],A[1])<=RE)mode='crash';}
+      trail.push([A[0],A[1]]);}
+    if(A)gap=Math.hypot(B[0]-A[0],B[1]-A[1])*1000;
+    const head=`At ${nf(h)} km up, gravity is ${nf(grav)} percent as strong as on the ground. `;
+    if(mode==='idle')ro.textContent=head+`The station needs ${nf(v,1)} km a second to stay up. Press Launch.`;
+    else if(mode==='orbit')ro.textContent=head+`The station is going ${nf(v,1)} km a second and one lap takes ${nf(lap/60)} minutes. Laps so far: ${Math.floor(ang/TAU)}. Gap between astronaut and cabin centre: ${nf(gap,1)} m, and holding.`;
+    else if(mode==='fall')ro.textContent=`Sideways speed gone. The station is ${fmtKm(Math.max(0,Math.hypot(A[0],A[1])-RE))} up and dropping straight down, ${fmtDur(tFall)} after stopping. Gap to the astronaut: ${nf(gap,1)} m. They fall together.`;
+    else ro.textContent=`With no sideways speed the station fell ${fmtKm(h0)} straight down and hit the ground after ${nf(tFall/60,1)} minutes. Gravity was there all along. Press Launch to try again.`;
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,vw=viewC(st,(RE+ISS)*1.13);
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    drawEarth(ctx,vw,c);drawMount(ctx,vw,h,c);
+    if(trail.length>1){ctx.beginPath();trail.forEach((p,i)=>i?ctx.lineTo(vw.X(p[0]),vw.Y(p[1])):ctx.moveTo(vw.X(p[0]),vw.Y(p[1])));ctx.strokeStyle=c.acc;ctx.lineWidth=2;ctx.stroke();}
+    const P=A||[0,r];ctx.fillStyle=c.acc;ctx.fillRect(vw.X(P[0])-5,vw.Y(P[1])-5,10,10);
+    label(ctx,nf(h)+' km up',vw.X(0),vw.Y(RE+h)-12,c.ink,'center',11,true);
+    // the little window: the astronaut's place inside the cabin
+    const bx=10,by=10,bs=Math.min(96,st.w*0.26);
+    ctx.fillStyle=c.card;ctx.strokeStyle=c.ink;ctx.lineWidth=2;ctx.fillRect(bx,by,bs,bs);ctx.strokeRect(bx,by,bs,bs);
+    let ax=GAP*1000,ay=0;
+    if(A){const rr=Math.hypot(A[0],A[1]),ux=A[0]/rr,uy=A[1]/rr,dx=(B[0]-A[0])*1000,dy=(B[1]-A[1])*1000;ax=dx*uy-dy*ux;ay=dx*ux+dy*uy;}
+    const m=bs/8;dot(ctx,bx+bs/2+ax*m,by+bs/2-ay*m,5,c.acc2);
+    label(ctx,'inside the cabin',bx,by+bs+13,c.ink,'left',10);
+  }});
+}
+
+/* ---------- chapter 9: height table ---------- */
+function Sim9(root){
+  const cv=$('canvas',root),st=Stage(cv,orbR),sl=$('input',root),out=$('output',root),ro=$('.readout',root),tb=$('tbody',root),coach=$('.coach',root);
+  let h=100,s=null,half=0;
+  const HS=[MOUNT,2*MOUNT,ISS,1000,2000,4000,sig(RE,2),10000,sig(2*RE,2),20000,36000,50000,100000,200000,sig(MOON-RE,2)];sl.max=HS.length-1;
+  const hOf=x=>HS[x];
+  const pct=r=>fsig(100*(RE/r)*(RE/r),2)+'%';
+  function launch(){const r=RE+h;s=[0,r,vCirc(r),0];}
+  const upd=()=>{h=hOf(+sl.value);out.textContent=nf(h);launch();};
+  sl.oninput=upd;upd();
+  function table(){
+    const rows=S.table9.slice().sort((a,b)=>a-b);
+    tb.innerHTML=rows.length?rows.map(hh=>{const r=RE+hh;return `<tr><td>${nf(hh)} km</td><td>${pct(r)}</td><td>${fsig(vCirc(r),2)} km/s</td><td>${fmtDur(lapTime(r))}</td></tr>`;}).join(''):'<tr><td class="empty" colspan="4">Nothing in your table yet.</td></tr>';
+  }
+  table();
+  $('.go',root).onclick=()=>{if(!S.table9.includes(h))S.table9.push(h);table();};
+  $('.check',root).onclick=()=>{
+    const rows=S.table9.slice().sort((a,b)=>a-b);
+    if(rows.length<4){coach.textContent=`You have ${rows.length} of the 4 rows this needs. Add more heights, far apart, then press again.`;return;}
+    const a=rows[0],b=rows[rows.length-1],ra=RE+a,rb=RE+b;
+    coach.textContent=`Read down your table. From ${nf(a)} km to ${nf(b)} km up, gravity drops from ${pct(ra)} to ${pct(rb)}. The speed drops from ${fsig(vCirc(ra),2)} to ${fsig(vCirc(rb),2)} km a second. The lap grows from ${fmtDur(lapTime(ra))} to ${fmtDur(lapTime(rb))}. Higher means weaker, slower and longer. Was that your pattern?`;
+  };
+  sims.push({cv,frame(dt){
+    const r=RE+h,lap=lapTime(r);
+    s=adv(s,dt*lap/9,GM,lap/400);
+    ro.textContent=`At ${nf(h)} km up you are ${fsig(r,3)} km from the Earth's centre. Gravity there is ${pct(r)} of its strength on the ground. The speed that just orbits is ${fsig(vCirc(r),2)} km a second, and one lap takes ${fmtDur(lap)}.`;
+    if(!st.fit())return;const c=colors(),ctx=st.ctx;
+    const want=r*1.15;half=half?half*Math.pow(want/half,1-Math.exp(-dt*5)):want;
+    const vw=viewC(st,half);
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    ctx.beginPath();ctx.arc(vw.X(0),vw.Y(0),r*vw.s,0,TAU);ctx.strokeStyle=c.trace;ctx.lineWidth=1.5;ctx.setLineDash([4,5]);ctx.stroke();ctx.setLineDash([]);
+    drawEarth(ctx,vw,c);if(h*vw.s>4)drawMount(ctx,vw,h,c);
+    dot(ctx,vw.X(s[0]),vw.Y(s[1]),5,c.acc);
+  }});
+}
+
+/* ---------- chapter 10: zoom out to the Moon ---------- */
+function Sim10(root){
+  const cv=$('canvas',root),st=Stage(cv,orbR),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  let M=[0,MOON,vCirc(MOON),0],t=0,ang=0,trail=[[0,MOON]];
+  const a0=(RE+MOUNT)*1.5,b0=MOON*1.2;
+  const halfOf=()=>a0*Math.pow(b0/a0,+sl.value/100);
+  const upd=()=>out.textContent='picture is '+fmtKm(2*halfOf())+' across';
+  sl.oninput=upd;upd();
+  sims.push({cv,frame(dt){
+    const half=halfOf(),vr=Math.min(MOON,Math.max(RE+MOUNT,half/1.25)),rate=lapTime(vr)/14,T=dt*rate;
+    const p=adv(M,T,GM,600);ang+=Math.abs(Math.atan2(M[0]*p[1]-M[1]*p[0],M[0]*p[0]+M[1]*p[1]));M=p;t+=T;
+    const last=trail[trail.length-1];if(Math.hypot(M[0]-last[0],M[1]-last[1])>MOON/200){trail.push([M[0],M[1]]);if(trail.length>1300)trail.shift();}
+    const r=Math.hypot(M[0],M[1]),v=Math.hypot(M[2],M[3]);
+    ro.textContent=`Day ${nf(t/DAY,1)}. The Moon is ${fsig(r,3)} km from the Earth's centre, which is ${nf(r/RE)} Earth radii. It moves at ${nf(v,1)} km a second, and one lap takes ${nf(TAU*r/v/DAY)} days. In one second it goes ${nf(v,1)} km sideways and falls ${nf(GM/(r*r)/2*1e6,1)} mm. In that second its circle curves away ${nf(v*v/(2*r)*1e6,1)} mm. Laps so far: ${Math.floor(ang/TAU)}.`;
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,vw=viewC(st,half);
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    ctx.beginPath();trail.forEach((q,i)=>i?ctx.lineTo(vw.X(q[0]),vw.Y(q[1])):ctx.moveTo(vw.X(q[0]),vw.Y(q[1])));ctx.strokeStyle=c.acc2;ctx.lineWidth=1.5;ctx.stroke();
+    drawEarth(ctx,vw,c);
+    const f=getShot(S.found||findEdge());
+    if((RE+MOUNT)*vw.s>3){const k=Math.max(1,Math.ceil(f.xs.length/400));ctx.beginPath();for(let i=0;i<f.xs.length;i+=k)i?ctx.lineTo(vw.X(f.xs[i]),vw.Y(f.ys[i])):ctx.moveTo(vw.X(f.xs[i]),vw.Y(f.ys[i]));ctx.closePath();ctx.strokeStyle=c.acc;ctx.lineWidth=1.5;ctx.stroke();}
+    if(RE*vw.s>14){const q=posAt(f,t%f.time);dot(ctx,vw.X(q[0]),vw.Y(q[1]),4,c.acc);if(MOUNT*vw.s>3)drawMount(ctx,vw,MOUNT,c);}
+    if(RE*vw.s<30)label(ctx,'Earth',vw.X(0),vw.Y(0)+Math.max(RE*vw.s,2)+13,c.ink,'center',11,true);
+    const mx=vw.X(M[0]),my=vw.Y(M[1]),mr=RMOON*vw.s;
+    dot(ctx,mx,my,Math.max(mr,0.8),c.ink);
+    if(mr<5){ctx.beginPath();ctx.arc(mx,my,8,0,TAU);ctx.strokeStyle=c.ink;ctx.lineWidth=1.2;ctx.stroke();}
+    if(mx>-20&&mx<st.w+20&&my>-20&&my<st.h+20)label(ctx,'Moon',Math.min(st.w-22,Math.max(22,mx)),my-13,c.ink,'center',11,true);
+  }});
+}
+
+/* ---------- chapter 11: gravity switch ---------- */
+function Sim11(root){
+  const cv=$('canvas',root),st=Stage(cv,orbR),ro=$('.readout',root),btn=$('.go',root);
+  let M,on,t,tOff,off0,trail,half,gone,ever;
+  function reset(){M=[0,MOON,vCirc(MOON),0];on=true;t=0;tOff=0;off0=null;trail=[[0,MOON]];half=MOON*1.25;gone=false;ever=false;face();}
+  function face(){btn.textContent=on?'Gravity is ON: switch it off':'Gravity is OFF: switch it on';btn.setAttribute('aria-pressed',on);}
+  btn.onclick=()=>{on=!on;if(!on){off0=M.slice();tOff=0;ever=true;}face();};
+  $('.reset',root).onclick=reset;reset();
+  sims.push({cv,frame(dt){
+    const lap0=lapTime(MOON);
+    if(!gone){const T=dt*lap0/16;M=adv(M,T,on?GM:0,900);t+=T;if(!on)tOff+=T;
+      const last=trail[trail.length-1];if(Math.hypot(M[0]-last[0],M[1]-last[1])>MOON/150){trail.push([M[0],M[1]]);if(trail.length>3000)trail.shift();}}
+    const r=Math.hypot(M[0],M[1]),v=Math.hypot(M[2],M[3]);
+    if(r>12*MOON)gone=true;
+    if(gone)ro.textContent=`The Moon is ${fsig(r,2)} km away and out of the picture. Press Start again.`;
+    else if(on&&!ever)ro.textContent=`Day ${nf(t/DAY,1)}. Gravity is on. The Moon is ${fsig(r,3)} km from the Earth, moving at ${nf(v,2)} km a second, and curving round.`;
+    else if(!on)ro.textContent=`Gravity has been off for ${nf(tOff/DAY,1)} days. In that time the Moon has gone ${fsig(Math.hypot(M[0]-off0[0],M[1]-off0[1]),2)} km in a dead straight line, at a steady ${nf(v,2)} km a second. It is now ${fsig(r,3)} km from the Earth.`;
+    else{const E=v*v/2-GM/r;ro.textContent=`Gravity is back on. The Moon is ${fsig(r,3)} km from the Earth, moving at ${nf(v,2)} km a second. `+(E>=0?'It is now too fast for the weak gravity out here to turn it round. It will not come back.':'Gravity has caught it again, on a new and longer loop.');}
+    if(!st.fit())return;const c=colors(),ctx=st.ctx;
+    const want=Math.max(MOON*1.25,r*1.12);half*=Math.pow(want/half,1-Math.exp(-dt*3));
+    const vw=viewC(st,half);
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    if(off0){const sp=Math.hypot(off0[2],off0[3]),ux=off0[2]/sp,uy=off0[3]/sp,Lg=30*MOON;
+      ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(vw.X(off0[0]),vw.Y(off0[1]));ctx.lineTo(vw.X(off0[0]+ux*Lg),vw.Y(off0[1]+uy*Lg));ctx.strokeStyle=c.mut;ctx.lineWidth=1.5;ctx.stroke();ctx.setLineDash([]);}
+    ctx.beginPath();trail.forEach((q,i)=>i?ctx.lineTo(vw.X(q[0]),vw.Y(q[1])):ctx.moveTo(vw.X(q[0]),vw.Y(q[1])));ctx.lineTo(vw.X(M[0]),vw.Y(M[1]));ctx.strokeStyle=c.acc2;ctx.lineWidth=2;ctx.stroke();
+    drawEarth(ctx,vw,c);label(ctx,'Earth',vw.X(0),vw.Y(0)+15,c.ink,'center',11,true);
+    const mx=vw.X(M[0]),my=vw.Y(M[1]);dot(ctx,mx,my,Math.max(RMOON*vw.s,0.8),c.ink);
+    ctx.beginPath();ctx.arc(mx,my,8,0,TAU);ctx.strokeStyle=on?c.ink:c.acc;ctx.lineWidth=1.5;ctx.stroke();
+    label(ctx,'Moon',Math.min(st.w-22,Math.max(22,mx)),my-13,c.ink,'center',11,true);
+    label(ctx,on?'gravity ON':'gravity OFF',st.w-8,18,on?c.good:c.acc,'right',12,true);
+  }});
+}
+
+/* ---------- chapter 12: park a satellite ---------- */
+function Sim12(root){
+  const cv=$('canvas',root),st=Stage(cv,orbR),sl=$('input',root),out=$('output',root),ro=$('.readout',root);
+  let h,s,t,sa;
+  const upd=()=>{h=+sl.value;out.textContent=nf(h);const r=RE+h;s=[0,r,vCirc(r),0];t=0;sa=0;};
+  sl.oninput=upd;upd();
+  const nudge=d=>{sl.value=Math.min(+sl.max,Math.max(+sl.min,+sl.value+d));upd();};
+  $('.dn',root).onclick=()=>nudge(-100);$('.up',root).onclick=()=>nudge(100);
+  sims.push({cv,frame(dt){
+    const r=RE+h,lap=lapTime(r),T=dt*DAY/10;
+    const p=adv(s,T,GM,Math.min(120,lap/300));sa+=Math.abs(Math.atan2(s[0]*p[1]-s[1]*p[0],s[0]*p[0]+s[1]*p[1]));s=p;t+=T;
+    const ha=TAU*t/DAY;let lead=((sa-ha)*360/TAU)%360;if(lead>180)lead-=360;if(lead<-180)lead+=360;
+    const hrs=lap/3600,ok=Math.abs(hrs-DAY/3600)<0.05;
+    ro.textContent=`At ${nf(h)} km up the satellite needs ${nf(vCirc(r),1)} km a second, and one lap takes ${hrs<10?nf(hrs,1)+' hours':nf(hrs,1)+' hours'}. In one day it makes ${nf(DAY/lap,2)} laps. `+
+      (ok?`Parked. After ${nf(t/DAY,1)} days it is still over the house.`:`After ${nf(t/DAY,1)} days it is ${nf(Math.abs(lead))} degrees ${lead>0?'ahead of':'behind'} the house. ${hrs<DAY/3600?'Too quick: go higher.':'Too slow: come lower.'}`);
+    if(!st.fit())return;const c=colors(),ctx=st.ctx,vw=viewC(st,(RE+50000)*1.08);
+    ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
+    ctx.beginPath();ctx.arc(vw.X(0),vw.Y(0),r*vw.s,0,TAU);ctx.strokeStyle=c.trace;ctx.lineWidth=1.5;ctx.setLineDash([3,5]);ctx.stroke();
+    const hx=Math.sin(ha),hy=Math.cos(ha);
+    ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(vw.X(RE*hx),vw.Y(RE*hy));ctx.lineTo(vw.X((RE+56000)*hx),vw.Y((RE+56000)*hy));ctx.strokeStyle=ok?c.good:c.mut;ctx.lineWidth=1.5;ctx.stroke();ctx.setLineDash([]);
+    drawEarth(ctx,vw,c);dot(ctx,vw.X(RE*hx),vw.Y(RE*hy),4,c.ink);
+    dot(ctx,vw.X(s[0]),vw.Y(s[1]),5,ok?c.good:c.acc);
+    if(ok)label(ctx,'parked',st.w-8,18,c.good,'right',12,true);
+  }});
+}
+
+/* ---------- book shell ---------- */
+const main=$('#main');
+main.innerHTML=main.innerHTML.replace(/\{\{(\w+)\}\}/g,'<span data-n="$1"></span>');
+const chapters=$$('.chapter'),toc=$('#toc'),pages=[toc,...chapters];
+let curPage=0,allMode=false;
+fill();
+
+chapters.forEach((ch,i)=>{
+  $('.kicker',ch).textContent=`Chapter ${i+1}`;
+  const nav=document.createElement('nav');nav.className='pager';
+  const back=document.createElement('button');back.className='btn alt back';back.type='button';back.textContent='← Back';back.onclick=()=>show(i);
+  const pc=document.createElement('span');pc.className='pc';pc.textContent=`${i+1} of ${chapters.length}`;
+  nav.append(back,pc);
+  if(i+1<chapters.length){const next=document.createElement('button');next.className='btn next';next.type='button';next.onclick=()=>show(i+2);nav.append(next);}
+  else{const home=document.createElement('button');home.className='btn next';home.type='button';home.textContent='Back to the contents';home.onclick=()=>show(0);nav.append(home);}
+  ch.append(nav);
+});
+function titles(){
+  chapters.forEach((ch,i)=>{const n=$('.pager .next',ch);if(n&&i+1<chapters.length)n.textContent='Next: '+$('h2',chapters[i+1]).textContent+' →';});
+  const ol=$('#tocList');ol.innerHTML='';
+  chapters.forEach((ch,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.className='link';b.textContent=$('h2',ch).textContent;b.onclick=()=>show(i+1);li.append(b);ol.append(li);
+    if(i===5){const s=document.createElement('li');s.className='stop';s.textContent='A good place to stop for the night. Your ball is in orbit, and the Moon is still to come.';ol.append(s);}});
+}
+titles();
+
+function thread(){$('#threadV').textContent=S.flying?'still flying':S.far>0?fmtKm(S.far):'none yet';}
+subs.push(thread,fill,()=>{const f=!!S.found;$('#payoff').hidden=!f;$('#locked').hidden=f;});
+changed();
+
+function show(i){
+  if(allMode){setAll(false);}
+  curPage=Math.max(0,Math.min(pages.length-1,i));
+  if(curPage>=6)ensure(curPage>=7?2:1);
+  pages.forEach((p,k)=>p.classList.toggle('active',k===curPage));
+  $('#count').textContent=curPage?`${curPage} / ${chapters.length}`:'Contents';
+  window.scrollTo(0,0);
+}
+function setAll(v){
+  allMode=v;document.body.classList.toggle('all',v);
+  $('#btnAll').textContent=v?'Book':'All';
+  $('#btnAll').setAttribute('aria-label',v?'Back to one chapter at a time':'Show all chapters on one page');
+  if(v){ensure(2);$('#count').textContent='All chapters';window.scrollTo(0,0);}
+}
+$('#btnHome').onclick=()=>show(0);
+$('#btnAll').onclick=()=>{if(allMode){setAll(false);show(curPage);}else setAll(true);};
+$('#btnAll2').onclick=()=>setAll(true);
+$$('[data-go]').forEach(b=>b.onclick=()=>show(+b.dataset.go));
+$('#btnTheme').onclick=()=>{
+  const root=document.documentElement,cur=root.dataset.theme||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  root.dataset.theme=cur==='dark'?'light':'dark';COL=null;
+};
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{COL=null;});
+document.addEventListener('keydown',e=>{
+  if(allMode||e.altKey||e.ctrlKey||e.metaKey)return;
+  const tg=e.target;if(tg&&/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName))return;
+  if(e.key==='ArrowRight'&&curPage<pages.length-1)show(curPage+1);
+  if(e.key==='ArrowLeft'&&curPage>0)show(curPage-1);
+});
+window.addEventListener('beforeprint',()=>$$('details').forEach(d=>d.open=true));
+
+/* ---------- build the sims ---------- */
+Sim1($('#sim1'));Sim2($('#sim2'));Sim3($('#sim3'));Sim4($('#sim4'));
+Cannon($('#sim5'),{min:0.5,max:7.5,step:0.5,start:1,
+  hint:()=>['Fire one shot, then another at double its speed. Double the first distance in your head. Did the second shot beat that?','Try the pair again with faster shots. Does the extra distance grow or shrink?'],
+  check:()=>{
+    const land=S.shots.filter(s=>s.type==='land');let best=null;
+    for(const a of land){const b=land.find(q=>q.v===r1(a.v*2));if(b&&(!best||a.v>best[0].v))best=[a,b];}
+    if(!best)return 'Your log needs two shots where one is double the speed of the other. Fire a pair like that, then press again.';
+    const [a,b]=best,dbl=2*a.dist;
+    return `At ${nf(a.v,1)} km a second the ball landed ${fmtKm(a.dist,3)} away. Doubling says ${nf(b.v,1)} km a second should land ${fmtKm(dbl,3)} away. Your shot landed ${fmtKm(b.dist,3)} away, which is ${fmtKm(b.dist-dbl,2)} farther. So no: on a round Earth, double the speed gives more than double the distance.`;
+  }});
+Cannon($('#sim6'),{min:0.5,max:9,step:0.1,start:4,
+  hint:()=>['Look down your log. Find the fastest shot that landed. Then fire something faster.','Find the fastest shot that landed and the slowest that did not. The speed you want sits between them.','Fire halfway between those two. Keep halving until they are next-door steps on the slider.'],
+  check:()=>{
+    if(S.hi===null&&S.lo===null)return 'Fire a few shots first.';
+    if(S.lo===null){const e=S.shots.find(s=>s.v===S.hi);return `Not yet. Your fastest shot, ${nf(S.hi,1)} km a second, still landed, ${fmtKm(e.dist)} away. Go faster.`;}
+    if(!S.found)return `At ${nf(S.lo,1)} km a second the ball stayed up. But the fastest shot that landed was ${S.hi===null?'none yet':nf(S.hi,1)+' km a second'}. Is ${nf(S.lo,1)} really the slowest that stays up? Try the speeds in between.`;
+    const e=S.shots.find(s=>s.v===S.hi);
+    return `Yes. At ${nf(S.hi,1)} km a second the ball landed, ${fmtKm(e.dist)} away. At ${nf(S.lo,1)} it never came down. So the speed that works is about ${Math.round(S.lo)} km a second.`;
+  }});
+Cannon($('#sim7'),{min:7,max:12,step:0.1,start:8.5});
+Sim8($('#sim8'));Sim9($('#sim9'));Sim10($('#sim10'));Sim11($('#sim11'));Sim12($('#sim12'));
+
+let lastT=0;
+function loop(now){
+  const dt=Math.min(0.05,(now-lastT)/1000||0);lastT=now;
+  for(const s of sims)if(onScreen(s.cv))s.frame(dt);
+  requestAnimationFrame(loop);
+}
+show(0);
+requestAnimationFrame(loop);
+
+/* for checking the book against its own rules (not used by the page) */
+window.__book={S,show,chapters,getShot,computeN};
+})();
+</script>
+</body>
+</html>

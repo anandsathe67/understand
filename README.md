@@ -13,6 +13,8 @@ Each topic has two builds. **Briefed** pages were built by an agent that got the
 | Euler's formula for solid shapes, corners − edges + faces = 2 | [The Number That Never Changes](https://anandsathe67.github.io/understand/topics/eulers-polyhedron-formula/cold/) | [Let's Squash a Football](https://anandsathe67.github.io/understand/topics/eulers-polyhedron-formula/briefed/) | [prompt.md](topics/eulers-polyhedron-formula/prompt.md) |
 | Euler's identity, e^(iπ) + 1 = 0 | [Let's Walk Round a Circle](https://anandsathe67.github.io/understand/topics/eulers-identity/cold/) | [Spinning to Minus One](https://anandsathe67.github.io/understand/topics/eulers-identity/briefed/) | [prompt.md](topics/eulers-identity/prompt.md) |
 
+A third topic exists only as a book, built cold from its prompt: [Why the Moon Doesn't Fall Down](https://anandsathe67.github.io/understand/topics/newtons-cannon/book/) (Newton's cannon, for a 10-to-12-year-old alone; [prompt-book.md](topics/newtons-cannon/prompt-book.md)).
+
 Every page is a single self-contained HTML file with no libraries. Every number shown is computed live from the real geometry or arithmetic. Works on a phone.
 
 Audience, honestly: the football page is for a 10-year-old alone (two sittings). The identity page is for a strong 12-to-14-year-old alone, or a 10-year-old with a parent; the hard steps are marked "Parent, carry here".
