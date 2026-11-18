@@ -187,7 +187,7 @@ details.extra p{font-size:.95rem}
 
   <details class="extra"><summary>Extras: try it at home</summary>
     <h4>Two coins, one click</h4>
-    <p>Lay a ruler on a table with one end poking over the edge. Rest a coin on that end. Put a second coin on the table edge, beside the ruler. Flick the ruler sideways so it swats that coin away. The coin on the ruler is left behind and drops straight down. Listen for one click, not two.</p>
+    <p>Use the corner of a table. Lay a ruler near the corner, with one end poking out over the front edge. Rest a coin on that end. Put a second coin beside the ruler's other end, right at the side edge of the table. Press one finger on the ruler where it crosses the front edge. Now flick the poking-out end sideways, away from the corner. The ruler spins under your finger. One end slips from under the first coin, which drops straight down. The other end knocks the second coin off the side. Listen for one click, not two. It may take a few tries.</p>
     <p>Why it works: both coins fall the same height together, like the two balls in this chapter's cliff sim.</p>
   </details>
 </section>
@@ -334,7 +334,7 @@ details.extra p{font-size:.95rem}
   <h2>At one speed the ball never lands</h2>
   <p class="ans">Yes. And you are about to find that shot yourself.</p>
   <p>Imagine walking down a staircase that sinks as fast as you step. You would keep stepping down, and never reach the floor.</p>
-  <p>Same cannon, same mountain. Your old shots are still in the log. The slider now goes higher, in finer steps. Hunt for the slowest shot that does not land. You will know when you have it. One speed lands. The very next one keeps going.</p>
+  <p>Same cannon, same mountain. Your old shots are still in the log. The slider now goes higher, in finer steps. The − and + buttons move it one step. Hunt for the slowest shot that does not land. You will know when you have it. One speed lands. The very next one keeps going.</p>
 
   <figure class="sim cannon" id="sim6">
     <div class="ctl">
@@ -359,7 +359,9 @@ details.extra p{font-size:.95rem}
       <p>So after one second the ball is still {{mount}} km up. It is no closer to the ground. The next second goes the same way, and the one after that.</p>
       <p>One step slower, at {{vBelow}} km a second, the ball loses a little height each second. It landed {{belowDist}} away.</p>
     </div>
-    <p style="margin-top:14px">The ball never stops falling. The ground just keeps curving out of its way. A fall like that, all the way round, has a name. It is called an <b>orbit</b>.</p>
+    <p style="margin-top:14px">On the cliff, the ball fell faster each second. Here it cannot build up speed toward the ground. As the ball goes round, "down" turns with it.</p>
+    <p>Your slider moves in steps, so {{vFound}} is a touch too fast. The ball swings from {{ovLo}} up to {{ovHi}} up, and back. The speed that keeps it level is {{vExact}} km a second.</p>
+    <p>The ball never stops falling. The ground just keeps curving out of its way. A fall like that, all the way round, has a name. It is called an <b>orbit</b>.</p>
     <div class="box notice"><h3>A few things to notice</h3><ul>
       <li>The ball comes back to the mountain at the height it left.</li>
       <li>Nothing pushes it along. There is no engine and no fuel.</li>
@@ -769,6 +771,7 @@ function computeN(){
   N.moonR=Math.round(MOON/RE);N.moonWeak=fsig((MOON/RE)*(MOON/RE),2);
   N.moonVr=Math.round(vm);N.moonV=nf(vm,1);N.moonDays=Math.round(lapTime(MOON)/DAY);
   N.moonFall=nf(mf,1);N.moonFallR=Math.floor(mf);N.moonCurve=nf(vm*vm/(2*MOON)*1e6,1);
+  const fs=f?getShot(f):null;N.ovLo=fs?fmtKm(fs.rmin-RE):'?';N.ovHi=fs?fmtKm(fs.rmax-RE):'?';N.vExact=nf(vCirc(rm),2);
   N.v11=11;N.ap11=fsig(getShot(11).rmax-RE,2);
   N.day=Math.round(DAY/3600);N.sid=Math.round((DAY-SIDEREAL)/60);
   return N;
@@ -937,6 +940,8 @@ function Cannon(root,opt){
   const ro=$('.readout',root),tb=$('tbody',root),coach=$('.coach',root);
   sl.min=opt.min;sl.max=opt.max;sl.step=opt.step;sl.value=opt.start;
   const upd=()=>out.textContent=nf(+sl.value,1);sl.oninput=upd;upd();
+  const mkN=(t,d,l)=>{const b=document.createElement('button');b.type='button';b.className='btn alt';b.textContent=t;b.setAttribute('aria-label',l);b.onclick=()=>{sl.value=Math.min(+sl.max,Math.max(+sl.min,r1(+sl.value+d*+sl.step)));upd();};return b;};
+  $('.go',root).before(mkN('\u2212',-1,'One step slower'),mkN('+',1,'One step faster'));
   let cur=null,cam=null,tgt={cx:60,cy:RE+MOUNT/2,bw:420,bh:260},seen=-1;
   function boxOf(f){
     let x0=-70,x1=70,y0=RE-20,y1=RE+MOUNT+20;const lim=f.type==='gone'?20*RE:Infinity;
@@ -1158,10 +1163,10 @@ function Sim12(root){
   sims.push({cv,frame(dt){
     const r=RE+h,lap=lapTime(r),T=dt*DAY/10;
     const p=adv(s,T,GM,Math.min(120,lap/300));sa+=Math.abs(Math.atan2(s[0]*p[1]-s[1]*p[0],s[0]*p[0]+s[1]*p[1]));s=p;t+=T;
-    const ha=TAU*t/DAY;let lead=((sa-ha)*360/TAU)%360;if(lead>180)lead-=360;if(lead<-180)lead+=360;
+    const ha=TAU*t/DAY;const lead=(sa-ha)*360/TAU,al=Math.abs(lead),turns=Math.floor(al/360);
     const hrs=lap/3600,ok=Math.abs(hrs-DAY/3600)<0.05;
     ro.textContent=`At ${nf(h)} km up the satellite needs ${nf(vCirc(r),1)} km a second, and one lap takes ${hrs<10?nf(hrs,1)+' hours':nf(hrs,1)+' hours'}. In one day it makes ${nf(DAY/lap,2)} laps. `+
-      (ok?`Parked. After ${nf(t/DAY,1)} days it is still over the house.`:`After ${nf(t/DAY,1)} days it is ${nf(Math.abs(lead))} degrees ${lead>0?'ahead of':'behind'} the house. ${hrs<DAY/3600?'Too quick: go higher.':'Too slow: come lower.'}`);
+      (ok?`Parked. After ${nf(t/DAY,1)} days it is still over the house.`:`After ${nf(t/DAY,1)} days it is ${turns?turns+(turns===1?' whole turn and ':' whole turns and '):''}${nf(al%360)} degrees ${lead>0?'ahead of':'behind'} the house. ${hrs<DAY/3600?'Too quick: go higher.':'Too slow: come lower.'}`);
     if(!st.fit())return;const c=colors(),ctx=st.ctx,vw=viewC(st,(RE+50000)*1.08);
     ctx.fillStyle=c.sky;ctx.fillRect(0,0,st.w,st.h);
     ctx.beginPath();ctx.arc(vw.X(0),vw.Y(0),r*vw.s,0,TAU);ctx.strokeStyle=c.trace;ctx.lineWidth=1.5;ctx.setLineDash([3,5]);ctx.stroke();
@@ -1202,8 +1207,9 @@ function thread(){$('#threadV').textContent=S.flying?'still flying':S.far>0?fmtK
 subs.push(thread,fill,()=>{const f=!!S.found;$('#payoff').hidden=!f;$('#locked').hidden=f;});
 changed();
 
-let shownOnce=false;
+let shownOnce=false,skipAsked=false;
 function show(i){
+  if(!allMode&&curPage===6&&i===7&&!S.found&&!skipAsked){skipAsked=true;const L=$('#locked');L.textContent='You have not found the speed yet. Keep hunting, and use the hint button if you are stuck. Or press Next again, and the book will fill it in for you.';L.scrollIntoView({block:'center'});return;}
   if(allMode){setAll(false);}
   curPage=Math.max(0,Math.min(pages.length-1,i));
   if(curPage>=6)ensure(curPage>=7?2:1);
@@ -1216,7 +1222,7 @@ function setAll(v){
   allMode=v;document.body.classList.toggle('all',v);
   $('#btnAll').textContent=v?'Book':'All';
   $('#btnAll').setAttribute('aria-label',v?'Back to one chapter at a time':'Show all chapters on one page');
-  if(v){ensure(2);$('#count').textContent='All chapters';window.scrollTo(0,0);}
+  if(v){ensure(S.found?2:1);$('#count').textContent='All chapters';window.scrollTo(0,0);}
 }
 $('#btnHome').onclick=()=>show(0);
 $('#btnAll').onclick=()=>{if(allMode){setAll(false);show(curPage);}else setAll(true);};
