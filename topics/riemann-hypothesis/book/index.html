@@ -194,7 +194,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <section class="short" id="short" aria-labelledby="shortH">
 <div class="kicker">The two-minute version</div>
 <h2 id="shortH" tabindex="-1">The Riemann hypothesis in two minutes</h2>
-<p class="lead">A prime is a number you cannot split into equal rows: 2, 3, 5, 7, 11, and on forever.</p>
+<p class="lead">A prime is a whole number bigger than 1 that you can't make by multiplying two smaller whole numbers. 6 is 2 × 3, so 6 is not prime. 2, 3, 5, 7 and 11 are prime, and the list never ends.</p>
 <p>Primes thin out as numbers grow. A smooth curve predicts how many there are up to any point. The prediction is very good, but never exact. It wobbles.</p>
 <h3>What it says</h3>
 <p>The <b>Riemann hypothesis</b> says the primes are spread about as evenly as they could be. Their wobble stays small, like the drift in a long run of coin flips. In numbers, the error stays inside a band about the size of the square root. (The exact statement adds a slowly growing extra factor.)</p>
@@ -225,15 +225,15 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <li>What would change, in detail. <button class="lnk" data-go="11">Chapter 11</button></li>
   <li>Watch a 16-minute walk-through. <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine: The Riemann Hypothesis, Explained</a> (Alex Kontorovich, 2021)</li>
 </ul>
-<div class="pager"><button id="shortBack"><small>Back</small>Contents</button><button class="next" id="shortNext"><small>Next &rarr;</small>1. Primes are the numbers you cannot split into equal rows</button></div>
+<div class="pager"><button id="shortBack"><small>Back</small>Contents</button><button class="next" id="shortNext"><small>Next &rarr;</small>1. Primes can't be made by multiplying smaller numbers</button></div>
 </section>
 
-<section class="ch" id="ch1" data-title="Primes are the numbers you cannot split into equal rows">
+<section class="ch" id="ch1" data-title="Primes can't be made by multiplying smaller numbers">
 <div class="kicker">Chapter 1</div>
-<h2>Primes are the numbers you cannot split into equal rows</h2>
+<h2>Primes can't be made by multiplying smaller numbers</h2>
 <p class="lead">Let's start with buttons.</p>
-<p>Take <b class="v" data-x="12">12</b> buttons. You can lay them out in <b class="v" data-x="2">2</b> rows of <b class="v" data-x="12/2">6</b>. Or <b class="v" data-x="3">3</b> rows of <b class="v" data-x="12/3">4</b>. Twelve is easy to tidy into a rectangle.</p>
-<p>Now take <b class="v" data-x="7">7</b> buttons. Try 2 rows: one is left over. Try 3 rows: one is left over again. Every try leaves a straggler. The only tidy layout is one long row.</p>
+<p>Take <b class="v" data-x="12">12</b> buttons. You can lay them out in <b class="v" data-x="2">2</b> rows of <b class="v" data-x="12/2">6</b>. Or <b class="v" data-x="3">3</b> rows of <b class="v" data-x="12/3">4</b>. Twelve is easy to tidy into a rectangle. Each rectangle is a multiplication: 3 rows of 4 is 3 × 4 = 12.</p>
+<p>Now take <b class="v" data-x="7">7</b> buttons. Try 2 rows: one is left over. Try 3 rows: one is left over again. Every try leaves a straggler. The only tidy layout is one long row. That doesn't count as a rectangle: a rectangle needs at least 2 rows, with at least 2 in each.</p>
 <figure class="sim" id="simDots">
   <div class="ctl">
     <label for="dN">Dots</label><input type="range" id="dN" min="2" max="60" value="7"><output id="dNo"></output>
@@ -244,14 +244,14 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <p class="readout" id="dOut" aria-live="polite"></p>
   <figcaption>Pick a number of dots, then a number of rows. Red dots are the ones left over.</figcaption>
 </figure>
-<p>A number that only fits in one long row is called a <b>prime</b>. The first few are <b class="v" data-x="M.primes.slice(0,6).join(', ')"></b>. One dot is a special case. It doesn't count as prime.</p>
+<p>A whole number bigger than 1 that only fits in one long row is called a <b>prime</b>. Put another way, you can't make it by multiplying two smaller whole numbers. The first few are <b class="v" data-x="M.primes.slice(0,6).join(', ')"></b>. One dot is a special case. It doesn't count as prime.</p>
 <p>Every other number is built by multiplying primes. For example, 12 is <b class="v" data-x="F.factor(12)"></b>. Each number has only one such recipe, apart from the order. So primes are the atoms of counting.</p>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>Every even number above 2 fits in 2 rows. So 2 is the only even prime.</li>
   <li>Big numbers have many row counts to try. Some still fail every one.</li>
   <li>Primes keep no simple rhythm. After <b class="v" data-x="23">23</b>, the next prime is <b class="v" data-x="F.nextPrime(23)"></b>.</li>
 </ul></div>
-<div class="take"><strong>Take this with you</strong>A prime is a number that won't make a rectangle. Every other number is built from primes, in exactly one way.</div>
+<div class="take"><strong>Take this with you</strong>A prime is a number that won't make a rectangle of at least 2 rows of 2. Every other number is built from primes, in exactly one way.</div>
 <p class="closing">Primes get rarer as numbers grow. Do they thin out at random, or in a pattern?</p>
 <details><summary>Side note: why we stop checking early</summary>
 <p>To test a number, you never need more rows than its square root. If 91 fits in rows, one side of the rectangle is at most <b class="v" data-x="F.d(Math.sqrt(91),2)"></b>. Trying 2 to 9 finds <b class="v" data-x="F.factor(91)"></b>. The sieve in the next chapter uses the same trick.</p>
@@ -1444,7 +1444,7 @@ function worldDraw() {
 function sumDraw() {
   const p6 = M.piOf(1e6), g6 = Math.round(liAt(1e6));
   const items = [
-    [1, `A prime only fits in one long row. There are ${F.i(p6)} of them up to a million.`],
+    [1, `A prime can't be made by multiplying two smaller whole numbers. There are ${F.i(p6)} of them up to a million.`],
     [2, `Each extra digit makes primes rarer by about ${F.d(Math.log(10), 2)}. Gauss turned that into a smooth guess.`],
     [3, `The guess is close but wobbles: ${F.i(g6)} against ${F.i(p6)} at a million, off by ${F.i(g6 - p6)}.`],
     [4, `Coin flips drift by about the square root: after 10,000 flips, about ${F.i(SQ(1e4))}.`],
