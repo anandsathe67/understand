@@ -18,6 +18,7 @@ The output is a prompt, not a page. To build and review the page, use `explainer
 | Exemplar URLs | no | Pages the user already thinks are good. Fetch them, extract principles, never copy text. |
 | The user's own earlier prompt | no | If they have one that worked, keep its voice and length as the baseline. |
 | Format | no | `scroll` (default) or `book`: one chapter on screen at a time. Decide with the table in [book-format.md](book-format.md); the usual triggers are more than about 2,500 words or 8 sims, sections that reuse an earlier sim, or readers who work in short sittings. |
+| Two-minute version | no | Book only. An optional page in front of chapter 1 for readers who want the gist. Add it for famous or newsworthy topics, long or hard books, and topics with a popular myth; skip it for children's discovery books. Rules in [book-format.md](book-format.md#optional-a-two-minute-version). |
 
 ## Steps
 
@@ -60,6 +61,7 @@ Use [prompt-template.md](prompt-template.md). Fill every slot with topic-specifi
 1. The opening paragraph: who the reader is, what the user has tried, what they want the child to *see*. One honest sentence about difficulty if the topic is hard.
 2. Constraints on the path: which tools the explanation may use, what is banned (calculus, "just trust me", jargon before intuition), where hard steps go.
    - For a book, the format block from the template, filled in with the one number the thread tracks. Then go through the numbered requirements and apply every `{book: …}` substitution; the chapter rules in [book-format.md](book-format.md) are what the block encodes, and the reasons there are for you, not the prompt.
+   - If the book gets a two-minute version, add the template's two-minute block after the format block. Fill in the one claim in a plain sentence, the chapter whose sim the picture reuses, the stakes table if the topic has one (name the popular myth), and the discovery the page must not give away.
 3. Models to imitate, as principles in your words from step 1, not as "copy this page".
 4. The numbered requirements (about 12). Keep the ones in the template; they are all load-bearing and each one was missing from some earlier page.
 5. A suggested arc, marked "refine freely". Four to six bullets, each naming the one idea and its sim. The arc is where the thinking goes; a good arc is the difference between a page and a tour.
@@ -88,6 +90,7 @@ Go down this list. Fix the prompt, don't just note it.
 - [ ] Every formula, definition or house rule the page must use is stated in the prompt itself. A builder that only has the attached data will fall back to the standard definition and say so honestly; if your organisation's definition differs (a ratio that also subtracts insider receivables, say), the prompt has to carry it.
 - [ ] If the prompt depends on source files, it says "I have attached" and names them; it never points at a repository path a cold reader cannot open.
 - [ ] If the format is a book: the handoff rule (first line answers, last line asks), the no-chapter-without-a-sim rule, the carried-state rule with its out-of-order fill-in, the no-storage rule and the thread number are all in the prompt. A builder given "chapters" without these produces a slide deck with Next buttons.
+- [ ] If the book has a two-minute version: it is outside the chapter numbering, the contents page offers both doors, the length (300 to 400 words) and grade (8 or under) are stated, the picture reuses a chapter's sim, and the prompt names the discovery it must not give away. If the topic has a popular myth, the stakes table answers it.
 
 ### 5. Deliver
 
@@ -100,4 +103,4 @@ Two finished prompts with their v1 versions and the reviews that changed them:
 - `topics/eulers-polyhedron-formula/prompt.md` (10-year-old alone; 930 words)
 - `topics/eulers-identity/prompt.md` (12 to 14 alone, or 10 with a parent; 1,100 words)
 
-Read one before drafting; the arc bullets show the level of detail that works. For the book format, `topics/*/prompt-book.md` are the two prompts that ran cold into `topics/*/book/`; the rules and the measurements are in [book-format.md](book-format.md).
+Read one before drafting; the arc bullets show the level of detail that works. For the book format, `topics/*/prompt-book.md` are the two prompts that ran cold into `topics/*/book/`; the rules and the measurements are in [book-format.md](book-format.md). For a book with a two-minute version, `topics/riemann-hypothesis/prompt-book.md` carries the block (a curious adult or about 16; the book was built cold before the block was added).

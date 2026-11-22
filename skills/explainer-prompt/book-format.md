@@ -43,6 +43,38 @@ Pick the book when any of these holds; otherwise the scroll is simpler and loses
 | On a phone the sticky top bar stays short (hide the chapter buttons, keep the counter and the thread) | The first book's bar took 200 of 300 px until this was fixed |
 | Moving to a chapter scrolls to the top and focuses the chapter heading | Keyboard and screen-reader users land on the new chapter |
 
+## Optional: a two-minute version
+
+A single page in front of chapter 1 for the reader who wants the gist and will not read the book. It is an extra door, not a replacement for the contents page.
+
+### When to add it
+
+| Add it when | Skip it when |
+|---|---|
+| Many readers want the gist of a famous result or a question in the news (the Riemann hypothesis, "would it break encryption?") | The book is a discovery book for a child, where the gist would give away what the reader is meant to find |
+| The book is long or hard (several "trust" or "older readers" steps), so a time-poor reader would otherwise get nothing | The whole book is already short enough to skim (under about 2,000 words) |
+| The topic carries a popular myth the reader should leave without | The topic has no conclusion that survives being said in a sentence |
+
+### Rules
+
+| Rule | Reason |
+|---|---|
+| The contents page offers two doors: "Short on time? Read the two-minute version" and "Or start the book at chapter 1" | The reader chooses before they start; neither path hides the other |
+| One page between the contents and chapter 1. It is not a chapter: chapter count, numbering, links and the thread are unchanged | Every chapter link and "chapter n" reference in the book stays correct |
+| The top bar shows a label of its own ("Two minutes") on that page; its Next goes to chapter 1 and Back to the contents; the arrow keys do the same | It behaves like a page of the book without being counted as one |
+| In the "all chapters on one page" view it sits after the contents | Skimming and printing still start with the gist |
+| 300 to 400 words, counting everything but the sim caption and readout; reading grade 8 or under | Two minutes at an ordinary reading pace; it is the page most people will read |
+| In order: the thing in a line; the claim in one plain sentence; one live picture; where it comes from in three lines; why it matters, as a short honest table where the topic has stakes; anything time-limited (a prize, the state of the question); links into the chapters that explain each part | Conclusions first, then provenance, then consequences, then the way in |
+| One live sim, reused from a chapter (same drawing code, own controls, one slider at most), not a new one | The picture stays computed and costs almost no extra build |
+| Conclusions, never answers the book asks the reader to find (no pattern the reader discovers in chapter 2, no value they hunt for in chapter 8) | The book's discovery moments still work for a reader who reads both |
+| Compression must not overclaim. Where the topic has a popular myth, the honest table says it plainly ("your phone and your bank: nothing changes") | Two-minute summaries are where the myth creeps back in |
+| Anything dated (news, a claimed proof, "still unclaimed") is written with its date and kept in step with the chapter that covers it in full | The front page is the first thing to go stale |
+| An outside resource worth the reader's next step (a good video or article) may close the "go deeper" list, credited by name, author and year | The time-poor reader's next step is often not the book |
+
+### What the first one measured
+
+Added by hand to the Riemann hypothesis book after its cold build (`topics/riemann-hypothesis/`), then written into its `prompt-book.md`. It opened at about 400 words with one live picture (the smooth curve's error against the square-root band, one zoom slider) and an honest "what would change" table. A dated news box and a "watch next" link took it to about 480 words, which is the upper limit worth allowing. The block has not yet been run cold.
+
 ## What the first book measured
 
 Converted from a 3,600-word scroll with 12 sections and 9 sims: 12 chapters of 175 to 310 words (about 3,000 words of chapter text), one sim each with the board shared by three chapters, reading grade 6 or under in every chapter, no errors inside a `sandbox="allow-scripts"` frame.
