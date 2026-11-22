@@ -103,6 +103,9 @@ table.counts td.hid{color:transparent}
 .seg{display:inline-flex;border:1.5px solid var(--acc);border-radius:10px;overflow:hidden}
 .seg button{background:none;border:0;color:var(--acc);padding:7px 12px;font-weight:600;font-size:.88rem}
 .seg button.on{background:var(--acc);color:var(--acc-ink)}
+#fcSeg{flex-wrap:wrap;max-width:100%}
+#fcSeg button{padding:7px 8px}
+#fcCv{margin-top:8px}
 .cards{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
 @media (min-width:560px){.cards{grid-template-columns:1fr 1fr}}
 .card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2);transition:background .3s}
@@ -212,7 +215,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <tr><th>Your phone and your bank</th><td>Nothing changes either way. Encryption depends on how hard it is to split a huge number into its prime factors. The hypothesis says nothing about that.</td></tr>
 </table></div>
 <p>Since 2000, a proof has carried a prize of one million dollars. It is still unclaimed.</p>
-<div class="news"><b>News, November 2026:</b> a proof has been claimed. It was built with an AI and checked step by step by computer. Experts are still checking it. If it holds, the main uses are guarantees for computer methods that already work. The bigger change may be how it was made. <button class="lnk" data-go="11">Read more, with sources, in chapter 11</button></div>
+<div class="news"><b>News, November 2026:</b> two proofs have been claimed. One was built with an AI and checked step by step by computer. Experts are still checking both. If it holds, the main uses are guarantees for computer methods that already work. The bigger change may be how it was made. <button class="lnk" data-go="11">Read more, with sources, in chapter 11</button></div>
 <div class="take"><strong>Take this with you</strong>The Riemann hypothesis says the primes wobble no more than chance would. It matters to mathematics far more than to technology.</div>
 <h3>Go deeper</h3>
 <ul class="puzzles">
@@ -220,6 +223,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <li>Find a zero on the line. <button class="lnk" data-go="8">Chapter 8</button></li>
   <li>Watch ripples rebuild the primes. <button class="lnk" data-go="9">Chapter 9</button></li>
   <li>What would change, in detail. <button class="lnk" data-go="11">Chapter 11</button></li>
+  <li>Watch a 16-minute walk-through. <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine: The Riemann Hypothesis, Explained</a> (Alex Kontorovich, 2021)</li>
 </ul>
 <div class="pager"><button id="shortBack"><small>Back</small>Contents</button><button class="next" id="shortNext"><small>Next &rarr;</small>1. Primes are the numbers you cannot split into equal rows</button></div>
 </section>
@@ -274,6 +278,14 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <div class="hint" id="tHint">Look down the "Change" column. Each extra digit makes primes rarer by a step. Are the steps settling on one size?</div>
   <p class="readout" id="tOut" aria-live="polite"></p>
   <figcaption>Counts come from sieving every number up to a million, live. "One in every" is rounded to 2 places.</figcaption>
+  <details id="fcBox"><summary>After you find the pattern: a walk in Factor City</summary>
+  <p>Picture every whole number as a building on one long street. Each prime factor adds a storey. So 12 = 2 × 2 × 3 has three storeys. Primes are the one-storey houses.</p>
+  <p>Stand at an address. Look 500 houses each way. What share of the houses has one storey?</p>
+  <div class="seg" role="group" aria-label="Street address" id="fcSeg"><button data-a="1000" class="on">1,000</button><button data-a="10000">10,000</button><button data-a="100000">100,000</button><button data-a="1000000">1,000,000</button></div>
+  <canvas id="fcCv"></canvas>
+  <p class="readout" id="fcOut" aria-live="polite"></p>
+  <p class="note">The picture shows the 41 houses nearest your address. Orange houses have one storey. Idea from <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine’s video</a>.</p>
+  </details>
 </figure>
 <p>Each extra digit makes primes rarer by almost the same step. The steps settle near <b class="v" data-x="F.d(Math.log(10),1)"></b>. So near a million, about one number in <b class="v" data-x="F.d(6*Math.log(10),1)"></b> is prime. The table averages over all the smaller numbers too, so its figures are a bit lower.</p>
 <p>Around 1792, a teenage Carl Friedrich Gauss spotted this pattern in tables of primes. He turned it into a smooth guess. Measure a number's digits in steps of <b class="v" data-x="F.d(Math.log(10),1)"></b> instead of 1. That measure is the <b>natural logarithm</b>. Near a number, the chance of being prime is one over its natural logarithm. Add up those chances, number by number, and you get Gauss's <b>smooth guess</b> for the prime count.</p>
@@ -283,6 +295,9 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 </ul></div>
 <div class="take"><strong>Take this with you</strong>Primes thin out steadily: each extra digit adds about <b class="v" data-x="F.d(Math.log(10),1)"></b> to "one in every". Gauss turned this into a smooth guess.</div>
 <p class="closing">How close does the smooth guess come to the true count?</p>
+<details><summary>History: Gauss's tables</summary>
+<p>Gauss counted primes for fun, a block of a thousand numbers at a time. Over his life his tables reached about three million. He had no computer. The sieve on this page does a million in a blink.</p>
+</details>
 <details><summary>History: primes never run out</summary>
 <p>Euclid proved this about 300 BC. Multiply any list of primes and add 1. The result leaves remainder 1 when divided by each prime on the list. So its own prime factors are missing from the list. For 2, 3, 5 and 7, you get <b class="v" data-x="2*3*5*7+1"></b>, a new prime.</p>
 </details>
@@ -401,9 +416,10 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <p>Now use only primes. For the prime 2, take 1 + 1/4 + 1/16 + … Each piece is a quarter of the one before. Call the total T. Then T is 1 plus a quarter of T. So T is 4/3. Do the same for 3, for 5, for every prime. Multiply the results together.</p>
 <p>Multiplying out the brackets gives one over every square, each exactly once. That's because each number splits into primes in only one way. So the prime product and the full sum agree.</p>
 <p>The total, as the dial turns, is called the <b>zeta function</b>, after the Greek letter ζ.</p>
+<p>Not every endless sum settles. Take 1 + ½ + ¼ + ⅛ and so on. Each piece fills half the gap that is left, so it settles at 2. Now take 1 + ½ + ⅓ + ¼ and so on. Its pieces shrink too, but it grows forever. That is the dial at 1, the runaway point.</p>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>The product uses far fewer pieces, yet keeps up.</li>
-  <li>Turn the dial down to 1. The totals run away.</li>
+  <li>Turn the dial down to 1. After a thousand numbers the sum is <b class="v" data-x="F.d(M.eulerSum(1,1000),2)"></b>, and it keeps growing.</li>
 </ul></div>
 <div class="take"><strong>Take this with you</strong>Zeta adds one over every number raised to the dial's power. The same total is a product over primes alone. So zeta "knows" the primes.</div>
 <p class="closing">So far the dial took ordinary numbers. What if it turns somewhere stranger?</p>
@@ -418,14 +434,26 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <div class="kicker">Chapter 7</div>
 <h2>The dial can turn sideways</h2>
 <p class="lead">Stranger settings exist: the dial can point sideways.</p>
-<p>Face east. Multiply by −1 and you face west: a half turn. What, done twice, makes a half turn? A quarter turn. Call it <b>i</b>. Then i × i = −1. The old name "imaginary number" is unlucky. Here, i just means "turn a quarter".</p>
-<p>A number like 3 + 2i means 3 steps east, then 2 steps north. It's a point on a map. Put such a point into the dial. Each piece of the sum gains a size and a turn. For example, 2 to the power i has size 1 and turns about 40 degrees. Take this turning rule on trust here. Adding them is like adding arrows, tip to tail.</p>
-<p>The plain sum only works east of the line through 1. Further west it runs away.</p>
-<div class="trust"><strong>A step we take on trust.</strong> Riemann showed in 1859 that zeta stretches to the whole map, except at 1. There is only one smooth way to do it. This is a proven theorem, but the proof needs tools beyond this book. So we take it on trust, then look at what it gives.</div>
+<p>Face east. Multiply by −1 and you face west: a half turn. What, done twice, makes a half turn? A quarter turn. Call it <b>i</b>. Then i × i = −1. Here, i just means "turn a quarter".</p>
+<p>A number like 3 + 2i means 3 steps east, then 2 steps north. It's a point on a map. Put such a point into the dial. Each piece of the sum becomes an arrow with a size and a turn. Take the turning rule on trust. Then add the arrows, tip to tail.</p>
+<figure class="sim" id="simSpiral">
+  <div class="ctl">
+    <label for="spS">East part</label><input type="range" id="spS" min="0" max="300" step="5" value="200"><output id="spSo"></output>
+    <label for="spT">North part</label><input type="range" id="spT" min="0" max="3000" value="300"><output id="spTo"></output>
+    <label for="spN">Terms</label><input type="range" id="spN" min="0" max="1000" value="1000"><output id="spNo"></output>
+  </div>
+  <div class="btns"><button class="btn ghost" data-sp="2,3">2 + 3i</button><button class="btn ghost" data-sp="0.5,14.13">½ + 14.13i</button><button class="btn" id="spPlay">Play the arrows from the start</button></div>
+  <canvas id="spCv"></canvas>
+  <div class="legend"><span style="--c:var(--acc)">arrows of the sum, tip to tail</span><span style="--c:var(--zero)">zeta’s true value</span></div>
+  <p class="readout" id="spOut" aria-live="polite"></p>
+  <figcaption>Pick a dial setting with the sliders, the two buttons, or a tap on the colour map below. The first arrow is 1, pointing east. Each later arrow is one more piece of the sum. The spiral of sums and the two-functions picture are ideas from <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine’s video</a>.</figcaption>
+</figure>
+<p>At 2 + 3i the arrows shrink fast. The spiral winds in to one point, zeta's value. Now try ½ + 14.13i. The arrows shrink too slowly. The tip circles on and never settles. West of the line through 1, the plain sum stops working.</p>
+<div class="trust"><strong>A step we take on trust.</strong> Picture two functions at once. The first is the plain sum. The second agrees with it wherever the sum works. It also makes sense everywhere else on the map, except at 1. Riemann built it in 1859. Only one smooth function can do this. That one is the full zeta. The proof needs tools beyond this book.</div>
 <figure class="sim" id="simMap">
   <canvas id="mCv"></canvas>
   <p class="readout" id="mOut" aria-live="polite"></p>
-  <figcaption>Each point is a dial setting: east part across, north part up. Colour shows which way zeta's arrow points: red is east, yellow-green north, cyan west, purple south. Dark means short, white means long. Tap or drag to read the value. Computed live, pixel by pixel.</figcaption>
+  <figcaption>Each point is a dial setting: east part across, north part up. Colour shows which way zeta's arrow points: red is east, yellow-green north, cyan west, purple south. Dark means short, white means long. Tap or drag to read the value and move the spiral above. Computed live, pixel by pixel.</figcaption>
 </figure>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>Where all the colours meet at a dark point, zeta is zero.</li>
@@ -456,9 +484,10 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
   <div class="btns"><button class="btn" id="wNext">Walk to the next sign change</button><button class="btn ghost" id="wAll">Let the page walk to height 100</button></div>
   <p class="readout" id="wOut" aria-live="polite"></p>
   <div class="chips" id="wChips"></div>
-  <figcaption>The graph shows the untwisted value as you climb. Only the part you've walked is drawn. The arrow panel shows zeta's arrow at your height. Every zero you find joins the top bar. Heights are rounded to 3 places.</figcaption>
+  <figcaption>The graph shows the untwisted value as you climb. Only the part you've walked is drawn. The arrow panel shows zeta's arrow at your height. Its tip leaves a trail as you climb, a curly swirl. Every zero you find joins the top bar. Heights are rounded to 3 places. The swirl picture is an idea from <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine’s video</a>.</figcaption>
 </figure>
 <p class="v" data-x="K.zeroSentence()"></p>
+<p>Watch the arrow panel too. The tip of zeta's arrow draws a swirl as you climb. Each time the swirl passes through the centre, the arrow has length zero. That is a zero.</p>
 <p>Riemann guessed in 1859 that every zero between east parts 0 and 1 lies on this line. That is the Riemann hypothesis, in its usual form. Computers have checked about <b class="v" data-x="F.d(M.Ncount(3e12)/1e12,1)"></b> trillion zeros. All are on the line.</p>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>The zeros are not evenly spaced. They crowd closer as you climb.</li>
@@ -467,7 +496,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <div class="take"><strong>Take this with you</strong>The Riemann hypothesis: every zero of zeta in the strip sits on the line where the east part is ½.</div>
 <p class="closing">These are zeros of a function of made-up numbers. What do they have to do with primes?</p>
 <details><summary>History: one paper, a famous list, and tea</summary>
-<p>Riemann's paper of 1859 was eight pages long. It was the only one he ever wrote about primes. In 1900 David Hilbert put the hypothesis on his famous list of problems for the new century. In 1914 G. H. Hardy proved that infinitely many zeros lie on the line. In 1972 Hugh Montgomery met Freeman Dyson over tea in Princeton. Montgomery's formula for the spacing of zeros matched Dyson's formula for energy levels in heavy atomic nuclei. Nobody fully knows why. In 2021 Dave Platt and Tim Trudgian confirmed every zero up to height 3 × 10¹² is on the line.</p>
+<p>Riemann's paper of 1859 was eight pages long. It was the only one he ever wrote about primes. Riemann had been Gauss's doctoral student at Göttingen, finishing in 1851. His ideas about curved space later became the maths of Einstein's general relativity. In 1900 David Hilbert put the hypothesis on his famous list of problems for the new century. In 1914 G. H. Hardy proved that infinitely many zeros lie on the line. In 1972 Hugh Montgomery met Freeman Dyson over tea in Princeton. Montgomery's formula for the spacing of zeros matched Dyson's formula for energy levels in heavy atomic nuclei. Nobody fully knows why. In 2021 Dave Platt and Tim Trudgian confirmed every zero up to height 3 × 10¹² is on the line.</p>
 </details>
 <div class="pager"></div>
 </section>
@@ -481,16 +510,18 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <div class="trust"><strong>A step we take on trust.</strong> Riemann wrote down an exact formula linking zeros to primes. Hans von Mangoldt proved it in full in 1895. It takes the smooth curve and adds one wave for each zero. We can't derive it here. But we can check it.</div>
 <figure class="sim" id="simWave">
   <div class="fill" id="wvFill"></div>
+  <div class="seg" role="group" aria-label="Which count" id="vSeg" style="margin-bottom:8px"><button data-psi="0" class="on">Prime count</button><button data-psi="1">Simpler version: weighted count</button></div>
   <div class="ctl"><label for="vK">Waves added</label><input type="range" id="vK" min="0" max="3" value="0"><output id="vKo"></output></div>
   <canvas id="vCv"></canvas>
   <canvas id="vOne"></canvas>
   <div class="btns"><button class="btn" id="vAdd">Add one wave</button><button class="btn ghost" id="vHunt">Hunt for more zeros</button></div>
-  <div class="legend"><span style="--c:var(--prime)">true prime count</span><span style="--c:var(--curve)">smooth curve + waves</span><span style="--c:var(--zero)">the newest wave alone</span></div>
+  <div class="legend"><span style="--c:var(--prime)" id="vLgA">true prime count</span><span style="--c:var(--curve)" id="vLgB">smooth curve + waves</span><span style="--c:var(--zero)">the newest wave alone</span></div>
   <p class="readout" id="vOut" aria-live="polite"></p>
-  <figcaption>Top: the prime staircase from 2 to 100, and the curve built from zeros. Tap to read any spot. Bottom: the wave from the last zero added. New zeros are found the same way you found yours.</figcaption>
+  <figcaption>Top: the prime staircase from 2 to 100, and the curve built from zeros. Tap to read any spot. Bottom: the wave from the last zero added. New zeros are found the same way you found yours. The weighted count is an idea from <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">Quanta Magazine’s video</a>.</figcaption>
 </figure>
 <p>With no waves, the curve is smooth. It misses every step. The first wave already bends it toward the stairs. Each new zero adds a faster ripple. Press Hunt to reach height 250 for about a hundred waves. Then the curve leaps at <b class="v" data-x="M.primes.slice(0,5).join(', ')"></b> and every prime after. You can read the primes off a sum of waves.</p>
 <p>The smooth curve here is Gauss's guess with a small correction from Riemann. It allows for squares, cubes and higher powers of primes.</p>
+<p>The switch shows a simpler version, the <b>weighted count</b>. Each prime adds its natural logarithm instead of 1. At 7 it steps up by about <b class="v" data-x="F.d(Math.log(7),2)"></b>. Powers like 4, 8 and 9 add a step too. With these weights, the smooth part is a plain straight line. That is why experts prefer it.</p>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>Each wave is small near 2 and slowly grows.</li>
   <li>More waves make the jumps sharper. The jumps land on primes.</li>
@@ -502,6 +533,9 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <p>Write ρ for a zero, ½ + iγ. Riemann's R(x) is Gauss's curve with corrections for prime powers. The page draws</p>
 <p class="math">π(x) ≈ R(x) − Σ<sub>ρ</sub> R(x<sup>ρ</sup>) − 1/ln x + arctan(π/ln x)/π</p>
 <p>Each zero and its mirror below give one real wave. Its size near x is about 2√x / (|ρ| ln x). The page computes R(x<sup>ρ</sup>) with the complex exponential integral, using every term with x<sup>1/n</sup> ≥ 2. The last two terms come from the trivial zeros.</p>
+<p>The weighted count is ψ(x), the sum of ln p over every prime power p<sup>k</sup> up to x. Its formula has no logarithmic integral at all:</p>
+<p class="math">ψ(x) = x − Σ<sub>ρ</sub> x<sup>ρ</sup>/ρ − ln 2π − ½ ln(1 − x<sup>−2</sup>)</p>
+<p>Each zero and its mirror give the wave 2 Re(x<sup>ρ</sup>/ρ). At a jump, both sides average.</p>
 </details>
 <div class="pager"></div>
 </section>
@@ -557,14 +591,16 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <div class="take"><strong>Take this with you</strong>A proof turns many "ifs" into facts. A disproof sends some back to work. Your phone doesn't notice either way.</div>
 <p class="closing">Can the whole story fit on one page? And can you test it yourself?</p>
 <details class="news" open><summary>News: a proof was claimed in November 2026</summary>
-<p>On 20 November 2026, Levent Alpöge, a mathematician at Anthropic, said he had found a proof. He worked with Claude, an AI model. The proof is written in Lean, a computer language in which a machine checks every step.</p>
-<p>It is huge. Reports describe about 175,000 files. Independent checkers say the files compile, and the Lean community has said it is confident the proof is correct. Reports say it also covers a wider version, the generalised hypothesis.</p>
+<p>On 20 November 2026, Levent Alpöge, a mathematician at Anthropic, said he had found a proof. He worked with Claude, an AI model. He posted a four-page paper. A much longer version is written in Lean, a computer language in which a machine checks every step.</p>
+<p>The Lean version is huge. Reports describe about 175,000 files. Independent checkers say the files compile, and the Lean community has said it is confident the proof is correct. Reports say it also covers a wider version, the generalised hypothesis.</p>
 <p>But no person has yet followed the whole argument. Checkers are still confirming that the statement proved is exactly the right one. Until mathematicians accept it, this book treats the hypothesis as unproved. If it holds, the "Proved" column above is the one that comes true.</p>
+<p>The same day, Ravi Vakil, president of the American Mathematical Society, posted a second claim. It is a 940-page manuscript by Alessandro Masullo, reported to be a postdoctoral researcher at Stanford. It claims a proof of the generalised hypothesis. It is being checked too.</p>
 <p><b>If it holds, what would it be used for?</b> Mostly guarantees. Some fast computer methods for primes were only known to work if a stronger version is true. The claimed proof reportedly covers that version. So these methods would become proven. One is a quick test for whether a number is prime. Searching for a large prime, as making a key does, would also get a proven time limit.</p>
 <p>In practice little changes, because these methods already work. Some famous questions need even wider versions, so they would stay open. Encryption would not change.</p>
 <p>The bigger effect may be the method. It reportedly extends an older counting technique of Sergei Stepanov, which could open related problems. And a machine-checked proof this large shows what AI and proof checkers can do. The same kind of checker is used on software, chips and security protocols.</p>
 <p class="small">Written on 22 November 2026, two days after the claim. Read more:</p>
 <ul class="srcs">
+  <li><a href="https://www.quantamagazine.org/updates/transformation/" target="_blank" rel="noopener">Quanta Magazine: Transformation, latest news on both claims</a></li>
   <li><a href="https://www.scientificamerican.com/article/the-ai-riemann-hypothesis-proof-is-almost-certainly-true-independent-mathematicians-attest/" target="_blank" rel="noopener">Scientific American: independent mathematicians on the proof</a></li>
   <li><a href="https://www.scientificamerican.com/article/what-the-riemann-hypothesis-proof-really-means-about-ai-and-the-future/" target="_blank" rel="noopener">Scientific American: what the proof means for AI</a></li>
   <li><a href="https://officechai.com/ai/how-mathematicians-have-reacted-to-claimed-riemann-hypothesis-proof-by-anthropics-levent-alpoge/" target="_blank" rel="noopener">OfficeChai: how mathematicians reacted</a></li>
@@ -619,8 +655,9 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <footer class="cred">
 <h3>Credits and checks</h3>
 <p>The style follows <a href="https://aatishb.com/myriad/lets-build-a-brain/" target="_blank" rel="noopener">"Let's Build a Brain"</a> by Aatish Bhatia and Arkarup Banerjee: one change at a time, show before naming, poke the sims.</p>
-<p><b>Dates checked:</b> Euler's prime product 1737; the Basel sum 1735; Riemann's paper 1859; von Mangoldt 1895; prime number theorem 1896; Hilbert's list 1900; von Koch 1901; Hardy and Littlewood 1914; Montgomery and Dyson 1972; Schoenfeld 1976; Lagarias 2002; Platt and Trudgian 2021 (height 3 × 10¹²); Atiyah's claim 2018; the prize 2000. Two dates carry "about": Gauss's guess (he later recalled 1792 or 1793) and Euclid (about 300 BC). These were checked against standard histories from memory, not looked up live.</p>
-<p><b>What the sims compute:</b> primes by a sieve up to 1,000,000; Gauss's guess as the logarithmic integral; coin flips with your browser's random numbers; zeta by Euler–Maclaurin summation; the twist by Stirling's series for the gamma function; zeros as sign changes, refined by halving; waves by the explicit formula with the complex exponential integral.</p>
+<p><b>Further watching:</b> <a href="https://www.youtube.com/watch?v=zlm1aajH6gY" target="_blank" rel="noopener">"The Riemann Hypothesis, Explained"</a>, Quanta Magazine, with Alex Kontorovich, 2021. Five ideas here come from it: the spiral of sums (chapter 7), two functions at once (chapter 7), the swirl picture (chapter 8), Factor City (chapter 2) and the weighted count (chapter 9). The words and sims are our own.</p>
+<p><b>Dates checked:</b> Euler's prime product 1737; the Basel sum 1735; Riemann's paper 1859; von Mangoldt 1895; prime number theorem 1896; Hilbert's list 1900; von Koch 1901; Hardy and Littlewood 1914; Montgomery and Dyson 1972; Schoenfeld 1976; Lagarias 2002; Platt and Trudgian 2021 (height 3 × 10¹²); Riemann's doctorate under Gauss 1851; Atiyah's claim 2018; the prize 2000. Two dates carry "about": Gauss's guess (he later recalled 1792 or 1793) and Euclid (about 300 BC). These were checked against standard histories from memory, not looked up live.</p>
+<p><b>What the sims compute:</b> primes by a sieve up to 1,000,000; Gauss's guess as the logarithmic integral; coin flips with your browser's random numbers; zeta by Euler–Maclaurin summation; the twist by Stirling's series for the gamma function; zeros as sign changes, refined by halving; waves by the explicit formula with the complex exponential integral; the weighted count by its own explicit formula; the spiral by adding the first terms of the plain sum.</p>
 <p><b>What they simplify:</b> the wave sim stops at the zeros found so far and ignores terms with x<sup>1/n</sup> below 2; the off-line sim moves one zero and shows only its wave; the zero count up to 3 × 10¹² uses Riemann's counting formula without its small wobble term; the zeta map is computed on a coarse grid and smoothed.</p>
 </footer>
 <div class="pager"></div>
@@ -758,7 +795,21 @@ const M = (() => {
   /* --- Riemann-von Mangoldt: how many zeros up to height T --- */
   const Ncount = T => (T / (2 * PI)) * LN(T / (2 * PI)) - T / (2 * PI) + 7 / 8;
 
-  return { LIMIT, primes, isPrime, piOf, li, zeta, Z, Zfull, theta, refine, liPow, Rsmooth, wave, trivial, flip, eulerSum, eulerProd, sigma, harmonic, lagBound, Ncount, mobius, cabs };
+  /* --- Factor City: storeys = prime factors with repeats; window counts --- */
+  function storeys(n) { let k = 0; for (let p = 2; p * p <= n; p++) while (n % p === 0) { n /= p; k++; } return n > 1 ? k + 1 : k; }
+  const isPrimeAny = n => n <= LIMIT ? isPrime(n) : storeys(n) === 1;
+  function cityWindow(a, half) { let c = 0; for (let n = a - half; n <= a + half; n++) if (isPrimeAny(n)) c++; return { lo: a - half, hi: a + half, houses: 2 * half + 1, ones: c, share: c / (2 * half + 1), guess: 1 / LN(a) }; }
+
+  /* --- partial sums of 1 + 1/2^s + 1/3^s + ..., as points tip to tail --- */
+  function partials(sr, si, N) { const out = [[0, 0]]; let re = 0, im = 0; for (let n = 1; n <= N; n++) { const L = LN(n), m = Math.exp(-sr * L), a = -si * L; re += m * Math.cos(a); im += m * Math.sin(a); out.push([re, im]); } return out; }
+
+  /* --- weighted count psi(x) and its explicit formula --- */
+  const ppow = []; for (const p of primes) { if (p > 1000) break; for (let q = p; q <= 1000; q *= p) ppow.push([q, LN(p)]); } ppow.sort((a, b) => a[0] - b[0]);
+  function psi0(x) { let s = 0; for (const [q, w] of ppow) { if (q > x + 1e-9) break; s += Math.abs(q - x) < 1e-9 ? w / 2 : w; } return s; }
+  const psiWave = (x, g) => { const r = SQ(x), L = LN(x); return 2 * r * (0.5 * Math.cos(g * L) + g * Math.sin(g * L)) / (0.25 + g * g); };
+  const psiSmooth = x => x - LN(2 * PI) - 0.5 * LN(1 - x ** -2);
+
+  return { LIMIT, primes, isPrime, piOf, storeys, cityWindow, partials, ppow, psi0, psiWave, psiSmooth, li, zeta, Z, Zfull, theta, refine, liPow, Rsmooth, wave, trivial, flip, eulerSum, eulerProd, sigma, harmonic, lagBound, Ncount, mobius, cabs };
 })();
 
 
@@ -787,6 +838,7 @@ const S = {
   zeros: [],       // zeros found on the line, shared by 8, 9, 10, 12
   walkMax: 0, walkT: 0, samples: [], lastZ: null,
   sigma: 0.5,
+  psi: false,      // chapter 9: prime count (false) or weighted count (true)
   cur: 0, all: false,
 };
 
@@ -962,6 +1014,24 @@ function tableDraw() {
   $('tMore').disabled = tab.shown >= 6;
 }
 
+const fc = { a: 1000, half: 500 };
+function fcDraw() {
+  const r = M.cityWindow(fc.a, fc.half);
+  document.querySelectorAll('#fcSeg button').forEach(b => b.classList.toggle('on', +b.dataset.a === fc.a));
+  $('fcOut').innerHTML = `Address ${F.i(fc.a)}. From ${F.i(r.lo)} to ${F.i(r.hi)} there are ${F.i(r.houses)} houses. <b>${F.i(r.ones)}</b> have one storey: a share of <b>${F.d(r.share, 4)}</b>. One over the natural log of ${F.i(fc.a)} is <b>${F.d(r.guess, 4)}</b>. (Rounded.)`;
+  const g = canv($('fcCv'), 130); if (!g) return; const c = g.c;
+  const n0 = fc.a - 20, cnt = 41, bw = (g.w - 8) / cnt, st = []; for (let k = 0; k < cnt; k++) st.push(M.storeys(n0 + k));
+  const top = Math.max(...st), sh = Math.min(16, (g.h - 30) / top);
+  for (let k = 0; k < cnt; k++) {
+    const n = n0 + k, x = 4 + k * bw, hgt = st[k] * sh, y = g.h - 18 - hgt;
+    c.fillStyle = st[k] === 1 ? css('prime') : css('line'); c.fillRect(x + 1, y, bw - 2, hgt);
+    c.fillStyle = css('panel'); for (let s = 1; s < st[k]; s++) c.fillRect(x + 1, y + s * sh - 1, bw - 2, 1.2);
+    if (n === fc.a) { c.strokeStyle = css('acc'); c.lineWidth = 2; c.strokeRect(x, y - 2, bw, hgt + 2); }
+  }
+  c.fillStyle = css('mute'); c.textAlign = 'center'; c.fillText(F.i(fc.a), Math.min(g.w - 30, Math.max(30, 4 + 20.5 * bw)), g.h - 4);
+  c.textAlign = 'left'; c.fillText(F.i(n0), 4, g.h - 4); c.textAlign = 'right'; c.fillText(F.i(n0 + cnt - 1), g.w - 4, g.h - 4);
+}
+
 /* ================= Chapters 3 and 5: staircase, gap, band ================= */
 const xFromSlider = v => Math.round(10 ** (2 + 4 * v / 1000));
 const sliderFromX = x => Math.round((LOG10(x) - 2) / 4 * 1000);
@@ -1076,8 +1146,51 @@ function eulerDraw() {
   const terms = s === 2 ? '1 + 1/4 + 1/9 + 1/16 + …' : `1 + 1/2^${F.d(s, 2)} + 1/3^${F.d(s, 2)} + …`;
   let out = `Dial at ${F.d(s, 2)}: ${terms}<br>Adding the first ${F.i(N)} numbers: <b>${F.d(a, 5)}</b>. Multiplying over the ${F.i(k)} prime${k === 1 ? '' : 's'} up to ${F.i(N)}: <b>${F.d(b, 5)}</b>.`;
   if (target) out += ` Both head for <b>${F.d(target, 5)}</b>. All rounded to 5 places.`;
-  else out += ` At dial 1 the sum never settles. It keeps growing as you add numbers.`;
+  else { const h = [10, 100, 1000].map(n => F.d(M.eulerSum(s, n), 2)); out += ` At dial ${F.d(s, 2)} the sum never settles. After 10 numbers it is ${h[0]}; after 100, ${h[1]}; after 1,000, <b>${h[2]}</b>. It keeps growing as you add numbers.`; }
   $('eOut').innerHTML = out;
+}
+
+/* ================= Chapter 7: spiral of partial sums ================= */
+const sp = { s: 2, t: 3, nv: 1000, anim: null };
+const spN = v => Math.max(1, Math.round(2000 ** (v / 1000)));
+function spiralSet(s, t, fromMap) { sp.s = Math.round(s * 100) / 100; sp.t = Math.round(t * 100) / 100; if (!fromMap) { map.pick = { s: Math.min(map.s1, sp.s), t: Math.min(map.t1, sp.t) }; } spiralDraw(); if (!fromMap && map.f) mapDraw(); }
+function spiralDraw() {
+  const s = sp.s, t = sp.t, N = spN(sp.nv);
+  $('spS').value = Math.round(s * 100); $('spT').value = Math.round(t * 100); $('spN').value = sp.nv;
+  $('spSo').textContent = F.d(s, 2); $('spTo').textContent = F.d(t, 2); $('spNo').textContent = F.i(N);
+  const P = M.partials(s, t, N), runaway = Math.abs(s - 1) < 1e-9 && Math.abs(t) < 1e-9;
+  const z = runaway ? null : M.zeta(s, t);
+  const g = canv($('spCv'), 280);
+  if (g) {
+    const c = g.c; let x0 = 0, x1 = 0, y0 = 0, y1 = 0;
+    const pts = z ? P.concat([[z.re, z.im]]) : P; for (const [a, b] of pts) { x0 = Math.min(x0, a); x1 = Math.max(x1, a); y0 = Math.min(y0, b); y1 = Math.max(y1, b); }
+    const pad = 16, sc = Math.min((g.w - 2 * pad) / Math.max(1e-9, x1 - x0), (g.h - 2 * pad) / Math.max(1e-9, y1 - y0));
+    const ox = (g.w - (x1 - x0) * sc) / 2 - x0 * sc, oy = (g.h + (y1 - y0) * sc) / 2 + y0 * sc;
+    const X = a => ox + a * sc, Y = b => oy - b * sc;
+    c.strokeStyle = css('line'); c.lineWidth = 1; c.beginPath(); c.moveTo(0, Y(0)); c.lineTo(g.w, Y(0)); c.moveTo(X(0), 0); c.lineTo(X(0), g.h); c.stroke();
+    const acc = css('acc'), heads = Math.min(N, 40);
+    c.strokeStyle = acc; c.lineWidth = N > 300 ? 1.2 : 1.8; c.beginPath(); c.moveTo(X(0), Y(0)); for (let k = 1; k < P.length; k++) c.lineTo(X(P[k][0]), Y(P[k][1])); c.stroke();
+    c.fillStyle = acc;
+    for (let k = 1; k <= heads; k++) { const [a, b] = P[k - 1], [e, f] = P[k]; const L = Math.hypot(e - a, f - b) * sc; if (L < 7) continue; const ang = Math.atan2(Y(f) - Y(b), X(e) - X(a)), hx = X(e), hy = Y(f); c.beginPath(); c.moveTo(hx, hy); c.lineTo(hx - 7 * Math.cos(ang - .45), hy - 7 * Math.sin(ang - .45)); c.lineTo(hx - 7 * Math.cos(ang + .45), hy - 7 * Math.sin(ang + .45)); c.fill(); }
+    const tip = P[P.length - 1]; c.beginPath(); c.arc(X(tip[0]), Y(tip[1]), 3.5, 0, 7); c.fill();
+    if (z) { c.strokeStyle = css('zero'); c.lineWidth = 2.5; c.beginPath(); c.arc(X(z.re), Y(z.im), 6, 0, 7); c.stroke(); }
+  }
+  const tip = P[N], fmt = (a, b) => `${F.d(a, 3)} ${b < 0 ? '−' : '+'} ${F.d(Math.abs(b), 3)}i`;
+  let out = `Dial at ${fmt(s, t).replace(/(\.\d\d)\d/g, '$1')}. After ${F.i(N)} term${N === 1 ? '' : 's'} the tip is at <b>${fmt(tip[0], tip[1])}</b>. `;
+  if (!z) { $('spOut').innerHTML = out + 'This is the runaway point from chapter 6. The arrows all point east and the sum grows forever.'; return; }
+  const d1 = Math.hypot(tip[0] - z.re, tip[1] - z.im), h = P[Math.ceil(N / 2)], d0 = Math.hypot(h[0] - z.re, h[1] - z.im);
+  out += `Zeta's true value is <b>${fmt(z.re, z.im)}</b>. The tip is ${F.d(d1, 4)} away. At half as many terms it was ${F.d(d0, 4)} away. `;
+  if (s > 1) out += d1 < 0.001 ? 'The spiral has settled on zeta’s value.' : 'It is closing in. Add more terms.';
+  else out += 'The circles do not shrink, so this sum never settles. Here zeta’s value comes from the stretch.';
+  $('spOut').innerHTML = out + ' (Rounded.)';
+}
+function spiralInit() {
+  const stop = () => { if (sp.anim) { cancelAnimationFrame(sp.anim); sp.anim = null; } };
+  $('spS').addEventListener('input', () => { stop(); spiralSet(+$('spS').value / 100, sp.t); });
+  $('spT').addEventListener('input', () => { stop(); spiralSet(sp.s, +$('spT').value / 100); });
+  $('spN').addEventListener('input', () => { stop(); sp.nv = +$('spN').value; spiralDraw(); });
+  document.querySelectorAll('[data-sp]').forEach(b => b.addEventListener('click', () => { stop(); const [a, c] = b.dataset.sp.split(',').map(Number); spiralSet(a, c); }));
+  $('spPlay').addEventListener('click', () => { stop(); sp.nv = 0; const step = () => { sp.nv = Math.min(1000, sp.nv + 8); spiralDraw(); if (sp.nv < 1000) sp.anim = requestAnimationFrame(step); else sp.anim = null; }; spiralDraw(); sp.anim = requestAnimationFrame(step); });
 }
 
 /* ================= Chapter 7: zeta map ================= */
@@ -1116,10 +1229,11 @@ function mapDraw() {
   $('mOut').innerHTML = s;
   map.f = f;
 }
-function mapInit() { pointerOn($('mCv'), (x, y) => { const f = map.f; if (!f) return; const s = map.s0 + (x - f.L) / f.iw * (map.s1 - map.s0), t = map.t1 - (y - f.T) / f.ih * (map.t1 - map.t0); map.pick = { s: Math.min(map.s1, Math.max(map.s0, s)), t: Math.min(map.t1, Math.max(map.t0, t)) }; mapDraw(); }); }
+function mapInit() { pointerOn($('mCv'), (x, y) => { const f = map.f; if (!f) return; const s = map.s0 + (x - f.L) / f.iw * (map.s1 - map.s0), t = map.t1 - (y - f.T) / f.ih * (map.t1 - map.t0); map.pick = { s: Math.min(map.s1, Math.max(map.s0, s)), t: Math.min(map.t1, Math.max(map.t0, t)) }; mapDraw(); spiralSet(Math.max(0, Math.min(3, map.pick.s)), Math.min(30, map.pick.t), true); }); }
 
 /* ================= Chapter 8: walking the line ================= */
 const STEP = 0.05;
+const trail = []; // zeta(1/2 + i·k·STEP) for k = 0, 1, 2, ...: the swirl in the arrow panel
 function scanTo(T) {
   // walk from S.walkMax to T in small steps, recording sign changes
   let t = S.walkMax, z = S.lastZ == null ? M.Z(0) : S.lastZ; if (S.lastZ == null) S.samples.push([0, z]);
@@ -1151,9 +1265,14 @@ function walkDraw() {
   const a = canv($('wAr'), Math.min(220, Math.max(150, $('wAr').clientWidth * .5))); if (a) {
     const c = a.c, cx = a.w / 2, cy = a.h / 2, sc = Math.min(a.w, a.h) / 2 / 3.2;
     c.strokeStyle = css('line'); c.lineWidth = 1; c.beginPath(); c.moveTo(cx - a.w / 2 + 6, cy); c.lineTo(cx + a.w / 2 - 6, cy); c.moveTo(cx, 6); c.lineTo(cx, a.h - 6); c.stroke();
-    // trail over the last 3 units of height
-    const tr = []; for (let t = Math.max(0, T - 3); t <= T + 1e-9; t += 0.05) { const z = M.zeta(.5, t); tr.push([cx + z.re * sc, cy - z.im * sc]); }
-    lineTo(c, tr, css('mute'), 1);
+    // the swirl: every value zeta has taken from height 0 up to here (cached), recent part brighter
+    const iT = Math.floor(T / STEP + 1e-9); for (let i = trail.length; i <= iT; i++) { const z = M.zeta(.5, i * STEP); trail.push([z.re, z.im]); }
+    const toPx = ([re, im]) => [cx + re * sc, cy - im * sc];
+    const recent = Math.max(0, iT - Math.round(3 / STEP));
+    c.save(); c.globalAlpha = .45; lineTo(c, trail.slice(0, recent + 1).map(toPx), css('curve'), 1); c.restore();
+    const zt = M.zeta(.5, T); lineTo(c, trail.slice(recent, iT + 1).map(toPx).concat([toPx([zt.re, zt.im])]), css('curve'), 1.8);
+    const passes = S.zeros.filter(q => q <= T + 1e-9).length;
+    if (passes) { c.strokeStyle = css('zero'); c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, 6, 0, 7); c.stroke(); c.fillStyle = css('zero'); c.fillText(`${passes} pass${passes === 1 ? '' : 'es'} through the centre`, 8, a.h - 8); }
     const z = info.zeta; const ex = cx + Math.max(-3.1, Math.min(3.1, z.re)) * sc, ey = cy - Math.max(-3.1, Math.min(3.1, z.im)) * sc;
     c.strokeStyle = css('zero'); c.fillStyle = css('zero'); c.lineWidth = 2.5; c.beginPath(); c.moveTo(cx, cy); c.lineTo(ex, ey); c.stroke();
     const ang = Math.atan2(ey - cy, ex - cx); c.beginPath(); c.moveTo(ex, ey); c.lineTo(ex - 9 * Math.cos(ang - .4), ey - 9 * Math.sin(ang - .4)); c.lineTo(ex - 9 * Math.cos(ang + .4), ey - 9 * Math.sin(ang + .4)); c.fill();
@@ -1186,10 +1305,11 @@ function walkInit() {
 }
 
 /* ================= Chapter 9: waves ================= */
-const wv = { xs: [], base: null, cache: [], busy: false, cursor: 50.5, huntTo: [100, 250, 500, 1000] };
-function waveSetup() { if (wv.base) return; for (let x = 2; x <= 100.0001; x += 0.2) wv.xs.push(+x.toFixed(2)); wv.base = wv.xs.map(x => M.Rsmooth(x) + M.trivial(x)); }
-function waveArr(k) { if (!wv.cache[k]) wv.cache[k] = wv.xs.map(x => M.wave(x, S.zeros[k])); return wv.cache[k]; }
-function curveAt(x, K) { let v = M.Rsmooth(x) + M.trivial(x); for (let k = 0; k < K; k++) v -= M.wave(x, S.zeros[k]); return v; }
+const wv = { xs: [], base: null, cache: [], pbase: null, pcache: [], busy: false, cursor: 50.5, huntTo: [100, 250, 500, 1000] };
+function waveSetup() { if (wv.base) return; for (let x = 2; x <= 100.0001; x += 0.2) wv.xs.push(+x.toFixed(2)); wv.base = wv.xs.map(x => M.Rsmooth(x) + M.trivial(x)); wv.pbase = wv.xs.map(M.psiSmooth); }
+function waveArr(k) { if (S.psi) { if (!wv.pcache[k]) wv.pcache[k] = wv.xs.map(x => M.psiWave(x, S.zeros[k])); return wv.pcache[k]; } if (!wv.cache[k]) wv.cache[k] = wv.xs.map(x => M.wave(x, S.zeros[k])); return wv.cache[k]; }
+function curveAt(x, K) { if (S.psi) { let v = M.psiSmooth(x); for (let k = 0; k < K; k++) v -= M.psiWave(x, S.zeros[k]); return v; } let v = M.Rsmooth(x) + M.trivial(x); for (let k = 0; k < K; k++) v -= M.wave(x, S.zeros[k]); return v; }
+const isJump = x => Math.abs(x - Math.round(x)) < 1e-9 && M.ppow.some(q => q[0] === Math.round(x));
 function fillIn(minZeros, toHeight, el, what) {
   if (S.zeros.length >= minZeros) { if (!el.dataset.kept) el.classList.remove('on'); return; }
   const had = S.zeros.length; walkSet(Math.max(S.walkT, toHeight)); S.walkT = Math.max(S.walkT, toHeight);
@@ -1201,32 +1321,41 @@ function waveDraw() {
   fillIn(3, 26, $('wvFill'), 'so this chapter has waves to add');
   const n = S.zeros.length; const sl = $('vK'); sl.max = n; let K = Math.min(+sl.value, n); sl.value = K;
   // compute any missing waves in small chunks
-  const need = []; for (let k = 0; k < K; k++) if (!wv.cache[k]) need.push(k);
+  const psi = S.psi, cache = psi ? wv.pcache : wv.cache;
+  document.querySelectorAll('#vSeg button').forEach(b => b.classList.toggle('on', (b.dataset.psi === '1') === psi));
+  $('vLgA').textContent = psi ? 'weighted count' : 'true prime count'; $('vLgB').textContent = psi ? 'straight line + waves' : 'smooth curve + waves';
+  const need = []; for (let k = 0; k < K; k++) if (!cache[k]) need.push(k);
   if (need.length > 12) { need.slice(0, 12).forEach(waveArr); $('vOut').innerHTML = `Computing waves… ${K - need.length + 12} of ${K}`; setTimeout(waveDraw, 0); return; }
   need.forEach(waveArr);
   $('vKo').textContent = K;
   const g = canv($('vCv'), 250); if (!g) return; const c = g.c;
-  const f = frame(g, { x0: 0, x1: 100, y0: 0, y1: 28, l: 34 });
-  axes(g, f, niceTicks(0, 100, 5), niceTicks(0, 28, 4), F.i, F.i);
-  const st = []; let prev = 0; st.push([f.X(0), f.Y(0)]); for (const q of M.primes) { if (q > 100) break; st.push([f.X(q), f.Y(prev)]); st.push([f.X(q), f.Y(prev + 1)]); prev++; } st.push([f.X(100), f.Y(prev)]);
+  const ytop = psi ? 110 : 28;
+  const f = frame(g, { x0: 0, x1: 100, y0: 0, y1: ytop, l: 34 });
+  axes(g, f, niceTicks(0, 100, 5), niceTicks(0, ytop, 4), F.i, F.i);
+  const st = []; let prev = 0; st.push([f.X(0), f.Y(0)]);
+  if (psi) { for (const [q, w] of M.ppow) { if (q > 100) break; st.push([f.X(q), f.Y(prev)]); st.push([f.X(q), f.Y(prev + w)]); prev += w; } }
+  else for (const q of M.primes) { if (q > 100) break; st.push([f.X(q), f.Y(prev)]); st.push([f.X(q), f.Y(prev + 1)]); prev++; }
+  st.push([f.X(100), f.Y(prev)]);
   lineTo(c, st, css('prime'), 2.4);
-  const cur = wv.base.slice(); for (let k = 0; k < K; k++) { const a = wv.cache[k]; for (let i = 0; i < cur.length; i++) cur[i] -= a[i]; }
+  const cur = (psi ? wv.pbase : wv.base).slice(); for (let k = 0; k < K; k++) { const a = cache[k]; for (let i = 0; i < cur.length; i++) cur[i] -= a[i]; }
   lineTo(c, wv.xs.map((x, i) => [f.X(x), f.Y(cur[i])]), css('curve'), 1.8);
   c.strokeStyle = css('mute'); c.setLineDash([3, 3]); c.beginPath(); c.moveTo(f.X(wv.cursor), f.T); c.lineTo(f.X(wv.cursor), f.T + f.ih); c.stroke(); c.setLineDash([]);
   wv.f = f;
   // newest wave alone
   const g2 = canv($('vOne'), 110); if (g2) {
-    const arr = K ? wv.cache[K - 1] : null; const amp = arr ? Math.max(0.02, ...arr.map(Math.abs)) * 1.1 : 1;
+    const arr = K ? cache[K - 1] : null; const amp = arr ? Math.max(0.02, ...arr.map(Math.abs)) * 1.1 : 1;
     const f2 = frame(g2, { x0: 0, x1: 100, y0: -amp, y1: amp, l: 34, b: 18 });
     axes(g2, f2, [], [-amp, 0, amp], F.i, v => F.d(v, amp < .5 ? 2 : 1));
     if (arr) lineTo(g2.c, wv.xs.map((x, i) => [f2.X(x), f2.Y(-arr[i])]), css('zero'), 1.6);
     g2.c.fillStyle = css('mute'); g2.c.fillText(K ? `wave from the zero at height ${F.d(S.zeros[K - 1], 3)}` : 'no wave added yet', f2.L + 6, 12);
   }
   // readout
-  const x = wv.cursor, v = curveAt(x, K), p = M.piOf(x);
-  let err = 0; for (let i = 0; i < wv.xs.length; i++) { const xx = wv.xs[i]; if (Math.abs(xx - Math.round(xx)) < 1e-9 && M.isPrime(Math.round(xx))) continue; err += Math.abs(cur[i] - M.piOf(xx)); }
-  err /= wv.xs.length;
-  $('vOut').innerHTML = `Using <b>${K}</b> wave${K === 1 ? '' : 's'}${K ? ` (zeros up to height ${F.d(S.zeros[K - 1], 1)})` : ''}. At x = ${F.d(x, 1)} the curve says <b>${F.d(v, 2)}</b>; the true count is <b>${p}</b>. Average distance from the staircase, 2 to 100: ${F.d(err, 2)} (rounded). Zeros available: ${n}.`;
+  const x = wv.cursor, v = curveAt(x, K), truth = psi ? M.psi0(x) : M.piOf(x);
+  let err = 0, cnt = 0; for (let i = 0; i < wv.xs.length; i++) { const xx = wv.xs[i]; if (psi ? isJump(xx) : (Math.abs(xx - Math.round(xx)) < 1e-9 && M.isPrime(Math.round(xx)))) continue; err += Math.abs(cur[i] - (psi ? M.psi0(xx) : M.piOf(xx))); cnt++; }
+  err /= psi ? cnt : wv.xs.length;
+  $('vOut').innerHTML = `Using <b>${K}</b> wave${K === 1 ? '' : 's'}${K ? ` (zeros up to height ${F.d(S.zeros[K - 1], 1)})` : ''}. ` + (psi
+    ? `At x = ${F.d(x, 1)} the straight line plus waves says <b>${F.d(v, 2)}</b>; the weighted count is <b>${F.d(truth, 2)}</b>. Average distance from its staircase, 2 to 100: ${F.d(err, 2)} (rounded). Zeros available: ${n}.`
+    : `At x = ${F.d(x, 1)} the curve says <b>${F.d(v, 2)}</b>; the true count is <b>${truth}</b>. Average distance from the staircase, 2 to 100: ${F.d(err, 2)} (rounded). Zeros available: ${n}.`);
   const nextH = wv.huntTo.find(h => h > S.walkMax + 1e-6);
   $('vHunt').textContent = nextH ? `Hunt for zeros up to height ${F.i(nextH)}` : 'Hunted as far as this page goes';
   $('vHunt').disabled = !nextH || wv.busy;
@@ -1234,6 +1363,7 @@ function waveDraw() {
 }
 function waveInit() {
   $('vK').addEventListener('input', waveDraw);
+  document.querySelectorAll('#vSeg button').forEach(b => b.addEventListener('click', () => { S.psi = b.dataset.psi === '1'; waveDraw(); }));
   $('vAdd').addEventListener('click', () => { $('vK').value = +$('vK').value + 1; waveDraw(); });
   $('vHunt').addEventListener('click', () => {
     const nextH = wv.huntTo.find(h => h > S.walkMax + 1e-6); if (!nextH || wv.busy) return; wv.busy = true; $('vHunt').disabled = true;
@@ -1320,7 +1450,7 @@ function sumDraw() {
     [4, `Coin flips drift by about the square root: after 10,000 flips, about ${F.i(SQ(1e4))}.`],
     [5, `The hypothesis: the prime gap stays inside a square-root band, give or take a slow factor. At a million: ${F.i(g6 - p6)} against ${F.i(SQ(1e6))}.`],
     [6, `Euler's sum over all numbers equals a product over primes: ${F.d(M.zeta(2, 0).re, 4)} at dial 2.`],
-    [7, `A proven stretch extends zeta to a map of dial settings. Its zeros seem to line up.`],
+    [7, `At 2 + 3i the arrows of the sum spiral in to ${F.d(M.zeta(2, 3).re, 3)} − ${F.d(-M.zeta(2, 3).im, 3)}i. West of 1 they never settle, so a proven stretch takes over. Its zeros seem to line up.`],
     [8, `You found ${S.zeros.length} zero${S.zeros.length === 1 ? '' : 's'} on the line${S.zeros.length ? `, the first near height ${F.d(S.zeros[0], 3)}` : ''}. About ${F.d(M.Ncount(3e12) / 1e12, 1)} trillion have been checked.`],
     [9, `Each zero adds a wave. Enough waves rebuild the prime staircase.`],
     [10, `A zero at east part ½ makes a wave of size √x. Anywhere else, it would eventually beat the coin-flip band.`],
@@ -1382,7 +1512,7 @@ function showShort() {
 /* ================= navigation ================= */
 const chapters = Array.from(document.querySelectorAll('section.ch'));
 const LAST = chapters.length - 1;
-const renderers = { 1: [dotsDraw], 2: [sieveDraw, tableDraw], 3: [stairDraw], 4: [coinDraw], 5: [bandDraw], 6: [eulerDraw], 7: [mapDraw], 8: [walkDraw], 9: [waveDraw], 10: [offDraw], 11: [worldDraw], 12: [sumDraw, lagDraw] };
+const renderers = { 1: [dotsDraw], 2: [sieveDraw, tableDraw, fcDraw], 3: [stairDraw], 4: [coinDraw], 5: [bandDraw], 6: [eulerDraw], 7: [spiralDraw, mapDraw], 8: [walkDraw], 9: [waveDraw], 10: [offDraw], 11: [worldDraw], 12: [sumDraw, lagDraw] };
 function render(i) { if (S.all || shortOn()) { try { shortDraw(); } catch (e) { console.error(e); } } (renderers[i] || []).forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); bind(chapters[i]); }
 let bindTimer = null; function bindSoon() { clearTimeout(bindTimer); bindTimer = setTimeout(() => { if (S.all) bind(); else bind(chapters[S.cur]); }, 30); }
 function buildPagers() {
@@ -1408,7 +1538,9 @@ function setAll(on) {
 
 /* ================= wiring ================= */
 function init() {
-  dotsInit(); mapInit(); walkInit(); waveInit(); offInit();
+  dotsInit(); mapInit(); spiralInit(); walkInit(); waveInit(); offInit();
+  document.querySelectorAll('#fcSeg button').forEach(b => b.addEventListener('click', () => { fc.a = +b.dataset.a; fcDraw(); }));
+  $('fcBox').addEventListener('toggle', fcDraw);
   $('shortBtn').addEventListener('click', showShort);
   $('shortBack').addEventListener('click', () => go(0));
   $('shortNext').addEventListener('click', () => go(1));
