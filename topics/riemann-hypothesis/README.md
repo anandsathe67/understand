@@ -29,3 +29,4 @@ Fixes after the cold build:
 - Chapter 5: a side note giving the closer coin-flip match (the running total of +1 and −1 by prime-factor count).
 - Chapter 2: one line saying the table is an average.
 - Eight wording fixes from the review.
+- 22 November 2026: a dated news note on the proof Levent Alpöge claimed on 20 November (written in Lean with Claude, under review), with links to six reports. It sits in chapter 11, with a short version on the two-minute page and pointers from the contents and chapter 5. It also says what a proof would be used for: proven guarantees for prime tests and prime searches, little change in practice, nothing for encryption, and the method as the bigger effect. Two cards in chapter 11's map were updated to match. The book still treats the hypothesis as unproved until mathematicians accept the proof; update the note when that changes.

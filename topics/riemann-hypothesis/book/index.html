@@ -57,6 +57,11 @@ b.v,span.v{font-variant-numeric:tabular-nums}
 main{max-width:760px;margin:0 auto;padding:18px 16px 60px}
 section.ch{display:none}
 section.ch.on, body.all section.ch{display:block}
+.news{border-left:5px solid var(--zero);background:var(--panel);border-radius:10px;padding:10px 14px;margin:18px 0}
+.news summary{font-weight:700;cursor:pointer}
+.news .small{font-size:.86rem;color:var(--mute)}
+.news .srcs{font-size:.86rem;margin:4px 0 0;padding-left:18px}
+.news .srcs a{color:var(--acc)}
 .short{display:none}
 .short.on, body.all .short{display:block}
 body.all .short{border-bottom:2px dashed var(--line);padding-bottom:30px;margin-bottom:30px}
@@ -163,7 +168,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <section class="ch on" id="ch0" data-title="Contents">
 <div class="kicker">A short book about the Riemann hypothesis</div>
 <h1>How Wobbly Are the Primes?</h1>
-<p class="scene">In 2000, a foundation in America put up a million dollars for one problem about prime numbers. Many brilliant people have tried. The prize is still unclaimed.</p>
+<p class="scene">In 2000, a foundation in America put up a million dollars for one problem about prime numbers. Many brilliant people have tried. The prize is still unclaimed. In November 2026 a proof was claimed, and experts are checking it now.</p>
 <p>The problem is called the <b>Riemann hypothesis</b>. Most explanations show a strange graph and stop. Others promise that solving it would break the internet. It wouldn't. This book builds the idea from scratch, one step at a time, with things you can poke. You'll need counting, powers, square roots, a coin and a graph. Nothing more.</p>
 <div class="doors"><button class="door" id="shortBtn">Short on time? Read the two-minute version</button><button class="lnk" data-go="1">Or start the book at chapter 1</button></div>
 <h3>Puzzles this book answers</h3>
@@ -199,14 +204,15 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 </figure>
 <h3>Where it comes from</h3>
 <p>In 1859, Bernhard Riemann linked the primes to one function, now called the <b>zeta function</b>. Each place where it equals zero adds one ripple to the prime count. The hypothesis says every one of those zeros lies on one straight line. If even one zero strayed off it, the primes would wobble more than coin flips.</p>
-<p>Computers have checked more than 12 trillion zeros. Every one sits on the line. But checking is not proving, and nobody has a proof.</p>
+<p>Computers have checked more than 12 trillion zeros. Every one sits on the line. But checking is not proving. Until November 2026, nobody had a proof.</p>
 <h3>What would change</h3>
 <div class="tw-table"><table class="short-t">
-  <tr><th>If it is proved</th><td>Many theorems that begin "if the Riemann hypothesis is true" become facts. The new ideas in the proof may matter even more.</td></tr>
+  <tr><th>If it is proved</th><td>Many theorems that begin "if the Riemann hypothesis is true" become facts. Some fast computer methods for primes gain proven guarantees, though they already work in practice. The new ideas in the proof may matter even more.</td></tr>
   <tr><th>If it is disproved</th><td>Those theorems lose their proofs. Some may still be true, but would need new ones.</td></tr>
   <tr><th>Your phone and your bank</th><td>Nothing changes either way. Encryption depends on how hard it is to split a huge number into its prime factors. The hypothesis says nothing about that.</td></tr>
 </table></div>
 <p>Since 2000, a proof has carried a prize of one million dollars. It is still unclaimed.</p>
+<div class="news"><b>News, November 2026:</b> a proof has been claimed. It was built with an AI and checked step by step by computer. Experts are still checking it. If it holds, the main uses are guarantees for computer methods that already work. The bigger change may be how it was made. <button class="lnk" data-go="11">Read more, with sources, in chapter 11</button></div>
 <div class="take"><strong>Take this with you</strong>The Riemann hypothesis says the primes wobble no more than chance would. It matters to mathematics far more than to technology.</div>
 <h3>Go deeper</h3>
 <ul class="puzzles">
@@ -360,7 +366,7 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 </figure>
 <p>Here is the <b>Riemann hypothesis</b>, in plain words. The gap between Gauss's guess and the prime count never grows faster than coin-flip drift. Up to a number x, the gap stays within about √x.</p>
 <p>An honest note. The exact statement uses a slightly different band. It is √x times the natural logarithm of x, divided by about <b class="v" data-x="F.i(8*Math.PI)"></b>. At a million that band is <b class="v" data-x="F.i(Math.sqrt(1e6)*Math.log(1e6)/(8*Math.PI))"></b>, even narrower. Far out it grows a little faster than √x, but only slowly. Tick the box to see it.</p>
-<p>Nobody has proved this. It has only been checked.</p>
+<p>For 167 years nobody proved this. It was only checked. A proof was claimed in November 2026 and is being checked now (<button class="lnk" data-go="11">chapter 11</button>).</p>
 <div class="notice"><h3>A few things to notice</h3><ul>
   <li>Up to a million, the gap never leaves the plain band. Its tightest moment uses <b class="v" data-x="F.d(100*K.bandMax().r,0)"></b>% of it, at <b class="v" data-x="K.bandMax().x"></b>.</li>
   <li>Far out, the gap uses only a small part of the band.</li>
@@ -550,8 +556,25 @@ footer.cred h3{color:var(--ink);font-size:.95rem}
 <p>Either way, the new methods would probably matter more than the answer. That's why mathematicians care.</p>
 <div class="take"><strong>Take this with you</strong>A proof turns many "ifs" into facts. A disproof sends some back to work. Your phone doesn't notice either way.</div>
 <p class="closing">Can the whole story fit on one page? And can you test it yourself?</p>
+<details class="news" open><summary>News: a proof was claimed in November 2026</summary>
+<p>On 20 November 2026, Levent Alpöge, a mathematician at Anthropic, said he had found a proof. He worked with Claude, an AI model. The proof is written in Lean, a computer language in which a machine checks every step.</p>
+<p>It is huge. Reports describe about 175,000 files. Independent checkers say the files compile, and the Lean community has said it is confident the proof is correct. Reports say it also covers a wider version, the generalised hypothesis.</p>
+<p>But no person has yet followed the whole argument. Checkers are still confirming that the statement proved is exactly the right one. Until mathematicians accept it, this book treats the hypothesis as unproved. If it holds, the "Proved" column above is the one that comes true.</p>
+<p><b>If it holds, what would it be used for?</b> Mostly guarantees. Some fast computer methods for primes were only known to work if a stronger version is true. The claimed proof reportedly covers that version. So these methods would become proven. One is a quick test for whether a number is prime. Searching for a large prime, as making a key does, would also get a proven time limit.</p>
+<p>In practice little changes, because these methods already work. Some famous questions need even wider versions, so they would stay open. Encryption would not change.</p>
+<p>The bigger effect may be the method. It reportedly extends an older counting technique of Sergei Stepanov, which could open related problems. And a machine-checked proof this large shows what AI and proof checkers can do. The same kind of checker is used on software, chips and security protocols.</p>
+<p class="small">Written on 22 November 2026, two days after the claim. Read more:</p>
+<ul class="srcs">
+  <li><a href="https://www.scientificamerican.com/article/the-ai-riemann-hypothesis-proof-is-almost-certainly-true-independent-mathematicians-attest/" target="_blank" rel="noopener">Scientific American: independent mathematicians on the proof</a></li>
+  <li><a href="https://www.scientificamerican.com/article/what-the-riemann-hypothesis-proof-really-means-about-ai-and-the-future/" target="_blank" rel="noopener">Scientific American: what the proof means for AI</a></li>
+  <li><a href="https://officechai.com/ai/how-mathematicians-have-reacted-to-claimed-riemann-hypothesis-proof-by-anthropics-levent-alpoge/" target="_blank" rel="noopener">OfficeChai: how mathematicians reacted</a></li>
+  <li><a href="https://casrai.org/news/anthropic-levent-alpoge-claude-lean-riemann-hypothesis-claim-2026" target="_blank" rel="noopener">CASRAI: the 175,000-file Lean claim</a></li>
+  <li><a href="https://dev.to/axrisi/riemann-hypothesis-lean-proof-what-the-checkers-actually-check-31i6" target="_blank" rel="noopener">DEV Community: what the Lean checkers actually check</a></li>
+  <li><a href="https://www.nacionale.com/en/articles/when-will-we-know-riemann-hypothesis-proof-verified-alpoge-claude-lean-what-happens-next" target="_blank" rel="noopener">Nacionale: when will we know if it is right?</a></li>
+</ul>
+</details>
 <details><summary>History: a famous claim</summary>
-<p>In 2018 Sir Michael Atiyah, a celebrated mathematician, presented a short claimed proof. Experts quickly found it did not work, and it was not accepted. Many claimed proofs appear every year. None has survived checking.</p>
+<p>In 2018 Sir Michael Atiyah, a celebrated mathematician, presented a short claimed proof. Experts quickly found it did not work, and it was not accepted. Many claimed proofs appear every year. Before 2026, none survived checking.</p>
 </details>
 <details><summary>Why care, if nothing changes?</summary>
 <p>Primes are the atoms of whole numbers. The hypothesis says their spread is as tame as it could possibly be. Nearly every deep tool in number theory touches it. A proof would likely bring new tools, the way the 1896 proof of the prime number theorem did.</p>
@@ -1270,9 +1293,9 @@ function offInit() {
 /* ================= Chapter 11: what would change ================= */
 const W = [
   { h: 'The wobble band (chapter 5)', d: 'The gap from Gauss’s guess stays inside a square-root band, with its small extra factor.', today: ['open', 'Checked, not proved'], proved: ['fact', 'A fact'], disproved: ['false', 'False: the gap breaks out eventually'] },
-  { h: 'A prime in every short stretch', d: 'Cramér, 1920: if the hypothesis holds, there is always a prime between x and x plus about √x times the natural log of x.', today: ['open', 'Proved only for longer stretches'], proved: ['fact', 'A fact'], disproved: ['open', 'Proof unfinished; may still be true'] },
+  { h: 'A prime in every short stretch', d: 'Cramér, 1920: if the hypothesis holds, there is always a prime between x and x plus about √x times the natural log of x. That caps how far a computer must search to find a large prime for a key.', today: ['open', 'Proved only for longer stretches'], proved: ['fact', 'A fact'], disproved: ['open', 'Proof unfinished; may still be true'] },
   { h: 'Lagarias’ divisor test (chapter 12)', d: 'No whole number’s divisors ever add up past the limit built from fractions.', today: ['open', 'Checked, not proved'], proved: ['fact', 'A fact'], disproved: ['false', 'False: some number breaks it'] },
-  { h: 'A fast test for primes', d: 'Miller, 1976, assumed a stronger version of the hypothesis. In 2002 Agrawal, Kayal and Saxena found a fast test proved with no hypothesis.', today: ['same', 'Settled already'], proved: ['same', 'No change'], disproved: ['same', 'No change'] },
+  { h: 'A fast test for primes', d: 'Miller, 1976, assumed a stronger version of the hypothesis. In 2002 Agrawal, Kayal and Saxena found a fast test proved with no hypothesis. Miller’s test is faster.', today: ['same', 'A proven test exists'], proved: ['fact', 'Miller’s faster test is proven too, if the stronger version is proved'], disproved: ['same', 'The 2002 test still stands'] },
   { h: 'Goldbach’s odd-number problem', d: 'Every odd number above 5 is a sum of three primes. Proved in 1997 assuming a stronger version of the hypothesis; proved outright by Harald Helfgott in 2013.', today: ['same', 'Settled already'], proved: ['same', 'No change'], disproved: ['same', 'No change'] },
   { h: 'Encryption on your phone', d: 'Rests on how hard it is to split a huge number into its two primes. The hypothesis says nothing about that.', today: ['same', 'Safe as it is'], proved: ['same', 'No change'], disproved: ['same', 'No change'] },
 ];
